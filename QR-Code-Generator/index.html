@@ -11,35 +11,38 @@
   <h1>QR Code Generator</h1>
 
   <input type="text" id="qr-input" placeholder="Enter text or URL" />
-  <br />
-  <button id="generate-btn">Generate</button>
-  <button id="download-btn">Download</button>
+  <div class="buttons-row">
+    <button id="generate-btn">Generate</button>
+    <button id="download-btn">Download</button>
+  </div>
 
   <div id="qrcode"></div>
 
-  <button id="toggle-options-btn" aria-expanded="false">
+  <button id="toggle-options-btn" aria-expanded="false" aria-controls="more-options">
     More options <span class="arrow">▼</span>
   </button>
 
   <div id="more-options" class="more-options" hidden>
-    <label>
-      <input type="radio" name="style" value="square" checked /> Squares
-    </label>
-    <label>
-      <input type="radio" name="style" value="dots" /> Dots
-    </label>
+    <fieldset>
+      <legend>QR Code Style</legend>
+      <label><input type="radio" name="style" value="square" checked /> Squares</label>
+      <label><input type="radio" name="style" value="dots" /> Dots</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Colors</legend>
+      <label>
+        Dark color:
+        <input type="color" id="color-dark" value="#000000" />
+      </label>
+      <label>
+        Background color:
+        <input type="color" id="color-light" value="#ffffff" />
+      </label>
+    </fieldset>
 
     <label>
-      Color:
-      <input type="color" id="color-dark" value="#000000" />
-    </label>
-    <label>
-      Background:
-      <input type="color" id="color-light" value="#ffffff" />
-    </label>
-
-    <label>
-      Choose export format:
+      Export format:
       <select id="format">
         <option value="png" selected>PNG</option>
         <option value="jpeg">JPEG</option>
@@ -49,7 +52,7 @@
     </label>
 
     <label>
-      Logo Upload:
+      Upload logo:
       <input type="file" id="logo-upload" accept="image/*" />
     </label>
 
