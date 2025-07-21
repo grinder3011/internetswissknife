@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Easy File Renamer</title>
-  <link rel="stylesheet" href="renamer.styles.css" />
+  <link rel="stylesheet" href="renamer.styles.css">
 </head>
 <body>
 
@@ -39,21 +39,15 @@
       <div class="form-group">
         <label for="start-number">Starting Number</label>
         <input type="text" id="start-number" value="1" />
-        <small>Leading zeroes are preserved (e.g. 0067 → 0068).</small>
-      </div>
-
-      <div class="form-group checkbox-group">
-        <label>
-          <input type="checkbox" id="use-underscore" checked />
-          Add underscore before number
-        </label>
+        <small>Example: enter <code>0050</code> to continue numbering from 50 with leading zeroes.</small>
       </div>
     </div>
 
-    <div class="form-group preview-group">
-      <label>Preview:</label>
-      <div id="preview-filename" class="preview">example_001.jpg</div>
+    <div class="form-group">
+      <label><input type="checkbox" id="use-underscore" /> Add underscore before number</label>
     </div>
+
+    <div id="preview-box" class="file-preview"></div>
 
     <div class="file-list" id="file-list"></div>
 
