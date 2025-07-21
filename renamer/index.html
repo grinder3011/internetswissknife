@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Easy File Renamer</title>
   <link rel="stylesheet" href="renamer.styles.css" />
 </head>
@@ -21,35 +21,26 @@
 
     <div class="form-group">
       <label for="sort-order">Sort Files By:</label>
-      <select id="sort-order" aria-describedby="sort-help">
+      <select id="sort-order">
         <option value="custom">Manual (drag to reorder)</option>
         <option value="name-asc">Filename (A → Z)</option>
         <option value="name-desc">Filename (Z → A)</option>
         <option value="date-asc">Date Modified (Oldest First)</option>
         <option value="date-desc">Date Modified (Newest First)</option>
-        <option value="id-asc">ID (Leading Number Ascending)</option>
+        <option value="id">Sort by ID (numbers in filenames)</option>
       </select>
-      <small id="sort-help" style="display:block; margin-top:4px; color:#555;">
-        Sort by ID: orders files by leading number in filename (e.g. "1. file.txt" before "10. file.txt").
-      </small>
     </div>
 
     <div class="input-row">
-      <div class="form-group">
+      <div class="form-group" style="flex-grow:1;">
         <label for="prefix">Filename Prefix</label>
         <input type="text" id="prefix" placeholder="e.g. vacation, invoice, photo" value="file" />
       </div>
 
-      <div class="form-group">
+      <div class="form-group" style="flex-grow:1; margin-left: 1rem;">
         <label for="start-number">Starting Number</label>
-        <input type="text" id="start-number" placeholder="e.g. 001 or 1" value="1" />
-        <small>This is useful if you've already renamed some files and want to continue numbering.</small>
-      </div>
-
-      <div class="form-group">
-        <label for="padding">Leading Zeroes on Counter</label>
-        <input type="number" id="padding" min="0" max="6" value="3" />
-        <small>How many digits to pad numbers with zeros (e.g. 001, 002).</small>
+        <input type="text" id="start-number" placeholder="e.g. 001 or 67" value="001" />
+        <small>Leading zeros will be preserved automatically</small>
       </div>
     </div>
 
