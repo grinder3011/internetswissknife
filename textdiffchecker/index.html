@@ -4,22 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Text Diff Checker</title>
-  <link rel="stylesheet" href="textdiffchecker.styles.css" />
+  <link rel="stylesheet" href="textdiffchecker.styles.css">
 </head>
 <body>
   <h1>Text Diff Checker</h1>
 
   <textarea id="text1" placeholder="Enter original text here..."></textarea>
   <textarea id="text2" placeholder="Enter modified text here..."></textarea>
-
-  <div class="button-row">
-    <button id="compare-btn">Compare Text</button>
-    <button id="reset-btn" class="secondary">Reset</button>
+  <div class="buttons">
+    <button id="compare-btn">Compare</button>
+    <button id="reset-btn">Reset</button>
   </div>
-
   <div id="output" class="diff-output"></div>
 
-   <!-- ✅ Load library BEFORE your script -->
+  <!-- ✅ Load library BEFORE your script -->
   <script src="https://cdn.jsdelivr.net/npm/diff-match-patch@1.0.4/dist/diff-match-patch.umd.js"></script>
   <script src="textdiffchecker.js"></script>
 </body>
