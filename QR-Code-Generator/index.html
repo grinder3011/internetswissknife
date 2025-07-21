@@ -3,95 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>QR Code Generator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: auto;
-      padding: 2rem;
-      background: #f9f9f9;
-      text-align: center;
-    }
-
-    h1 {
-      margin-bottom: 1rem;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 0.6rem;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      padding: 0.6rem 1.5rem;
-      font-size: 1rem;
-      margin: 0.5rem;
-      border: none;
-      border-radius: 4px;
-      background-color: #007acc;
-      color: white;
-      cursor: pointer;
-    }
-
-    #qrcode {
-      margin-top: 2rem;
-    }
-  </style>
+  <title>Advanced QR Code Generator</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <h1>QR Code Generator</h1>
+  <h1>Advanced QR Code Generator</h1>
 
-  <input type="text" id="qr-input" placeholder="Enter text or URL" />
-  <br />
-  <button onclick="generateQR()">Generate</button>
-  <button onclick="downloadQR()">Download</button>
+  <label for="input-text">Text or URL</label>
+  <input type="text" id="input-text" placeholder="Enter text or URL" autocomplete="off" />
+
+  <div>
+    <label>Colors</label>
+    <div class="color-palette">
+      <div>
+        <label for="color-dark">Foreground:</label><br />
+        <input type="color" id="color-dark" value="#000000" />
+      </div>
+      <div>
+        <label for="color-light">Background:</label><br />
+        <input type="color" id="color-light" value="#ffffff" />
+      </div>
+    </div>
+  </div>
+
+  <div id="preview-text">Preview: <span id="preview-value">(empty)</span></div>
+
+  <div class="more-options-toggle" id="toggle-more-options">➕ More options</div>
+
+  <div class="more-options-content" id="more-options">
+
+    <label for="format-select">Output format</label>
+    <select id="format-select">
+      <option value="png" selected>PNG (image)</option>
+      <option value="svg">SVG (vector)</option>
+      <option value="pdf">PDF (download)</option>
+    </select>
+
+    <label for="logo-upload">Upload Logo (optional, center overlay)</label>
+    <input type="file" id="logo-upload" accept="image/*" />
+    <img id="logo-preview" class="logo-preview" alt="Logo preview" />
+
+    <div style="margin-top: 1rem;">
+      <label>Style</label>
+      <div class="style-options">
+        <label><input type="radio" name="style" value="square" checked> Square (classic)</label>
+        <label><input type="radio" name="style" value="dots"> Rounded Dots</label>
+      </div>
+    </div>
+  </div>
+
+  <button id="generate-btn">Generate QR Code</button>
+  <button id="download-btn">Download</button>
 
   <div id="qrcode"></div>
 
-<!-- CDN for QRCode.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script>
-    let qr;
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    function generateQR() {
-      const input = document.getElementById("qr-input").value;
-      const qrContainer = document.getElementById("qrcode");
-      qrContainer.innerHTML = ""; // Clear previous
+  <script src="script.js"></script>
 
-      if (!input.trim()) return;
-
-      qr = new QRCode(qrContainer, {
-        text: input,
-        width: 256,
-        height: 256,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    }
-
-    function downloadQR() {
-      if (!qr) return;
-
-      const img = document.querySelector("#qrcode img") || document.querySelector("#qrcode canvas");
-      if (img && img.src) {
-        const a = document.createElement("a");
-        a.href = img.src;
-        a.download = "qrcode.png";
-        a.click();
-      } else if (img && img.toDataURL) {
-        const a = document.createElement("a");
-        a.href = img.toDataURL("image/png");
-        a.download = "qrcode.png";
-        a.click();
-      }
-    }
-  </script>
 </body>
 </html>
