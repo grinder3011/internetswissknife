@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Text Diff Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      background: #f4f4f4;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.6rem 1.5rem;
+      font-size: 1rem;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .diff-output {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid #ccc;
+      white-space: pre-wrap;
+    }
+    .diff-output ins {
+      background-color: #c6f6d5;
+      text-decoration: none;
+    }
+    .diff-output del {
+      background-color: #fed7d7;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Text Diff Checker</h1>
+
+  <textarea id="text1" placeholder="Enter original text here..."></textarea>
+  <textarea id="text2" placeholder="Enter modified text here..."></textarea>
+  <button id="compare-btn">Compare</button>
+
+  <div id="output" class="diff-output"></div>
+
+  <!-- ✅ Correct working UMD build -->
+  <script src="https://cdn.jsdelivr.net/npm/diff-match-patch@1.0.4/dist/diff-match-patch.min.js"></script>
+
+  <script>
+    document.getElementById("compare-btn").addEventListener("click", function () {
+      const text1 = document.getElementById("text1").value;
+      const text2 = document.getElementById("text2").value;
+
+      const dmp = new diff_match_patch();
+      const diffs = dmp.diff_main(text1, text2);
+      dmp.diff_cleanupSemantic(diffs);
+
+      const result = diffs.map(([op, data]) => {
+        if (op === 1) return `<ins>${data}</ins>`;     // Insertion
+        if (op === -1) return `<del>${data}</del>`;    // Deletion
+        return data;                                   // Equal
+      }).join("");
+
+      document.getElementById("output").innerHTML = result;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MP3 Tag Editor</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 1rem; max-width: 600px; margin: auto; }
+  label { display: block; margin-top: 1rem; }
+  input[type="text"] { width: 100%; padding: 0.3rem; }
+  button { margin-top: 1rem; padding: 0.5rem 1rem; }
+</style>
+</head>
+<body>
+
+<h1>MP3 Tag Editor</h1>
+
+<input type="file" id="file-input" accept=".mp3" multiple />
+
+<div id="file-list"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/music-metadata-browser/dist/music-metadata-browser.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/dist/browser-id3-writer.min.js"></script>
+<script src="mp3tagger.js"></script>
+
+</body>
+</html>

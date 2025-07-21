@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF Merger</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    input[type="file"] {
+      display: block;
+      margin: 1rem 0;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      margin-top: 1rem;
+    }
+    #file-list {
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+<h1>PDF Merger Tool</h1>
+
+<input type="file" id="pdf-input" accept="application/pdf" multiple />
+
+<div id="file-list"></div>
+
+<button id="merge-btn">Merge PDFs</button>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

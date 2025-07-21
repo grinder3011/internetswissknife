@@ -1,0 +1,58 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f3f6fb;
+  margin: 0;
+  color: #333;
+}
+header {
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+main {
+  max-width: 700px;
+  margin: 2rem auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+.drop-zone {
+  border: 2px dashed #bbb;
+  padding: 2rem;
+  text-align: center;
+  border-radius: 8px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.drop-zone.dragover {
+  background: #e6f0ff;
+}
+.form-group {
+  margin-top: 1.5rem;
+}
+label {
+  font-weight: bold;
+}
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.3rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.input-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.file-list {
+  margin-top: 2rem;
+}
+.file-item {
+ 

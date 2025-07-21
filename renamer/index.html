@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Easy File Renamer</title>
+  <link rel="stylesheet" href="renamer.styles.css">
+</head>
+<body>
+
+  <header>
+    <h1>Easy File Renamer</h1>
+    <p>Rename and download your files with a custom name pattern</p>
+  </header>
+
+  <main>
+    <div class="drop-zone" id="drop-zone" tabindex="0" aria-label="File drop zone">
+      <p><strong>Drag & drop your files here</strong> or click to select</p>
+      <input type="file" id="file-input" multiple webkitdirectory style="display: none;" />
+    </div>
+
+    <div class="form-group">
+      <label for="sort-order">Sort Files By:</label>
+      <select id="sort-order">
+        <option value="custom">Manual (drag to reorder)</option>
+        <option value="name-asc">Filename (A → Z)</option>
+        <option value="name-desc">Filename (Z → A)</option>
+        <option value="date-asc">Date Modified (Oldest First)</option>
+        <option value="date-desc">Date Modified (Newest First)</option>
+      </select>
+    </div>
+
+    <div class="input-row">
+      <div class="form-group">
+        <label for="prefix">Filename Prefix</label>
+        <input type="text" id="prefix" placeholder="e.g. vacation, invoice, photo" value="file" />
+      </div>
+
+      <div class="form-group">
+        <label for="start-number">Starting Number</label>
+        <input type="number" id="start-number" min="1" value="1" />
+        <small>This is useful if you've already renamed some files.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="padding">Number Padding</label>
+        <input type="number" id="padding" min="1" max="6" value="3" />
+        <small>e.g. "001", "002" for padding of 3</small>
+      </div>
+    </div>
+
+    <div id="test" class="file-list" id="file-list"></div>
+
+    <button id="rename-btn">Rename & Download ZIP</button>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="renamer.js"></script>
+</body>
+</html>

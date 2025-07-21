@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Multi-ZIP Tool</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 2rem;
+      padding: 0;
+      background: #f4f4f4;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .upload-area {
+      border: 2px dashed #888;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    .upload-area.dragover {
+      border-color: #007bff;
+      background-color: #eef6ff;
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    #file-list {
+      margin-top: 1rem;
+      background: #fff;
+      border-radius: 6px;
+      padding: 1rem;
+    }
+
+    .file-item {
+      margin: 0.3rem 0;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Multi-ZIP Compressor</h1>
+
+  <div class="upload-area" id="drop-zone">
+    <p>Click to choose files or drag & drop here</p>
+    <input type="file" id="file-input" multiple />
+  </div>
+
+  <div id="file-list"></div>
+
+  <div style="text-align:center">
+    <button id="zip-button">Download ZIP</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const fileList = document.getElementById('file-list');
+    const zipButton = document.getElementById('zip-button');
+
+    let selectedFiles = [];
+
+    dropZone.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      handleFiles(Array.from(e.target.files));
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const files = Array.from(e.dataTransfer.files);
+      handleFiles(files);
+    });
+
+    function handleFiles(files) {
+      selectedFiles = selectedFiles.concat(files);
+      updateFileList();
+    }
+
+    function updateFileList() {
+      fileList.innerHTML = '';
+      selectedFiles.forEach((file, i) => {
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        item.textContent = `${i + 1}. ${file.name}`;
+        fileList.appendChild(item);
+      });
+    }
+
+    zipButton.addEventListener('click', async () => {
+      if (selectedFiles.length === 0) {
+        alert('Please add some files first.');
+        return;
+      }
+
+      const zip = new JSZip();
+      for (const file of selectedFiles) {
+        zip.file(file.name, file);
+      }
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'archive.zip';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
