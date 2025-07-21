@@ -8,15 +8,18 @@
   <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 </head>
 <body>
-
   <h1>QR Code Generator</h1>
 
   <input type="text" id="qr-input" placeholder="Enter text or URL" />
-  <div id="qr-code"></div>
-
-  <button id="generate-btn">Generate QR Code</button>
+  <br />
+  <button id="generate-btn">Generate</button>
   <button id="download-btn">Download</button>
-  <button id="toggle-options">More Options</button>
+
+  <div id="qrcode"></div>
+
+  <button id="toggle-options-btn" aria-expanded="false">
+    More options <span class="arrow">▼</span>
+  </button>
 
   <div id="more-options" class="more-options" hidden>
     <label>
