@@ -1,34 +1,76 @@
-<div id="more-options" class="more-options" hidden>
-  <label>
-    <input type="radio" name="style" value="square" checked /> Squares
-  </label>
-  <label>
-    <input type="radio" name="style" value="dots" /> Dots
-  </label>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QR Code Generator</title>
+  <link rel="stylesheet" href="QRCodeGenerator.styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>QR Code Generator</h1>
 
-  <label>
-    Color:
-    <input type="color" id="color-dark" value="#000000" />
-  </label>
-  <label>
-    Background:
-    <input type="color" id="color-light" value="#ffffff" />
-  </label>
+    <input
+      type="text"
+      id="qr-input"
+      placeholder="Enter text or URL"
+      autocomplete="off"
+    />
+    <div class="buttons">
+      <button id="generate-btn" type="button">Generate</button>
+      <button id="download-btn" type="button">Download</button>
+    </div>
 
-  <label>
-    Choose export format:
-    <select id="format">
-      <option value="png" selected>PNG</option>
-      <option value="jpeg">JPEG</option>
-      <option value="webp">WEBP</option>
-      <option value="svg">SVG</option>
-    </select>
-  </label>
+    <div id="qrcode"></div>
 
-  <label>
-    Logo Upload:
-    <input type="file" id="logo-upload" accept="image/*" />
-  </label>
+    <button
+      id="toggle-options-btn"
+      type="button"
+      aria-expanded="false"
+      aria-controls="more-options"
+      class="toggle-options"
+    >
+      More Options ▼
+    </button>
 
-  <button id="reset-btn" type="button">Reset to default settings</button>
-</div>
+    <section id="more-options" class="more-options" hidden>
+      <fieldset>
+        <legend>Style</legend>
+        <label><input type="radio" name="style" value="square" checked /> Squares</label>
+        <label><input type="radio" name="style" value="dots" /> Dots</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Colors</legend>
+        <label for="color-dark">Dark color:</label>
+        <input type="color" id="color-dark" value="#000000" />
+        <label for="color-light">Background color:</label>
+        <input type="color" id="color-light" value="#ffffff" />
+      </fieldset>
+
+      <fieldset>
+        <legend>Export Format</legend>
+        <label for="format">Choose export format:</label>
+        <select id="format">
+          <option value="png" selected>PNG</option>
+          <option value="jpeg">JPEG</option>
+          <option value="webp">WEBP</option>
+          <option value="svg">SVG</option>
+        </select>
+      </fieldset>
+
+      <fieldset>
+        <legend>Logo</legend>
+        <label for="logo-upload">Upload logo (optional):</label>
+        <input type="file" id="logo-upload" accept="image/*" />
+      </fieldset>
+
+      <button id="reset-btn" type="button" class="reset-btn">
+        Reset to default settings
+      </button>
+    </section>
+  </main>
+
+  <script src="QRCodeGenerator.js"></script>
+</body>
+</html>
