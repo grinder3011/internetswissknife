@@ -1,24 +1,67 @@
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
-const fileListContainer = document.getElementById('file-list');
-const sortOrderSelect = document.getElementById('sort-order');
+const fileList = document.getElementById('file-list');
 const renameBtn = document.getElementById('rename-btn');
+const patternSelect = document.getElementById('sort-order');
 const prefixInput = document.getElementById('prefix');
 const startNumberInput = document.getElementById('start-number');
-const paddingInput = document.getElementById('padding');
 
 let files = [];
-let manualOrder = []; // store manual order of files for "custom" sorting
+let dragSrcEl = null;
 
-// Helper: extract leading number from filename for "Sort by ID"
-function extractLeadingNumber(filename) {
-  const match = filename.match(/^(\d+)/);
-  return match ? parseInt(match[1], 10) : Infinity; // Infinity puts non-number files at end
+// Drag & drop zone handlers
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.style.background = '#eef';
+});
+dropZone.addEventListener('dragleave', () => (dropZone.style.background = ''));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.style.background = '';
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+// Handle incoming files (drop or select)
+function handleFiles(fileListInput) {
+  files = Array.from(fileListInput);
+  applySort(patternSelect.value);
+  displayFileList();
 }
 
-// Sort files based on criteria
-function sortFiles(criteria) {
-  switch(criteria) {
+// Display the list with drag-and-drop for manual order
+function displayFileList() {
+  fileList.innerHTML = '';
+
+  files.forEach((file, index) => {
+    const row = document.createElement('div');
+    row.className = 'file-row';
+    row.draggable = patternSelect.value === 'custom';
+    row.dataset.index = index;
+
+    row.textContent = file.name;
+
+    // Drag & drop events for manual reorder
+    if (row.draggable) {
+      row.addEventListener('dragstart', dragStart);
+      row.addEventListener('dragover', dragOver);
+      row.addEventListener('drop', drop);
+      row.addEventListener('dragend', dragEnd);
+    }
+
+    fileList.appendChild(row);
+  });
+}
+
+// Sorting handler
+patternSelect.addEventListener('change', () => {
+  applySort(patternSelect.value);
+  displayFileList();
+});
+
+function applySort(method) {
+  switch (method) {
     case 'name-asc':
       files.sort((a, b) => a.name.localeCompare(b.name));
       break;
@@ -31,175 +74,89 @@ function sortFiles(criteria) {
     case 'date-desc':
       files.sort((a, b) => b.lastModified - a.lastModified);
       break;
-    case 'id-asc':
-      files.sort((a, b) => extractLeadingNumber(a.name) - extractLeadingNumber(b.name));
+    case 'id':
+      files.sort((a, b) => extractNumber(a.name) - extractNumber(b.name));
       break;
     case 'custom':
     default:
-      // Restore manual order
-      if (manualOrder.length === files.length) {
-        files = manualOrder.map(i => files[i]);
-      }
+      // Do nothing, keep current order
+      break;
   }
 }
 
-// Render file list with drag & drop reorder for "custom" sorting
-function renderFileList() {
-  fileListContainer.innerHTML = '';
-
-  files.forEach((file, index) => {
-    const div = document.createElement('div');
-    div.className = 'file-item';
-    div.draggable = sortOrderSelect.value === 'custom';
-    div.dataset.index = index;
-    div.textContent = file.name;
-
-    if (div.draggable) {
-      div.addEventListener('dragstart', dragStart);
-      div.addEventListener('dragover', dragOver);
-      div.addEventListener('drop', drop);
-      div.addEventListener('dragend', dragEnd);
-    }
-
-    fileListContainer.appendChild(div);
-  });
+function extractNumber(filename) {
+  // Extract first number found in filename for sorting by ID
+  const match = filename.match(/(\d+)/);
+  return match ? parseInt(match[0], 10) : 0;
 }
 
-// Drag and Drop handlers for manual reorder
-let dragSrcIndex = null;
-
+// Drag and drop reorder handlers
 function dragStart(e) {
-  dragSrcIndex = +this.dataset.index;
+  dragSrcEl = e.target;
   e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/plain', '');
-  this.style.opacity = '0.5';
+  e.dataTransfer.setData('text/html', e.target.innerHTML);
+  e.target.style.opacity = '0.4';
 }
-
 function dragOver(e) {
   e.preventDefault();
-  this.style.borderTop = e.clientY < this.getBoundingClientRect().top + this.offsetHeight / 2 ? '2px solid blue' : '';
-  this.style.borderBottom = e.clientY >= this.getBoundingClientRect().top + this.offsetHeight / 2 ? '2px solid blue' : '';
+  e.dataTransfer.dropEffect = 'move';
 }
-
 function drop(e) {
-  e.preventDefault();
-  this.style.borderTop = '';
-  this.style.borderBottom = '';
-  const dropIndex = +this.dataset.index;
+  e.stopPropagation();
+  if (dragSrcEl !== this) {
+    const fromIndex = parseInt(dragSrcEl.dataset.index);
+    const toIndex = parseInt(this.dataset.index);
 
-  if (dragSrcIndex !== null && dropIndex !== dragSrcIndex) {
-    const draggedFile = files[dragSrcIndex];
-    files.splice(dragSrcIndex, 1);
-    files.splice(dropIndex, 0, draggedFile);
+    // Swap files array items
+    files.splice(toIndex, 0, files.splice(fromIndex, 1)[0]);
 
-    // Update manual order indexes
-    manualOrder = files.map((_, i) => i);
-
-    renderFileList();
+    applySort('custom'); // To update indices after reorder
+    displayFileList();
   }
 }
-
 function dragEnd(e) {
-  this.style.opacity = '1';
-  fileListContainer.querySelectorAll('.file-item').forEach(el => {
-    el.style.borderTop = '';
-    el.style.borderBottom = '';
-  });
+  e.target.style.opacity = '1';
 }
 
-function updateManualOrder() {
-  manualOrder = files.map((_, i) => i);
-}
-
-// Load files from input or drop
-function handleFiles(selectedFiles) {
-  files = Array.from(selectedFiles);
-  updateManualOrder();
-
-  applySortAndRender();
-}
-
-// Apply sort based on dropdown and render list
-function applySortAndRender() {
-  const sortCriteria = sortOrderSelect.value;
-  sortFiles(sortCriteria);
-  if(sortCriteria !== 'custom') updateManualOrder(); // reset manual order on sort
-  renderFileList();
-}
-
-// Format number with leading zeros according to padding
-function formatNumber(num, padding) {
-  return num.toString().padStart(padding, '0');
-}
-
-// Rename and download files as ZIP
-async function renameAndDownload() {
+// Rename & Download ZIP handler
+renameBtn.addEventListener('click', async () => {
   if (files.length === 0) {
-    alert('Please select files first.');
+    alert('Please add some files first.');
     return;
   }
 
   const prefix = prefixInput.value.trim() || 'file';
-  let startNumStr = startNumberInput.value.trim() || '1';
-  const padding = parseInt(paddingInput.value, 10) || 0;
+  let startNumStr = startNumberInput.value.trim();
 
-  // Parse start number from string pattern (e.g. "0067" -> 67, padding = 4)
-  const leadingZerosMatch = startNumStr.match(/^0+/);
-  let autoPadding = padding;
-  if (leadingZerosMatch) {
-    autoPadding = Math.max(padding, leadingZerosMatch[0].length);
+  // Validate start number
+  if (!/^\d+$/.test(startNumStr)) {
+    alert('Starting Number must be a number (leading zeros allowed).');
+    startNumberInput.focus();
+    return;
   }
+
+  // Determine padding from leading zeros
+  const padding = startNumStr.length;
   let startNum = parseInt(startNumStr, 10);
-  if (isNaN(startNum)) startNum = 1;
 
   const zip = new JSZip();
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const ext = file.name.includes('.') ? '.' + file.name.split('.').pop() : '';
-    const numStr = formatNumber(startNum + i, autoPadding);
-    const newName = `${prefix}${numStr}${ext}`;
+    const ext = file.name.includes('.') ? file.name.split('.').pop() : '';
+    // Format number with leading zeros
+    const numberStr = String(startNum + i).padStart(padding, '0');
+    const newName = ext ? `${prefix}_${numberStr}.${ext}` : `${prefix}_${numberStr}`;
+
     const content = await file.arrayBuffer();
     zip.file(newName, content);
   }
 
-  zip.generateAsync({ type: 'blob' }).then(function(content) {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(content);
-    a.download = `${prefix}_renamed_files.zip`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  });
-}
-
-// Event listeners
-
-dropZone.addEventListener('click', () => fileInput.click());
-
-dropZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropZone.classList.add('dragover');
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'renamed_files.zip';
+  a.click();
+  URL.revokeObjectURL(url);
 });
-
-dropZone.addEventListener('dragleave', () => {
-  dropZone.classList.remove('dragover');
-});
-
-dropZone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  dropZone.classList.remove('dragover');
-  if (e.dataTransfer.files.length > 0) {
-    handleFiles(e.dataTransfer.files);
-  }
-});
-
-fileInput.addEventListener('change', () => {
-  handleFiles(fileInput.files);
-});
-
-sortOrderSelect.addEventListener('change', () => {
-  applySortAndRender();
-});
-
-renameBtn.addEventListener('click', renameAndDownload);
