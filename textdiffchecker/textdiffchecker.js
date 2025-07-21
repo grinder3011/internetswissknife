@@ -1,30 +1,29 @@
-document.getElementById("compare-btn").addEventListener("click", function () {
-  const text1 = document.getElementById("text1").value.trim();
-  const text2 = document.getElementById("text2").value.trim();
+document.addEventListener("DOMContentLoaded", function () {
+  const compareBtn = document.getElementById("compare-btn");
+  const resetBtn = document.getElementById("reset-btn");
 
-  const dmp = new diff_match_patch();
-  const diffs = dmp.diff_main(text1, text2);
-  dmp.diff_cleanupSemantic(diffs);
+  compareBtn.addEventListener("click", function () {
+    const text1 = document.getElementById("text1").value;
+    const text2 = document.getElementById("text2").value;
 
-  const result = diffs.map(([op, data]) => {
-    if (op === 1) return `<ins>${escapeHtml(data)}</ins>`;   // Insertion
-    if (op === -1) return `<del>${escapeHtml(data)}</del>`;  // Deletion
-    return escapeHtml(data);                                 // Equal
-  }).join("");
+    const dmp = new diff_match_patch();
+    const diffs = dmp.diff_main(text1, text2);
+    dmp.diff_cleanupSemantic(diffs);
 
-  document.getElementById("output").innerHTML = result;
+    const result = diffs.map(function (diff) {
+      const op = diff[0];
+      const data = diff[1];
+      if (op === 1) return `<ins>${data}</ins>`;     // Insertion
+      if (op === -1) return `<del>${data}</del>`;    // Deletion
+      return data;                                   // Equal
+    }).join("");
+
+    document.getElementById("output").innerHTML = result;
+  });
+
+  resetBtn.addEventListener("click", function () {
+    document.getElementById("text1").value = "";
+    document.getElementById("text2").value = "";
+    document.getElementById("output").innerHTML = "";
+  });
 });
-
-document.getElementById("reset-btn").addEventListener("click", function () {
-  document.getElementById("text1").value = "";
-  document.getElementById("text2").value = "";
-  document.getElementById("output").innerHTML = "";
-  document.getElementById("text1").focus();
-});
-
-function escapeHtml(text) {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
