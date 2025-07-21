@@ -4,19 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Text Diff Checker</title>
-  <link rel="stylesheet" href="textdiffchecker.styles.css">
+  <link rel="stylesheet" href="textdiffchecker.styles.css" />
 </head>
 <body>
   <h1>Text Diff Checker</h1>
 
   <textarea id="text1" placeholder="Enter original text here..."></textarea>
   <textarea id="text2" placeholder="Enter modified text here..."></textarea>
-  <button id="compare-btn">Compare</button>
+
+  <div class="button-row">
+    <button id="compare-btn">Compare Text</button>
+    <button id="reset-btn" class="secondary">Reset</button>
+  </div>
 
   <div id="output" class="diff-output"></div>
 
-  <!-- ✅ Proper CDN with global access -->
-  <script src="https://unpkg.com/diff-match-patch@1.0.5/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/diff-match-patch@1.0.4/dist/diff-match-patch.min.js"></script>
   <script src="textdiffchecker.js"></script>
 </body>
 </html>
