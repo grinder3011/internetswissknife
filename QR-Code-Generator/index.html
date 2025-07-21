@@ -1,69 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>QR Code Generator</title>
-  <link rel="stylesheet" href="QRCodeGenerator.styles.css" />
-</head>
-<body>
-  <div class="container">
-    <h1>QR Code Generator</h1>
+<div id="more-options" class="more-options" hidden>
+  <label>
+    <input type="radio" name="style" value="square" checked /> Squares
+  </label>
+  <label>
+    <input type="radio" name="style" value="dots" /> Dots
+  </label>
 
-    <input
-      type="text"
-      id="qr-input"
-      placeholder="Enter text or URL"
-      aria-label="Text or URL to encode"
-    />
-    
-    <div class="buttons">
-      <button id="generate-btn">Generate</button>
-      <button id="download-btn" disabled>Download</button>
-    </div>
+  <label>
+    Color:
+    <input type="color" id="color-dark" value="#000000" />
+  </label>
+  <label>
+    Background:
+    <input type="color" id="color-light" value="#ffffff" />
+  </label>
 
-    <div class="options">
-      <button id="toggle-more-options" aria-expanded="false" aria-controls="more-options">
-        More Options ▼
-      </button>
-      <div id="more-options" class="more-options" hidden>
-        <label>
-          <input type="radio" name="style" value="square" checked /> Squares
-        </label>
-        <label>
-          <input type="radio" name="style" value="dots" /> Dots
-        </label>
+  <label>
+    Choose export format:
+    <select id="format">
+      <option value="png" selected>PNG</option>
+      <option value="jpeg">JPEG</option>
+      <option value="webp">WEBP</option>
+      <option value="svg">SVG</option>
+    </select>
+  </label>
 
-        <label>
-          Color:
-          <input type="color" id="color-dark" value="#000000" />
-        </label>
-        <label>
-          Background:
-          <input type="color" id="color-light" value="#ffffff" />
-        </label>
+  <label>
+    Logo Upload:
+    <input type="file" id="logo-upload" accept="image/*" />
+  </label>
 
-        <label>
-          Format:
-          <select id="format">
-            <option value="png" selected>PNG</option>
-            <option value="jpeg">JPEG</option>
-            <option value="webp">WEBP</option>
-          </select>
-        </label>
-
-        <label>
-          Logo URL:
-          <input type="text" id="logo-url" placeholder="Paste image URL here" />
-        </label>
-      </div>
-    </div>
-
-    <div id="qrcode"></div>
-  </div>
-
-  <!-- qr-code-styling lib -->
-  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
-  <script src="QRCodeGenerator.js"></script>
-</body>
-</html>
+  <button id="reset-btn" type="button">Reset to default settings</button>
+</div>
