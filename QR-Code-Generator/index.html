@@ -7,56 +7,63 @@
   <link rel="stylesheet" href="QRCodeGenerator.styles.css" />
 </head>
 <body>
-  <main class="container">
-    <h1 class="title">QR Code Generator</h1>
+  <div class="container">
+    <h1>QR Code Generator</h1>
 
-    <label for="qr-input" class="label">Enter text or URL</label>
-    <input type="text" id="qr-input" placeholder="Enter text or URL" autocomplete="off" />
-
-    <div class="buttons-row">
-      <button id="generate-btn" class="btn primary">Generate</button>
-      <button id="download-btn" class="btn" disabled>Download</button>
+    <input
+      type="text"
+      id="qr-input"
+      placeholder="Enter text or URL"
+      aria-label="Text or URL to encode"
+    />
+    
+    <div class="buttons">
+      <button id="generate-btn">Generate</button>
+      <button id="download-btn" disabled>Download</button>
     </div>
 
-    <section id="qrcode" class="qrcode-display" aria-live="polite" aria-atomic="true"></section>
-
-    <button class="toggle-more-btn" aria-expanded="false" aria-controls="more-options">
-      More Options
-      <span class="arrow" aria-hidden="true">▼</span>
-    </button>
-
-    <section id="more-options" class="more-options" hidden>
-      <fieldset>
-        <legend>Style</legend>
-        <label><input type="radio" name="style" value="square" checked /> Square</label>
-        <label><input type="radio" name="style" value="dots" /> Dots</label>
-      </fieldset>
-
-      <fieldset>
-        <legend>Format</legend>
-        <label><input type="radio" name="format" value="png" checked /> PNG</label>
-        <label><input type="radio" name="format" value="svg" /> SVG</label>
-      </fieldset>
-
-      <fieldset>
-        <legend>Color Palette</legend>
+    <div class="options">
+      <button id="toggle-more-options" aria-expanded="false" aria-controls="more-options">
+        More Options ▼
+      </button>
+      <div id="more-options" class="more-options" hidden>
         <label>
-          Foreground: <input type="color" id="color-dark" value="#000000" />
+          <input type="radio" name="style" value="square" checked /> Squares
         </label>
         <label>
-          Background: <input type="color" id="color-light" value="#ffffff" />
+          <input type="radio" name="style" value="dots" /> Dots
         </label>
-      </fieldset>
 
-      <fieldset>
-        <legend>Logo (optional)</legend>
-        <input type="file" id="logo-upload" accept="image/*" />
-        <div id="logo-preview" aria-live="polite"></div>
-      </fieldset>
-    </section>
-  </main>
+        <label>
+          Color:
+          <input type="color" id="color-dark" value="#000000" />
+        </label>
+        <label>
+          Background:
+          <input type="color" id="color-light" value="#ffffff" />
+        </label>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs2@0.0.2/qrcode.min.js"></script>
+        <label>
+          Format:
+          <select id="format">
+            <option value="png" selected>PNG</option>
+            <option value="jpeg">JPEG</option>
+            <option value="webp">WEBP</option>
+          </select>
+        </label>
+
+        <label>
+          Logo URL:
+          <input type="text" id="logo-url" placeholder="Paste image URL here" />
+        </label>
+      </div>
+    </div>
+
+    <div id="qrcode"></div>
+  </div>
+
+  <!-- qr-code-styling lib -->
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
   <script src="QRCodeGenerator.js"></script>
 </body>
 </html>
