@@ -27,14 +27,14 @@ function createQRCode() {
   const text = qrInput.value.trim();
   if (!text) {
     qrCodeContainer.innerHTML = "<p style='color:#999'>Enter text or URL to generate QR code</p>";
-    if (qrCode) {
-      qrCode.clear();
-    }
+    qrCodeContainer.innerHTML = ""; // Clear any existing QR code elements
+    qrCode = null;
     return;
   }
 
-  // Clear previous QR code container content
+  // Clear previous QR code container content and old qrCode instance
   qrCodeContainer.innerHTML = "";
+  qrCode = null;
 
   // Prepare logo config if any
   const logoConfig = logoImage
@@ -42,15 +42,9 @@ function createQRCode() {
         image: logoImage,
         width: 50,
         height: 50,
-        // borderRadius: 10,
-        // opacity: 0.8,
+        // Optional: borderRadius, opacity, etc.
       }
     : undefined;
-
-  // Destroy old qrCode instance before creating new
-  if (qrCode) {
-    qrCode.clear();
-  }
 
   qrCode = new QRCodeStyling({
     width: 256,
