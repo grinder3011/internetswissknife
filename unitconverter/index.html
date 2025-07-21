@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit Converter</title>
+  <link rel="stylesheet" href="unitconverter.styles.css" />
+</head>
+<body>
+  <div class="converter-container">
+    <h1>Unit Converter</h1>
+
+    <div class="converter-card">
+      <label for="category">Category</label>
+      <select id="category">
+        <option value="length">Length</option>
+        <option value="weight">Weight</option>
+        <option value="volume">Volume</option>
+        <option value="time">Time</option>
+      </select>
+
+      <div class="input-row">
+        <input type="number" id="input-value" placeholder="Enter value" />
+        <select id="from-unit"></select>
+        <span class="arrow">→</span>
+        <select id="to-unit"></select>
+      </div>
+
+      <div class="result-box">
+        Result: <span id="result">—</span>
+      </div>
+
+      <div class="button-row">
+        <button id="convert-btn">Convert</button>
+        <button id="reset-btn" class="secondary">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="unitconverter.js"></script>
+</body>
+</html>
