@@ -10,7 +10,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const diffs = dmp.diff_main(text1, text2);
     dmp.diff_cleanupSemantic(diffs);
 
-    const result = diffs.map(function (diff) {
+    // ✅ Convert to real array in case it's not
+    const realDiffs = Array.from(diffs);
+
+    const result = realDiffs.map(function (diff) {
       const op = diff[0];
       const data = diff[1];
       if (op === 1) return `<ins>${data}</ins>`;     // Insertion
