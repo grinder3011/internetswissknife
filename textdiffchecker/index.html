@@ -6,9 +6,8 @@
   <title>Text Diff Checker</title>
   <link rel="stylesheet" href="textdiffchecker.styles.css" />
 
-  <!-- ✅ Use working version that exposes diff_match_patch globally -->
+  <!-- ✅ Still OK to keep external library in head -->
   <script src="https://cdn.jsdelivr.net/gh/google/diff-match-patch/javascript/diff_match_patch.js"></script>
-  <script src="textdiffchecker.js"></script>
 </head>
 <body>
   <h1>Text Diff Checker</h1>
@@ -23,6 +22,7 @@
 
   <div id="output" class="diff-output"></div>
 
-
+  <!-- ✅ Now script runs AFTER elements are loaded -->
+  <script src="textdiffchecker.js"></script>
 </body>
 </html>
