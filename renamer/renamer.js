@@ -1,81 +1,88 @@
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
-const fileListElement = document.getElementById('file-list');
+const fileListContainer = document.getElementById('file-list');
 const renameBtn = document.getElementById('rename-btn');
 const prefixInput = document.getElementById('prefix');
 const startNumberInput = document.getElementById('start-number');
-const underscoreCheckbox = document.getElementById('use-underscore');
-const previewElement = document.getElementById('preview-filename');
 const sortOrderSelect = document.getElementById('sort-order');
+const previewBox = document.getElementById('preview-box');
+const underscoreCheckbox = document.getElementById('use-underscore');
 
 let files = [];
+let customOrder = [];
 
 dropZone.addEventListener('click', () => fileInput.click());
+
 dropZone.addEventListener('dragover', e => {
   e.preventDefault();
-  dropZone.style.background = '#eef';
+  dropZone.classList.add('drag-over');
 });
-dropZone.addEventListener('dragleave', () => dropZone.style.background = '');
+
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('drag-over');
+});
+
 dropZone.addEventListener('drop', e => {
   e.preventDefault();
-  dropZone.style.background = '';
+  dropZone.classList.remove('drag-over');
   handleFiles(e.dataTransfer.files);
 });
-fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+fileInput.addEventListener('change', e => {
+  handleFiles(e.target.files);
+});
 
 function handleFiles(fileListInput) {
   files = Array.from(fileListInput);
-  sortFiles();
+  updateFileOrder();
   displayFileList();
 }
 
-function sortFiles() {
+function updateFileOrder() {
   const order = sortOrderSelect.value;
-  if (order === 'name-asc') files.sort((a, b) => a.name.localeCompare(b.name));
-  if (order === 'name-desc') files.sort((a, b) => b.name.localeCompare(a.name));
-  if (order === 'date-asc') files.sort((a, b) => a.lastModified - b.lastModified);
-  if (order === 'date-desc') files.sort((a, b) => b.lastModified - a.lastModified);
+
+  if (order === 'name-asc') {
+    files.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (order === 'name-desc') {
+    files.sort((a, b) => b.name.localeCompare(a.name));
+  } else if (order === 'date-asc') {
+    files.sort((a, b) => a.lastModified - b.lastModified);
+  } else if (order === 'date-desc') {
+    files.sort((a, b) => b.lastModified - a.lastModified);
+  }
+
+  customOrder = [...files]; // fallback for manual drag (not yet implemented)
 }
 
 function displayFileList() {
-  fileListElement.innerHTML = '';
-  files.forEach(file => {
+  fileListContainer.innerHTML = '';
+  files.forEach((file, i) => {
     const row = document.createElement('div');
-    row.textContent = file.name;
-    fileListElement.appendChild(row);
+    row.className = 'file-row';
+    row.textContent = `${i + 1}. ${file.name}`;
+    fileListContainer.appendChild(row);
   });
 }
 
-function getPaddingFromStartNumber(numberStr) {
-  const match = numberStr.match(/^0+(\d+)$/);
-  if (match) {
-    return numberStr.length;
-  }
-  return Math.max(3, numberStr.length);
-}
-
-function updatePreview() {
-  const prefix = prefixInput.value.trim() || 'file';
-  const start = startNumberInput.value.trim() || '1';
-  const padding = getPaddingFromStartNumber(start);
-  const underscore = underscoreCheckbox.checked ? '_' : '';
-  const number = String(start).padStart(padding, '0');
-  const previewName = `${prefix}${underscore}${number}.jpg`;
-  previewElement.textContent = previewName;
-}
+sortOrderSelect.addEventListener('change', () => {
+  updateFileOrder();
+  displayFileList();
+});
 
 renameBtn.addEventListener('click', async () => {
+  if (files.length === 0) return;
+
   const prefix = prefixInput.value.trim() || 'file';
-  const start = parseInt(startNumberInput.value, 10) || 1;
-  const padding = getPaddingFromStartNumber(startNumberInput.value.trim());
-  const underscore = underscoreCheckbox.checked ? '_' : '';
+  const startNumber = parseInt(startNumberInput.value) || 1;
+  const underscore = underscoreCheckbox.checked ? "_" : "";
+
   const zip = new JSZip();
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const ext = file.name.split('.').pop();
-    const number = String(start + i).padStart(padding, '0');
-    const newName = `${prefix}${underscore}${number}.${ext}`;
+    const ext = file.name.includes('.') ? '.' + file.name.split('.').pop() : '';
+    const num = (startNumber + i).toString();
+    const newName = `${prefix}${underscore}${num}${ext}`;
     const content = await file.arrayBuffer();
     zip.file(newName, content);
   }
@@ -86,4 +93,31 @@ renameBtn.addEventListener('click', async () => {
   a.href = url;
   a.download = 'renamed_files.zip';
   a.click();
-  URL.revokeObjectURL(url
+  URL.revokeObjectURL(url);
+});
+
+// Preview feature
+function updatePreview() {
+  const prefix = prefixInput.value.trim() || "file";
+  const startNum = startNumberInput.value.trim();
+  const useUnderscore = underscoreCheckbox.checked;
+
+  if (!/^\d+$/.test(startNum)) {
+    previewBox.textContent = "Enter a valid starting number.";
+    return;
+  }
+
+  const padded = startNum;
+  const exampleExt = ".jpg";
+  const separator = useUnderscore ? "_" : "";
+  const exampleName = `${prefix}${separator}${padded}${exampleExt}`;
+  previewBox.textContent = `Example: ${exampleName}`;
+}
+
+// Update preview on any input
+prefixInput.addEventListener('input', updatePreview);
+startNumberInput.addEventListener('input', updatePreview);
+underscoreCheckbox.addEventListener('change', updatePreview);
+
+// Initial preview
+updatePreview();
