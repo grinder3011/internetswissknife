@@ -1,194 +1,86 @@
-/* Reset + base */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f0f2f5;
-  color: #222;
-  margin: 0;
-  padding: 1rem;
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  padding: 2rem;
   display: flex;
   justify-content: center;
-  min-height: 100vh;
 }
 
 .container {
-  background: #fff;
-  max-width: 480px;
+  max-width: 600px;
   width: 100%;
-  padding: 1.75rem 2rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgb(0 0 0 / 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.title {
-  font-size: 1.9rem;
-  font-weight: 700;
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
   text-align: center;
-  margin: 0;
-  user-select: none;
 }
 
-.label {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  display: block;
-  color: #444;
+h1 {
+  margin-bottom: 1rem;
 }
 
-input[type="text"] {
+input[type="text"], select {
   width: 100%;
-  padding: 0.65rem 0.9rem;
+  padding: 0.6rem;
   font-size: 1rem;
-  border-radius: 6px;
-  border: 1.8px solid #ccc;
-  transition: border-color 0.3s ease;
+  margin: 0.5rem 0 1rem 0;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
-input[type="text"]:focus {
-  border-color: #007acc;
-  outline: none;
+.buttons {
+  margin-bottom: 1rem;
 }
 
-.buttons-row {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.btn {
-  padding: 0.55rem 1.3rem;
-  font-size: 1rem;
-  border-radius: 7px;
-  border: none;
+button {
   cursor: pointer;
-  background-color: #ddd;
-  color: #444;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  user-select: none;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  margin: 0 0.5rem 1rem 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #007acc;
+  color: white;
+  transition: background-color 0.3s ease;
 }
 
-.btn:disabled {
-  opacity: 0.6;
+button:disabled {
+  background-color: #aaa;
   cursor: not-allowed;
 }
 
-.btn.primary {
-  background-color: #007acc;
-  color: white;
+.options {
+  margin-bottom: 1rem;
+  text-align: left;
 }
 
-.btn.primary:hover:not(:disabled) {
-  background-color: #005ea1;
-}
-
-.btn:hover:not(:disabled) {
-  background-color: #bbb;
-}
-
-.qrcode-display {
-  display: flex;
-  justify-content: center;
-  margin-top: 0.75rem;
-  min-height: 270px; /* to reserve space */
-  position: relative;
-}
-
-.toggle-more-btn {
+#toggle-more-options {
   background: none;
   border: none;
   color: #007acc;
-  font-weight: 600;
   font-size: 1rem;
+  padding: 0;
+  margin-bottom: 0.5rem;
   cursor: pointer;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
-  margin-top: 0.5rem;
-  padding: 0.25rem 0;
-  transition: color 0.3s ease;
-}
-
-.toggle-more-btn:hover {
-  color: #005ea1;
-}
-
-.arrow {
-  font-size: 0.85rem;
-  transition: transform 0.3s ease;
-}
-
-.toggle-more-btn[aria-expanded="true"] .arrow {
-  transform: rotate(180deg);
 }
 
 .more-options {
-  margin-top: 1rem;
-  border-top: 1px solid #ddd;
-  padding-top: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-}
-
-.more-options fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-
-.more-options legend {
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-  font-size: 1rem;
-  color: #333;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 6px;
+  background-color: #f5f5f5;
 }
 
 .more-options label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-weight: 500;
-  cursor: pointer;
-  user-select: none;
-  margin-right: 1rem;
-  margin-bottom: 0.4rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
 }
 
-.more-options input[type="radio"],
-.more-options input[type="checkbox"] {
-  cursor: pointer;
-  accent-color: #007acc;
-}
-
-#color-dark,
-#color-light {
-  cursor: pointer;
-  border: none;
-  padding: 0;
-  width: 2.4rem;
-  height: 2.4rem;
-  vertical-align: middle;
-  border-radius: 5px;
-}
-
-#logo-upload {
-  margin-top: 0.25rem;
-  cursor: pointer;
-}
-
-#logo-preview {
-  margin-top: 0.5rem;
-  max-height: 50px;
-  max-width: 100%;
-  object-fit: contain;
+#qrcode {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
 }
