@@ -1,0 +1,43 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+  background: #f4f4f4;
+}
+
+textarea {
+  width: 100%;
+  height: 120px;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.diff-output {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #ccc;
+  white-space: pre-wrap;
+}
+
+.diff-output ins {
+  background-color: #c6f6d5;
+  text-decoration: none;
+}
+
+.diff-output del {
+  background-color: #fed7d7;
+  text-decoration: none;
+}
