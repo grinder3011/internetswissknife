@@ -1,83 +1,132 @@
+// Use the QRCodeStyling library that supports dots, logos, and SVG export
+// CDN link: https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js
+// Make sure you include this in your project or add in the HTML head:
+// <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+
+const qrInput = document.getElementById("qr-input");
+const generateBtn = document.getElementById("generate-btn");
+const downloadBtn = document.getElementById("download-btn");
+const qrcodeContainer = document.getElementById("qrcode");
+
+const toggleOptionsBtn = document.getElementById("toggle-options-btn");
+const moreOptions = document.getElementById("more-options");
+
+const styleRadios = document.querySelectorAll('input[name="style"]');
+const colorDarkInput = document.getElementById("color-dark");
+const colorLightInput = document.getElementById("color-light");
+const formatSelect = document.getElementById("format");
 const logoUploadInput = document.getElementById("logo-upload");
 const resetBtn = document.getElementById("reset-btn");
 
-// Track current logo image data URL
-let logoDataUrl = null;
+let logoDataURL = null;
 
-// Handle logo file upload
-logoUploadInput.addEventListener("change", () => {
-  const file = logoUploadInput.files[0];
+const defaultSettings = {
+  data: "",
+  width: 256,
+  height: 256,
+  dotsOptions: {
+    color: "#000000",
+    type: "square",
+  },
+  backgroundOptions: {
+    color: "#ffffff",
+  },
+  imageOptions: {
+    crossOrigin: "anonymous",
+    margin: 5,
+  },
+  image: "",
+  type: "png",
+};
+
+let qrCode = new QRCodeStyling(defaultSettings);
+
+// Append QR code canvas/svg element to container
+function renderQRCode() {
+  qrcodeContainer.innerHTML = "";
+  qrCode.append(qrcodeContainer);
+}
+
+function updateQRCode() {
+  const data = qrInput.value.trim();
+  if (!data) {
+    qrcodeContainer.innerHTML = "";
+    return;
+  }
+
+  const selectedStyle = [...styleRadios].find((r) => r.checked).value;
+  const darkColor = colorDarkInput.value;
+  const lightColor = colorLightInput.value;
+  const format = formatSelect.value;
+
+  qrCode.update({
+    data,
+    dotsOptions: {
+      color: darkColor,
+      type: selectedStyle,
+    },
+    backgroundOptions: {
+      color: lightColor,
+    },
+    image: logoDataURL || "",
+    type: format,
+  });
+
+  renderQRCode();
+}
+
+// Logo Upload handling
+logoUploadInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
   if (!file) {
-    logoDataUrl = null;
-    createQRCode();
+    logoDataURL = null;
+    updateQRCode();
     return;
   }
   const reader = new FileReader();
-  reader.onload = (e) => {
-    logoDataUrl = e.target.result;
-    createQRCode();
+  reader.onload = function (event) {
+    logoDataURL = event.target.result;
+    updateQRCode();
   };
   reader.readAsDataURL(file);
 });
 
-// Update QR code creation function to use logoDataUrl instead of logo URL field
-function createQRCode() {
-  if (!input.value.trim()) {
-    qrCodeContainer.innerHTML = "";
-    downloadBtn.disabled = true;
-    return;
+// Generate button
+generateBtn.addEventListener("click", () => {
+  updateQRCode();
+});
+
+// Download button
+downloadBtn.addEventListener("click", () => {
+  qrCode.download(formatSelect.value);
+});
+
+// Toggle more options
+toggleOptionsBtn.addEventListener("click", () => {
+  const expanded = toggleOptionsBtn.getAttribute("aria-expanded") === "true";
+  toggleOptionsBtn.setAttribute("aria-expanded", String(!expanded));
+  if (expanded) {
+    moreOptions.hidden = true;
+    toggleOptionsBtn.textContent = "More Options ▼";
+  } else {
+    moreOptions.hidden = false;
+    toggleOptionsBtn.textContent = "Less Options ▲";
   }
+});
 
-  const style = [...styleRadios].find(r => r.checked)?.value || "square";
-
-  const options = {
-    width: 256,
-    height: 256,
-    data: input.value.trim(),
-    image: logoDataUrl || undefined,
-    dotsOptions: {
-      color: colorDarkInput.value,
-      type: style === "dots" ? "dots" : "square",
-    },
-    backgroundOptions: {
-      color: colorLightInput.value,
-    },
-    imageOptions: {
-      crossOrigin: "anonymous",
-      margin: 5,
-      imageSize: 0.15,
-      hideBackgroundDots: true,
-    },
-  };
-
-  qrCodeContainer.innerHTML = "";
-
-  qrCode = new QRCodeStyling(options);
-  qrCode.append(qrCodeContainer);
-  downloadBtn.disabled = false;
-}
-
-// Reset button resets all inputs and regenerates default QR
+// Reset to default settings
 resetBtn.addEventListener("click", () => {
-  input.value = "";
+  qrInput.value = "";
+  styleRadios.forEach((r) => (r.checked = r.value === "square"));
   colorDarkInput.value = "#000000";
   colorLightInput.value = "#ffffff";
   formatSelect.value = "png";
-  logoUploadInput.value = null;
-  logoDataUrl = null;
-
-  // Reset style radio to square
-  styleRadios.forEach(radio => {
-    radio.checked = radio.value === "square";
-  });
-
-  createQRCode();
-  downloadBtn.disabled = true;
+  logoUploadInput.value = "";
+  logoDataURL = null;
+  qrcodeContainer.innerHTML = "";
+  toggleOptionsBtn.setAttribute("aria-expanded", "false");
+  moreOptions.hidden = true;
+  toggleOptionsBtn.textContent = "More Options ▼";
 });
 
-// Listen for changes on options to auto-regenerate if QR code exists
-[colorDarkInput, colorLightInput, formatSelect, ...styleRadios].forEach((el) => {
-  el.addEventListener("change", () => {
-    if (qrCode) createQRCode();
-  });
-});
+renderQRCode();
