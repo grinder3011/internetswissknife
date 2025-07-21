@@ -49,9 +49,18 @@ function updateFileOrder() {
     files.sort((a, b) => a.lastModified - b.lastModified);
   } else if (order === 'date-desc') {
     files.sort((a, b) => b.lastModified - a.lastModified);
+  } else if (order === 'id-asc') {
+    files.sort((a, b) => extractNumericPrefix(a.name) - extractNumericPrefix(b.name));
+  } else if (order === 'id-desc') {
+    files.sort((a, b) => extractNumericPrefix(b.name) - extractNumericPrefix(a.name));
   }
 
   customOrder = [...files]; // fallback for manual drag (not yet implemented)
+}
+
+function extractNumericPrefix(filename) {
+  const match = filename.match(/^(\d+)/);
+  return match ? parseInt(match[0]) : Infinity; // Return the numeric part or Infinity if no number
 }
 
 function displayFileList() {
