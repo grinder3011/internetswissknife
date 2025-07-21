@@ -3,66 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Advanced QR Code Generator</title>
-  <link rel="stylesheet" href="qrcode.style.css" />
+  <title>QR Code Generator</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <h1>Advanced QR Code Generator</h1>
+  <h1>QR Code Generator</h1>
 
-  <label for="input-text">Text or URL</label>
-  <input type="text" id="input-text" placeholder="Enter text or URL" autocomplete="off" />
+  <input type="text" id="qr-input" placeholder="Enter text or URL" />
 
-  <div>
-    <label>Colors</label>
-    <div class="color-palette">
-      <div>
-        <label for="color-dark">Foreground:</label><br />
-        <input type="color" id="color-dark" value="#000000" />
-      </div>
-      <div>
-        <label for="color-light">Background:</label><br />
-        <input type="color" id="color-light" value="#ffffff" />
-      </div>
-    </div>
+  <div class="buttons">
+    <button id="generate-btn">Generate</button>
+    <button id="download-btn">Download</button>
   </div>
-
-  <div id="preview-text">Preview: <span id="preview-value">(empty)</span></div>
-
-  <div class="more-options-toggle" id="toggle-more-options">➕ More options</div>
-
-  <div class="more-options-content" id="more-options">
-
-    <label for="format-select">Output format</label>
-    <select id="format-select">
-      <option value="png" selected>PNG (image)</option>
-      <option value="svg">SVG (vector)</option>
-      <option value="pdf">PDF (download)</option>
-    </select>
-
-    <label for="logo-upload">Upload Logo (optional, center overlay)</label>
-    <input type="file" id="logo-upload" accept="image/*" />
-    <img id="logo-preview" class="logo-preview" alt="Logo preview" />
-
-    <div style="margin-top: 1rem;">
-      <label>Style</label>
-      <div class="style-options">
-        <label><input type="radio" name="style" value="square" checked> Square (classic)</label>
-        <label><input type="radio" name="style" value="dots"> Rounded Dots</label>
-      </div>
-    </div>
-  </div>
-
-  <button id="generate-btn">Generate QR Code</button>
-  <button id="download-btn">Download</button>
 
   <div id="qrcode"></div>
 
-  <!-- External Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <details id="more-options">
+    <summary>More options</summary>
 
-  <script src="qrcode.js"></script>
+    <div class="option-group">
+      <label for="dot-style">Module style:</label>
+      <select id="dot-style" title="Select module shape style">
+        <option value="square">Square</option>
+        <option value="dots">Dots</option>
+        <option value="rounded">Rounded</option>
+        <option value="classy">Classy</option>
+        <option value="classy-rounded">Classy Rounded</option>
+        <option value="extra-rounded">Extra Rounded</option>
+      </select>
+    </div>
 
+    <div class="option-group">
+      <label for="color-dark">Dark color:</label>
+      <input type="color" id="color-dark" value="#000000" />
+    </div>
+
+    <div class="option-group">
+      <label for="color-light">Light color:</label>
+      <input type="color" id="color-light" value="#ffffff" />
+    </div>
+
+    <div class="option-group">
+      <label for="format">Export format:</label>
+      <select id="format">
+        <option value="png">PNG</option>
+        <option value="svg">SVG</option>
+        <option value="jpeg">JPEG</option>
+      </select>
+    </div>
+
+    <div class="option-group logo-upload-group">
+      <label for="logo-file">Logo image:</label>
+      <input type="file" id="logo-file" accept="image/*" />
+      <small>(Optional) Upload logo to center of QR code</small>
+    </div>
+
+  </details>
+
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
