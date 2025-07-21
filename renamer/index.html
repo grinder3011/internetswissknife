@@ -36,18 +36,19 @@
         <input type="text" id="prefix" placeholder="e.g. vacation, invoice, photo" value="file" />
       </div>
 
-      <div class="form-group">
-        <label for="start-number">Starting Number</label>
-        <input type="number" id="start-number" min="1" value="1" />
-        <small>This is useful if you've already renamed some files.</small>
-      </div>
-
-      <div class="form-group">
-        <label for="padding">Number Padding</label>
-        <input type="number" id="padding" min="1" max="6" value="3" />
-        <small>e.g. "001", "002" for padding of 3</small>
-      </div>
+  <div class="input-row">
+    <div class="form-group">
+      <label for="start-number">Starting Number</label>
+      <input type="text" id="start-number" placeholder="e.g. 1 or 001" value="001" />
+      <small>Enter a number; leading zeros will be preserved automatically.</small>
     </div>
+  
+    <div class="form-group" id="padding-group">
+      <label for="padding">Number Padding</label>
+      <input type="number" id="padding" min="1" max="6" value="3" />
+      <small>e.g. "001", "002" for padding of 3 (ignored if your starting number has leading zeros)</small>
+    </div>
+  </div>
 
     <div id="test" class="file-list" id="file-list"></div>
 
