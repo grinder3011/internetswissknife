@@ -1,42 +1,33 @@
-const input = document.getElementById('pdf-input');
-const fileList = document.getElementById('file-list');
-const mergeBtn = document.getElementById('merge-btn');
+const fileInput = document.getElementById('file-input');
+const filePreview = document.getElementById('file-preview');
+const mergeButton = document.getElementById('merge-btn');
+const downloadLink = document.getElementById('download-link');
+let selectedFiles = [];
 
-let pdfFiles = [];
-
-input.addEventListener('change', () => {
-  pdfFiles = Array.from(input.files);
-  fileList.innerHTML = '';
-
-  pdfFiles.forEach((file, index) => {
-    const item = document.createElement('div');
-    item.textContent = `${index + 1}. ${file.name}`;
-    fileList.appendChild(item);
-  });
+fileInput.addEventListener('change', () => {
+  selectedFiles = Array.from(fileInput.files);
+  filePreview.innerHTML = "<ul>" + selectedFiles.map(file => `<li>${file.name}</li>`).join('') + "</ul>";
 });
 
-mergeBtn.addEventListener('click', async () => {
-  if (pdfFiles.length < 2) {
-    alert('Please select at least 2 PDF files to merge.');
+mergeButton.addEventListener('click', async () => {
+  if (selectedFiles.length < 2) {
+    alert('Please select at least two PDF files.');
     return;
   }
 
   const mergedPdf = await PDFLib.PDFDocument.create();
 
-  for (const file of pdfFiles) {
-    const bytes = await file.arrayBuffer();
-    const pdf = await PDFLib.PDFDocument.load(bytes);
+  for (const file of selectedFiles) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
     const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-    copiedPages.forEach(page => mergedPdf.addPage(page));
+    copiedPages.forEach((page) => mergedPdf.addPage(page));
   }
 
-  const mergedBytes = await mergedPdf.save();
-  const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+  const mergedPdfFile = await mergedPdf.save();
+  const blob = new Blob([mergedPdfFile], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
 
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'merged.pdf';
-  a.click();
-  URL.revokeObjectURL(url);
+  downloadLink.href = url;
+  downloadLink.style.display = 'block';
 });
