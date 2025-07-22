@@ -1,27 +1,96 @@
 body {
-  font-family: Arial, sans-serif;
-  padding: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #fafafa;
+  margin: 0; padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
 }
-h1 {
-  margin-bottom: 1rem;
-}
-#dropzone {
-  border: 2px dashed #666;
+
+.container {
+  margin: 3rem 1rem;
+  width: 100%;
+  max-width: 600px;
+  background: white;
   padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #007acc;
+}
+
+.file-inputs {
+  border: 2px dashed #007acc;
+  padding: 2rem;
+  border-radius: 10px;
   margin-bottom: 1rem;
   text-align: center;
-  color: #666;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  color: #007acc;
+  font-weight: 600;
+  user-select: none;
 }
-#dropzone.dragover {
-  border-color: #0b76ef;
-  background-color: #e0f0ff;
-  color: #0b76ef;
+
+.file-inputs:hover {
+  background-color: #e6f0fb;
 }
-select {
-  width: 100%;
-  margin-bottom: 1rem;
+
+.file-input-label input[type="file"] {
+  display: none;
 }
-button {
-  padding: 0.5rem 1rem;
+
+.archive-options {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: #333;
+}
+
+#archive-type {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
   font-size: 1rem;
+}
+
+button#create-archive-btn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background-color: #007acc;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+button#create-archive-btn:disabled {
+  background-color: #a0c6ff;
+  cursor: not-allowed;
+}
+
+button#create-archive-btn:hover:not(:disabled) {
+  background-color: #005fa3;
+}
+
+.output-area {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f3f3f3;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #333;
+  min-height: 50px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
