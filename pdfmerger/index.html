@@ -3,25 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PDF Merger</title>
-  <link rel="stylesheet" href="pdfmerger.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <title>PDF Merger Tool</title>
+  <link rel="stylesheet" href="pdfmerger.styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>PDF Merger Tool</h1>
-
-    <div id="drop-area" class="drop-area">
-      <p><strong>Drag & Drop</strong> your PDF files here, or <label for="fileElem">click to upload</label></p>
-      <input type="file" id="fileElem" accept="application/pdf" multiple hidden>
-    </div>
-
-    <div id="file-list" class="file-list"></div>
-
-    <button id="merge-btn" class="primary">Merge PDFs</button>
-    <div id="output" class="output"></div>
+    <input type="file" id="file-input" multiple accept="application/pdf">
+    <div id="file-preview"></div>
+    <button id="merge-btn">Merge PDFs</button>
+    <a id="download-link" style="display:none;" download="merged.pdf">Download Merged PDF</a>
   </div>
-
   <script src="pdfmerger.js"></script>
 </body>
 </html>
