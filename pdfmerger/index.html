@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PDF Merger Tool</title>
-  <link rel="stylesheet" href="pdfmerger.styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF Merger</title>
+  <link rel="stylesheet" href="pdfmerger.styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>PDF Merger Tool</h1>
-    <input type="file" id="file-input" multiple accept="application/pdf">
-    <div id="file-preview"></div>
-    <button id="merge-btn">Merge PDFs</button>
-    <a id="download-link" style="display:none;" download="merged.pdf">Download Merged PDF</a>
+    <input type="file" id="file-input" accept="application/pdf" multiple />
+    <div id="preview-list" class="preview-list"></div>
+    <div class="buttons">
+      <button id="merge-btn">Merge PDFs</button>
+      <button id="reset-btn">Reset</button>
+    </div>
+    <div id="output"></div>
   </div>
   <script src="pdfmerger.js"></script>
 </body>
