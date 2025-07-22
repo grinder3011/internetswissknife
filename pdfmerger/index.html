@@ -2,46 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PDF Merger</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 1rem;
-      max-width: 700px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-    }
-    input[type="file"] {
-      display: block;
-      margin: 1rem 0;
-    }
-    button {
-      padding: 0.5rem 1rem;
-      margin-top: 1rem;
-    }
-    #file-list {
-      margin-top: 1rem;
-      border: 1px solid #ccc;
-      padding: 1rem;
-      background: #f9f9f9;
-    }
-  </style>
+  <link rel="stylesheet" href="pdfmerger.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 </head>
 <body>
+  <div class="container">
+    <h1>PDF Merger Tool</h1>
 
-<h1>PDF Merger Tool</h1>
+    <div id="drop-area" class="drop-area">
+      <p><strong>Drag & Drop</strong> your PDF files here, or <label for="fileElem">click to upload</label></p>
+      <input type="file" id="fileElem" accept="application/pdf" multiple hidden>
+    </div>
 
-<input type="file" id="pdf-input" accept="application/pdf" multiple />
+    <div id="file-list" class="file-list"></div>
 
-<div id="file-list"></div>
+    <button id="merge-btn" class="primary">Merge PDFs</button>
+    <div id="output" class="output"></div>
+  </div>
 
-<button id="merge-btn">Merge PDFs</button>
-
-<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-<script src="script.js"></script>
-
+  <script src="pdfmerger.js"></script>
 </body>
 </html>
