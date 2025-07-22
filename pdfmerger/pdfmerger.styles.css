@@ -1,66 +1,69 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f2f5;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  padding: 20px;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  color: #333;
 }
 
 .container {
-  max-width: 600px;
+  max-width: 700px;
   margin: auto;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   text-align: center;
-  color: #333;
+  color: #007bff;
 }
 
-#file-input {
+input[type="file"] {
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
-#file-preview {
-  margin-bottom: 20px;
+.preview-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-#file-preview ul {
-  padding-left: 20px;
-  list-style: none;
+.preview-item {
+  flex: 1 1 120px;
+  border: 1px solid #ccc;
+  background: #f1f1f1;
+  padding: 0.5rem;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.9rem;
+  word-wrap: break-word;
 }
 
-#file-preview li {
-  background-color: #e9ecef;
-  padding: 10px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  font-size: 0.95rem;
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
 }
 
 button {
-  display: block;
-  width: 100%;
-  padding: 12px;
+  padding: 0.6rem 1.2rem;
   font-size: 1rem;
   background-color: #007bff;
-  color: white;
   border: none;
-  border-radius: 8px;
+  color: white;
+  border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 10px;
 }
 
 button:hover {
   background-color: #0056b3;
 }
 
-a#download-link {
-  display: block;
+#output {
   text-align: center;
-  font-weight: bold;
-  color: #28a745;
+  margin-top: 1rem;
 }
