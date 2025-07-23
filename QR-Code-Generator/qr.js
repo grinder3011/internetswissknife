@@ -98,7 +98,7 @@ function handleLogoUpload(event) {
   reader.readAsDataURL(file);
 }
 
-// More options toggle handler
+// ✅ More options toggle handler (fixed and clean)
 toggleOptionsBtn.addEventListener("click", () => {
   const isExpanded = toggleOptionsBtn.getAttribute("aria-expanded") === "true";
 
@@ -108,10 +108,9 @@ toggleOptionsBtn.addEventListener("click", () => {
   // Toggle aria-expanded attribute on button
   toggleOptionsBtn.setAttribute("aria-expanded", String(!isExpanded));
 
-  // Change button text while preserving icon
-  toggleOptionsBtn.innerHTML =
-    (isExpanded ? "More options " : "Less options ") +
-    '<i class="fas fa-chevron-down arrow"></i>';
+  // Update button label text only (keep icon)
+  const labelSpan = toggleOptionsBtn.querySelector(".options-label");
+  labelSpan.textContent = isExpanded ? "More options" : "Less options";
 });
 
 // Tooltip toggle handler
@@ -168,11 +167,8 @@ resetBtn.addEventListener("click", () => {
 
 // Initial setup
 window.addEventListener("load", () => {
-  // Make sure more options start hidden and button aria-expanded is false
   moreOptions.hidden = true;
   toggleOptionsBtn.setAttribute("aria-expanded", "false");
-  toggleOptionsBtn.innerHTML =
-    "More options <i class='fas fa-chevron-down arrow'></i>";
 
   resetSettings();
   createQRCode();
