@@ -11,7 +11,7 @@
   <div class="container">
     <h1>QR Code Generator</h1>
 
-    <!-- Tooltip / Instructions trigger -->
+    <!-- Instructions trigger -->
     <div class="tooltip-trigger" id="open-instructions">
       <i class="fas fa-lightbulb"></i>
       <span class="tooltip-text">How to Use</span>
@@ -26,16 +26,17 @@
   <!-- Instructions Panel -->
   <div class="instructions-panel" id="instructions-panel">
     <div class="instructions-content">
-      <h2><i class="fas fa-circle-info"></i> How to Use QR Generator</h2>
+      <h2><i class="fas fa-circle-info"></i> How to Use</h2>
       <ul>
-        <li><strong>🔤 Input Field:</strong> Enter any text or link.</li>
-        <li><strong><i class="fas fa-qrcode"></i> Generate:</strong> Press this button to create a QR code.</li>
-        <li><strong>📱 Scan:</strong> The QR code can be scanned by most modern devices directly from screen.</li>
+        <li><strong>🔤 Input Field:</strong> Enter any text or link to encode.</li>
+        <li><strong><i class="fas fa-qrcode"></i> Generate:</strong> Press to create a QR code.</li>
+        <li><strong>📱 Scan:</strong> Most phones can scan it right off the screen.</li>
       </ul>
       <button id="close-instructions"><i class="fas fa-times"></i> Close</button>
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="QRCodeGenerator.js"></script>
 </body>
 </html>
