@@ -1,15 +1,15 @@
 body {
   font-family: system-ui, sans-serif;
-  background: #f9f9f9;
   margin: 0;
   padding: 2rem 1rem;
+  background: #f9f9f9;
   color: #333;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .logo {
@@ -17,13 +17,13 @@ header {
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #007BFF;
-  margin-bottom: 0.5rem;
+  border: 2px solid #007bff;
+  margin: 0 auto 0.5rem;
 }
 
 h1 {
   font-size: 2rem;
-  margin: 0.2rem 0;
+  margin: 0;
 }
 
 .brand {
@@ -32,11 +32,12 @@ h1 {
 }
 
 .highlight {
-  color: #007BFF;
+  color: #007bff;
   font-weight: bold;
 }
 
-/* Tool List Layout */
+/* Tool Cards */
+
 .tools {
   max-width: 1100px;
   margin: 0 auto;
@@ -45,40 +46,41 @@ h1 {
 
 ul.tool-list {
   list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
-  padding: 0;
-  margin: 0;
 }
 
 .tool-item {
-  background: white;
+  background: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
   padding: 1rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tool-item:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .tool-link {
-  text-decoration: none;
-  color: #2c3e50;
+  font-size: 1.15rem;
   font-weight: 600;
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+  color: #2c3e50;
+  text-decoration: none;
+  margin: 0 0 0.4rem;
   display: inline-block;
+  transition: color 0.2s ease;
 }
 
 .tool-link:hover {
-  color: #007BFF;
+  color: #007bff;
 }
 
 .tool-desc {
@@ -88,15 +90,16 @@ ul.tool-list {
 }
 
 /* Footer */
+
 footer {
-  margin-top: 4rem;
   text-align: center;
+  margin-top: 3rem;
   font-size: 0.9rem;
-  color: #888;
+  color: #777;
 }
 
 footer a {
-  color: #007BFF;
+  color: #007bff;
   text-decoration: none;
 }
 
@@ -104,7 +107,8 @@ footer a:hover {
   text-decoration: underline;
 }
 
-/* Responsive Tweaks */
+/* Responsive tweaks */
+
 @media (max-width: 500px) {
   .logo {
     width: 60px;
