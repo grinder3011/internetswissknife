@@ -7,8 +7,6 @@ const startNumberInput = document.getElementById('start-number');
 const sortOrderSelect = document.getElementById('sort-order');
 const previewBox = document.getElementById('preview-box');
 const underscoreCheckbox = document.getElementById('use-underscore');
-const howToToggle = document.getElementById('how-to-toggle');
-const howToText = document.getElementById('how-to-text');
 
 let files = [];
 let customOrder = [];
@@ -127,14 +125,15 @@ function updatePreview() {
 prefixInput.addEventListener('input', updatePreview);
 startNumberInput.addEventListener('input', updatePreview);
 underscoreCheckbox.addEventListener('change', updatePreview);
+
 updatePreview();
 
-// 💡 Toggle handler
-howToToggle.addEventListener('click', () => {
-  const isHidden = howToText.hasAttribute('hidden');
-  if (isHidden) {
-    howToText.removeAttribute('hidden');
-  } else {
-    howToText.setAttribute('hidden', true);
-  }
-});
+// 💡 Toggle "How to use this tool"
+const howToToggle = document.getElementById("how-to-toggle");
+const howToText = document.getElementById("how-to-text");
+
+if (howToToggle && howToText) {
+  howToToggle.addEventListener("click", () => {
+    howToText.hidden = !howToText.hidden;
+  });
+}
