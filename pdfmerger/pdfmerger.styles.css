@@ -68,6 +68,14 @@ button:hover {
   margin-top: 1rem;
 }
 
+/* Accordion container for vertical stacking */
+.accordion-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space between toggles */
+  margin-top: 2rem;
+}
+
 /* Updated accordion toggles */
 .accordion-toggle {
   background: none;
@@ -78,6 +86,8 @@ button:hover {
   font-weight: 600;
   text-align: left;
   transition: color 0.3s ease;
+  display: block;
+  width: 100%;
 }
 
 .accordion-toggle:hover,
@@ -87,9 +97,6 @@ button:hover {
   text-decoration: underline;
   outline: none;
 }
-
-/* Modal styles and others remain unchanged */
-
 
 /* Modal styles */
 .modal[hidden] {
