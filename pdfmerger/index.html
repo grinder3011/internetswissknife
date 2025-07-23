@@ -12,86 +12,46 @@
     <h1>PDF Merger Tool</h1>
     <input type="file" id="file-input" accept="application/pdf" multiple />
     <div id="preview-list" class="preview-list"></div>
+
     <div class="buttons">
       <button id="merge-btn">Merge PDFs</button>
       <button id="reset-btn">Reset</button>
     </div>
+
     <div id="output"></div>
 
-    <!-- Usage Section -->
-    <section class="usage-section">
-
-      <!-- Accordion header for How to use -->
-      <button id="usage-toggle" aria-expanded="false" aria-controls="usage-content" class="accordion-toggle">
-        <span class="icon">💡</span> How to use this tool
+    <!-- Usage and Disclaimer toggles -->
+    <div class="info-section">
+      <button id="usage-toggle" class="accordion-toggle" aria-expanded="false" aria-controls="usage-content" aria-haspopup="true" aria-label="How to use this tool">
+        💡 How to use this tool
       </button>
-
       <div id="usage-content" class="accordion-content" hidden>
-        <ul>
-          <li>Select at least two PDF files using the file picker above.</li>
-          <li>Click <strong>Merge PDFs</strong> to combine the files into one PDF.</li>
-          <li>Download the merged PDF using the link that appears below.</li>
-        </ul>
-
-        <!-- Disclaimer nested inside usage -->
-        <button id="disclaimer-toggle" aria-expanded="false" aria-controls="disclaimer-content" class="accordion-toggle nested-toggle">
-          What does “Basic PDF Merger” mean? 🔆
-        </button>
-
-        <div id="disclaimer-content" class="accordion-content nested-content" hidden>
-          <p><strong>What this tool is great for:</strong></p>
-          <ul>
-            <li>Merging invoices, contracts, reports, and scanned PDFs.</li>
-            <li>Combining multiple PDFs quickly and privately in your browser.</li>
-            <li>Keeping your files secure—nothing is uploaded to a server.</li>
-          </ul>
-          <p><strong>What this tool does NOT preserve:</strong></p>
-          <ul>
-            <li>Bookmarks (chapter navigation)</li>
-            <li>Fillable form fields</li>
-            <li>Annotations or comments</li>
-            <li>Metadata (title, author, etc.)</li>
-            <li>Password protection or digital signatures</li>
-          </ul>
-          <p>If you need those features preserved, consider using a more advanced PDF tool like Adobe Acrobat or PDFsam.</p>
-        </div>
+        <p>This basic PDF merger tool combines multiple PDFs by copying their pages into a new document. It may remove some advanced PDF features, resulting in a smaller file size. Use it when you want a quick, simple merge without preserving complex features.</p>
       </div>
 
-    </section>
-  </div>
-
-  <!-- Modals for mobile -->
-  <div id="usage-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="usage-modal-title" hidden>
-    <div class="modal-content">
-      <button class="modal-close" aria-label="Close How to use modal">&times;</button>
-      <h2 id="usage-modal-title">How to use this tool</h2>
-      <ul>
-        <li>Select at least two PDF files using the file picker above.</li>
-        <li>Click <strong>Merge PDFs</strong> to combine the files into one PDF.</li>
-        <li>Download the merged PDF using the link that appears below.</li>
-      </ul>
+      <button id="disclaimer-toggle" class="accordion-toggle" aria-expanded="false" aria-controls="disclaimer-content" aria-haspopup="true" aria-label="What does Basic PDF Merger mean?">
+        ❓ What does Basic PDF Merger mean?
+      </button>
+      <div id="disclaimer-content" class="accordion-content" hidden>
+        <p>This tool does not preserve all original PDF properties such as annotations, forms, or encryption. It creates a clean, simplified merged PDF ideal for basic use but not for advanced PDF workflows.</p>
+      </div>
     </div>
   </div>
 
-  <div id="disclaimer-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="disclaimer-modal-title" hidden>
+  <!-- Modals for mobile -->
+  <div id="usage-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="usage-toggle">
     <div class="modal-content">
-      <button class="modal-close" aria-label="Close Disclaimer modal">&times;</button>
-      <h2 id="disclaimer-modal-title">What does “Basic PDF Merger” mean?</h2>
-      <p><strong>What this tool is great for:</strong></p>
-      <ul>
-        <li>Merging invoices, contracts, reports, and scanned PDFs.</li>
-        <li>Combining multiple PDFs quickly and privately in your browser.</li>
-        <li>Keeping your files secure—nothing is uploaded to a server.</li>
-      </ul>
-      <p><strong>What this tool does NOT preserve:</strong></p>
-      <ul>
-        <li>Bookmarks (chapter navigation)</li>
-        <li>Fillable form fields</li>
-        <li>Annotations or comments</li>
-        <li>Metadata (title, author, etc.)</li>
-        <li>Password protection or digital signatures</li>
-      </ul>
-      <p>If you need those features preserved, consider using a more advanced PDF tool like Adobe Acrobat or PDFsam.</p>
+      <button class="modal-close" aria-label="Close">&times;</button>
+      <h2>How to use this tool</h2>
+      <p>This basic PDF merger tool combines multiple PDFs by copying their pages into a new document. It may remove some advanced PDF features, resulting in a smaller file size. Use it when you want a quick, simple merge without preserving complex features.</p>
+    </div>
+  </div>
+
+  <div id="disclaimer-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="disclaimer-toggle">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close">&times;</button>
+      <h2>What does Basic PDF Merger mean?</h2>
+      <p>This tool does not preserve all original PDF properties such as annotations, forms, or encryption. It creates a clean, simplified merged PDF ideal for basic use but not for advanced PDF workflows.</p>
     </div>
   </div>
 
