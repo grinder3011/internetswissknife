@@ -2,61 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QR Code Generator</title>
   <link rel="stylesheet" href="QRCodeGenerator.styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
-  <h1>QR Code Generator</h1>
+  <div class="container">
+    <h1>QR Code Generator</h1>
 
-  <input type="text" id="qr-input" placeholder="Enter text or URL" />
-  <div class="buttons-row">
-    <button id="generate-btn">Generate</button>
-    <button id="download-btn">Download</button>
+    <!-- Tooltip / Instructions trigger -->
+    <div class="tooltip-trigger" id="open-instructions">
+      <i class="fas fa-lightbulb"></i>
+      <span class="tooltip-text">How to Use</span>
+    </div>
+
+    <input type="text" id="qr-input" placeholder="Enter text or URL..." />
+    <button id="generate-btn"><i class="fas fa-qrcode"></i> Generate</button>
+
+    <div id="qr-output"></div>
   </div>
 
-  <div id="qrcode"></div>
-
-  <button id="toggle-options-btn" aria-expanded="false" aria-controls="more-options">
-    More options <span class="arrow">▼</span>
-  </button>
-
-  <div id="more-options" class="more-options" hidden>
-    <fieldset>
-      <legend>QR Code Style</legend>
-      <label><input type="radio" name="style" value="square" checked /> Squares</label>
-      <label><input type="radio" name="style" value="dots" /> Dots</label>
-    </fieldset>
-
-    <fieldset>
-      <legend>Colors</legend>
-      <label>
-        Dark color:
-        <input type="color" id="color-dark" value="#000000" />
-      </label>
-      <label>
-        Background color:
-        <input type="color" id="color-light" value="#ffffff" />
-      </label>
-    </fieldset>
-
-    <label>
-      Export format:
-      <select id="format">
-        <option value="png" selected>PNG</option>
-        <option value="jpeg">JPEG</option>
-        <option value="webp">WEBP</option>
-        <option value="svg">SVG</option>
-      </select>
-    </label>
-
-    <label>
-      Upload logo:
-      <input type="file" id="logo-upload" accept="image/*" />
-    </label>
-
-    <button id="reset-btn" type="button">Reset to default settings</button>
+  <!-- Instructions Panel -->
+  <div class="instructions-panel" id="instructions-panel">
+    <div class="instructions-content">
+      <h2><i class="fas fa-circle-info"></i> How to Use QR Generator</h2>
+      <ul>
+        <li><strong>🔤 Input Field:</strong> Enter any text or link.</li>
+        <li><strong><i class="fas fa-qrcode"></i> Generate:</strong> Press this button to create a QR code.</li>
+        <li><strong>📱 Scan:</strong> The QR code can be scanned by most modern devices directly from screen.</li>
+      </ul>
+      <button id="close-instructions"><i class="fas fa-times"></i> Close</button>
+    </div>
   </div>
 
   <script src="QRCodeGenerator.js"></script>
