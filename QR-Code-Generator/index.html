@@ -15,14 +15,7 @@
 <div class="container">
   <header class="header">
   <h1 class="tool-title">QR Code Generator</h1>
-  <button
-    id="tooltip-toggle"
-    class="tooltip-button"
-    aria-label="How to use"
-    title="How to use"
-  >
-    <i class="fas fa-lightbulb"></i> <span class="tooltip-label">How to use this tool</span>
-  </button>
+ 
 </header>
 
   <div id="tooltip-panel" class="tooltip-panel" hidden>
@@ -66,6 +59,15 @@
     </div>
 
     <div id="qrcode" class="qr-code-container" aria-live="polite"></div>
+    <button
+      id="tooltip-toggle"
+      class="tooltip-button"
+      aria-label="How to use"
+      title="How to use"
+    >
+      <i class="fas fa-lightbulb tooltip-icon"></i>
+      <span class="tooltip-label">How to use this tool</span>
+    </button>
 
     <button
       id="toggle-options-btn"
