@@ -2,62 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>QR Code Generator</title>
-  <link rel="stylesheet" href="qr.styles.css">
+  <link rel="stylesheet" href="qr.styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 </head>
 <body>
   <header>
     <h1>QR Code Generator</h1>
-    <button id="help-btn" class="help-button">💡 Help</button>
+    <div class="info-tooltip" id="info-tooltip" tabindex="0" role="button" aria-label="How to use instructions">
+      <span class="icon">💡</span>
+      <span class="text">How to use</span>
+    </div>
   </header>
 
   <main>
-    <input id="qr-input" type="text" placeholder="Enter text or URL..." />
-    <button id="generate-btn">Generate</button>
-    <button id="download-btn">⬇️ Download</button>
-    <button id="reset-btn">Reset</button>
+    <div id="qrcode"></div>
 
-    <button id="toggle-options-btn" aria-expanded="false">
+    <div class="form-group">
+      <label for="qr-input">Enter text or URL:</label>
+      <input type="text" id="qr-input" placeholder="Enter text or URL to generate QR code" />
+    </div>
+
+    <button id="generate-btn" aria-label="Generate QR code">Generate</button>
+    <button id="download-btn" aria-label="Download QR code">Download ⬇️</button>
+
+    <button id="toggle-options-btn" aria-expanded="false" aria-controls="more-options" aria-label="Toggle more options">
       More options <span class="arrow">▼</span>
     </button>
 
     <div id="more-options" hidden>
-      <label>Style:</label>
-      <label><input type="radio" name="style" value="square" checked> Square</label>
-      <label><input type="radio" name="style" value="dots"> Dots</label>
+      <fieldset>
+        <legend>Style</legend>
+        <label><input type="radio" name="style" value="square" checked /> Square</label>
+        <label><input type="radio" name="style" value="dots" /> Dots</label>
+      </fieldset>
 
-      <label for="color-dark">Dot Color:</label>
-      <input type="color" id="color-dark" value="#000000">
+      <div class="color-group">
+        <label for="color-dark">Dark color:</label>
+        <input type="color" id="color-dark" value="#000000" />
+      </div>
+      <div class="color-group">
+        <label for="color-light">Light color:</label>
+        <input type="color" id="color-light" value="#ffffff" />
+      </div>
 
-      <label for="color-light">Background Color:</label>
-      <input type="color" id="color-light" value="#ffffff">
+      <div class="form-group">
+        <label for="format">Format:</label>
+        <select id="format">
+          <option value="png" selected>PNG</option>
+          <option value="jpeg">JPEG</option>
+          <option value="webp">WEBP</option>
+        </select>
+      </div>
 
-      <label for="format">Download Format:</label>
-      <select id="format">
-        <option value="png">PNG</option>
-        <option value="svg">SVG</option>
-      </select>
+      <div class="form-group">
+        <label for="logo-upload">Upload logo (optional):</label>
+        <input type="file" id="logo-upload" accept="image/*" />
+      </div>
 
-      <label for="logo-upload">Upload Logo (optional):</label>
-      <input type="file" id="logo-upload" accept="image/*">
+      <button id="reset-btn" aria-label="Reset to defaults">Reset</button>
     </div>
-
-    <div id="qrcode"></div>
   </main>
 
-  <aside id="help-panel" class="help-panel hidden">
-    <button id="close-help-btn" class="close-help">✖</button>
-    <h2>How to Use</h2>
+  <!-- Instruction side panel -->
+  <aside id="instruction-panel" aria-hidden="true" tabindex="-1">
+    <button id="close-instructions" aria-label="Close instructions">✕</button>
+    <h2>How to Use the QR Code Generator</h2>
     <ul>
-      <li>🔤 Enter text or a URL to generate the QR code.</li>
-      <li>🎨 Customize style, color, and add a logo under “More options”.</li>
-      <li>⬇️ Click “Download” to save your QR code.</li>
-      <li>♻️ Use “Reset” to clear everything.</li>
+      <li>Enter any text or URL in the input box above.</li>
+      <li>Click <strong>Generate</strong> to create the QR code.</li>
+      <li>Customize the style, colors, format, or upload a logo using <em>More options</em>.</li>
+      <li>Click <strong>Download</strong> to save your QR code image.</li>
+      <li>Click <strong>Reset</strong> to restore default settings.</li>
     </ul>
   </aside>
 
-  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
   <script src="qr.js"></script>
 </body>
 </html>
