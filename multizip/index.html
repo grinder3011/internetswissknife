@@ -1,43 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MultiZip - ZIP Archive Tool</title>
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-/>
-<link rel="stylesheet" href="multizip.styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MultiZip Tool</title>
+  <link rel="stylesheet" href="multizip.styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>MultiZip</h1>
-    <div class="upload-section">
-      <label for="file-input" class="file-label">
-        <i class="fa fa-upload"></i> Select Files
-      </label>
-      <input id="file-input" type="file" multiple />
-    </div>
+    <h1>📦 MultiZip Tool</h1>
 
-    <ul id="file-list" class="file-list"></ul>
-
-    <div class="buttons">
-      <button id="create-archive-btn" class="btn primary">
-        <i class="fa fa-file-zipper"></i> Create Archive
-      </button>
-      <button id="download-archive-btn" class="btn" disabled>
-        <i class="fa fa-download"></i> Download Archive
-      </button>
-      <button id="reset-btn" class="btn danger">
-        <i class="fa fa-trash"></i> Remove All Files
+    <div class="help-toggle">
+      <button id="open-help" title="Instructions">
+        💡 <span class="help-label">How to use this tool</span>
       </button>
     </div>
 
-    <div id="status" class="status"></div>
+    <input type="file" id="fileInput" multiple />
+    <div id="fileList"></div>
+
+    <div class="actions">
+      <button id="createZipBtn">
+        📦 Create Archive
+      </button>
+      <button id="downloadBtn">
+        ⬇️ Download Archive
+      </button>
+      <button id="resetBtn">
+        🔄 Remove All Files
+      </button>
+    </div>
   </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="multizip.js"></script>
+  <!-- Help Panel -->
+  <div id="helpPanel" class="help-panel hidden">
+    <div class="help-content">
+      <h2>💡 How to Use MultiZip</h2>
+      <ul>
+        <li>📁 Use the file picker to select one or more files.</li>
+        <li>📦 Click <strong>Create Archive</strong> to prepare the zip file.</li>
+        <li>⬇️ Use <strong>Download Archive</strong> to save the zip to your device.</li>
+        <li>🔄 Click <strong>Remove All Files</strong> to start a new archive.</li>
+      </ul>
+      <button id="close-help">Close</button>
+    </div>
+  </div>
+
+  <script src="multizip.js"></script>
 </body>
 </html>
