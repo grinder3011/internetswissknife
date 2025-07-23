@@ -8,6 +8,11 @@ const sortOrderSelect = document.getElementById('sort-order');
 const previewBox = document.getElementById('preview-box');
 const underscoreCheckbox = document.getElementById('use-underscore');
 
+const howtoBtn = document.getElementById('howto-btn');
+const infoBtn = document.getElementById('info-btn');
+const howtoText = document.getElementById('howto-text');
+const infoText = document.getElementById('info-text');
+
 let files = [];
 let customOrder = [];
 
@@ -131,12 +136,22 @@ underscoreCheckbox.addEventListener('change', updatePreview);
 // Initial preview
 updatePreview();
 
-// Info toggle for Sort Files By explanation
-const infoToggle = document.querySelector('.info-toggle');
-const infoContent = document.getElementById('sort-order-info');
+// Toggle handlers for buttons and explanations
 
-infoToggle.addEventListener('click', () => {
-  const isExpanded = infoToggle.getAttribute('aria-expanded') === 'true';
-  infoToggle.setAttribute('aria-expanded', String(!isExpanded));
-  infoContent.hidden = isExpanded;
+function toggleButton(button, content) {
+  const expanded = button.getAttribute('aria-expanded') === 'true';
+  button.setAttribute('aria-expanded', String(!expanded));
+  if (!expanded) {
+    content.hidden = false;
+  } else {
+    content.hidden = true;
+  }
+}
+
+howtoBtn.addEventListener('click', () => {
+  toggleButton(howtoBtn, howtoText);
+});
+
+infoBtn.addEventListener('click', () => {
+  toggleButton(infoBtn, infoText);
 });
