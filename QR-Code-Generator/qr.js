@@ -103,16 +103,14 @@ toggleOptionsBtn.addEventListener("click", () => {
   toggleOptionsBtn.setAttribute("aria-expanded", String(!expanded));
   moreOptions.hidden = expanded;
 
-  // Clear button content
+  // Update button label and icon accordingly
   toggleOptionsBtn.innerHTML = "";
 
-  // Create label span
   const textSpan = document.createElement("span");
   textSpan.className = "text";
   textSpan.textContent = expanded ? "More options " : "Less options ";
   toggleOptionsBtn.appendChild(textSpan);
 
-  // Create arrow icon
   const arrowIcon = document.createElement("i");
   arrowIcon.className = "fas fa-chevron-down arrow";
   toggleOptionsBtn.appendChild(arrowIcon);
@@ -167,7 +165,9 @@ createQRCode();
 moreOptions.hidden = true;
 toggleOptionsBtn.setAttribute("aria-expanded", "false");
 
-// Set initial button label and arrow
+// Initialize "More options" button label and icon on load
+toggleOptionsBtn.innerHTML = "";
+
 const labelSpan = document.createElement("span");
 labelSpan.className = "text";
 labelSpan.textContent = "More options ";
