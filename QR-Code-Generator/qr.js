@@ -13,6 +13,10 @@ const formatSelect = document.getElementById("format");
 const logoUpload = document.getElementById("logo-upload");
 const resetBtn = document.getElementById("reset-btn");
 
+const helpBtn = document.getElementById("help-btn");
+const helpPanel = document.getElementById("help-panel");
+const closeHelpBtn = document.getElementById("close-help-btn");
+
 let qrCode = null;
 let logoImage = null;
 
@@ -27,24 +31,18 @@ function createQRCode() {
   const text = qrInput.value.trim();
   if (!text) {
     qrCodeContainer.innerHTML = "<p style='color:#999'>Enter text or URL to generate QR code</p>";
-    qrCodeContainer.innerHTML = ""; // Clear any existing QR code elements
     qrCode = null;
     return;
   }
 
-  // Clear previous QR code container content and old qrCode instance
   qrCodeContainer.innerHTML = "";
   qrCode = null;
 
-  // Prepare logo config if any
-  const logoConfig = logoImage
-    ? {
-        image: logoImage,
-        width: 50,
-        height: 50,
-        // Optional: borderRadius, opacity, etc.
-      }
-    : undefined;
+  const logoConfig = logoImage ? {
+    image: logoImage,
+    width: 50,
+    height: 50,
+  } : undefined;
 
   qrCode = new QRCodeStyling({
     width: 256,
@@ -53,7 +51,7 @@ function createQRCode() {
     image: logoConfig?.image || "",
     dotsOptions: {
       color: colorDarkInput.value,
-      type: getSelectedStyle(), // "dots" or "square"
+      type: getSelectedStyle(),
     },
     backgroundOptions: {
       color: colorLightInput.value,
@@ -69,7 +67,6 @@ function createQRCode() {
 }
 
 function resetSettings() {
-  // Reset form controls
   styleRadios.forEach(radio => {
     radio.checked = radio.value === "square";
   });
@@ -95,17 +92,12 @@ function handleLogoUpload(event) {
   reader.readAsDataURL(file);
 }
 
-// Event listeners
-generateBtn.addEventListener("click", () => {
-  createQRCode();
-});
+generateBtn.addEventListener("click", createQRCode);
 
 downloadBtn.addEventListener("click", () => {
   if (!qrCode) return;
-
-  const format = formatSelect.value;
   qrCode.download({
-    extension: format,
+    extension: formatSelect.value,
   });
 });
 
@@ -113,10 +105,7 @@ toggleOptionsBtn.addEventListener("click", () => {
   const expanded = toggleOptionsBtn.getAttribute("aria-expanded") === "true";
   toggleOptionsBtn.setAttribute("aria-expanded", String(!expanded));
   moreOptions.hidden = expanded;
-
   toggleOptionsBtn.firstChild.textContent = expanded ? "More options " : "Less options ";
-
-  // Append arrow back because changing textContent removes children
   toggleOptionsBtn.appendChild(toggleOptionsBtn.querySelector(".arrow"));
 });
 
@@ -128,6 +117,15 @@ logoUpload.addEventListener("change", handleLogoUpload);
 resetBtn.addEventListener("click", () => {
   resetSettings();
   createQRCode();
+});
+
+// Tooltip / Help Panel handlers
+helpBtn.addEventListener("click", () => {
+  helpPanel.classList.add("visible");
+});
+
+closeHelpBtn.addEventListener("click", () => {
+  helpPanel.classList.remove("visible");
 });
 
 // On page load
