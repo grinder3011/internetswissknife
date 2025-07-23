@@ -45,17 +45,21 @@
       </div>
     </div>
 
-    <div class="form-row">
-      <label><input type="checkbox" id="use-underscore" /> Add underscore before number</label>
-      <button id="toggle-info" aria-expanded="false" aria-controls="info-text" title="How to use this tool" class="info-button">💡 How to use this tool</button>
+    <div class="form-row-spread">
+      <div class="form-group checkbox-group">
+        <label><input type="checkbox" id="use-underscore" /> Add underscore before number</label>
+      </div>
+
+      <div class="how-to-container">
+        <button id="how-to-toggle" class="how-to-toggle">💡 How to use this tool</button>
+      </div>
     </div>
 
-    <div id="info-text" class="info-text" hidden>
-      <p>💡 <strong>How to use this tool:</strong> Drag and drop your files or select them manually. Choose how to sort them. Enter a filename prefix and starting number. You can also choose to add an underscore. Once set, click “Rename & Download ZIP” to receive the renamed files inside a ZIP archive.</p>
+    <div id="how-to-text" class="how-to-text" hidden>
+      <p>This tool lets you batch rename files with a consistent naming pattern. Choose a prefix, starting number (e.g. 001), and decide whether to include an underscore. Files can be sorted by filename, date, or number prefix. Once set, download your renamed files as a ZIP.</p>
     </div>
 
     <div id="preview-box" class="file-preview"></div>
-
     <div class="file-list" id="file-list"></div>
 
     <button id="rename-btn">Rename & Download ZIP</button>
