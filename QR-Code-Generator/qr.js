@@ -103,24 +103,19 @@ toggleOptionsBtn.addEventListener("click", () => {
   toggleOptionsBtn.setAttribute("aria-expanded", String(!expanded));
   moreOptions.hidden = expanded;
 
-  // Update button text with arrow
-  const spanText = toggleOptionsBtn.querySelector("span.text");
-  if (spanText) {
-    spanText.textContent = expanded ? "More options " : "Less options ";
-  } else {
-    // fallback in case span.text is missing
-    toggleOptionsBtn.textContent = expanded ? "More options " : "Less options ";
-  }
+  // Clear button content
+  toggleOptionsBtn.innerHTML = "";
 
-  // Remove existing arrow span if any to avoid duplicates
-  const existingArrow = toggleOptionsBtn.querySelector("span.arrow");
-  if (existingArrow) existingArrow.remove();
+  // Create label span
+  const textSpan = document.createElement("span");
+  textSpan.className = "text";
+  textSpan.textContent = expanded ? "More options " : "Less options ";
+  toggleOptionsBtn.appendChild(textSpan);
 
-  // Append arrow span
-  const arrow = document.createElement("span");
-  arrow.className = "arrow";
-  arrow.textContent = expanded ? "▼" : "▲";
-  toggleOptionsBtn.appendChild(arrow);
+  // Create arrow icon
+  const arrowIcon = document.createElement("i");
+  arrowIcon.className = "fas fa-chevron-down arrow";
+  toggleOptionsBtn.appendChild(arrowIcon);
 });
 
 // Tooltip toggle handler
@@ -167,3 +162,17 @@ resetBtn.addEventListener("click", () => {
 // On page load
 resetSettings();
 createQRCode();
+
+// Make sure options panel is collapsed on load
+moreOptions.hidden = true;
+toggleOptionsBtn.setAttribute("aria-expanded", "false");
+
+// Set initial button label and arrow
+const labelSpan = document.createElement("span");
+labelSpan.className = "text";
+labelSpan.textContent = "More options ";
+toggleOptionsBtn.appendChild(labelSpan);
+
+const arrowIcon = document.createElement("i");
+arrowIcon.className = "fas fa-chevron-down arrow";
+toggleOptionsBtn.appendChild(arrowIcon);
