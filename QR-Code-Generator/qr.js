@@ -37,7 +37,6 @@ function createQRCode() {
     return;
   }
 
-  // Clear previous QR code container content and old qrCode instance
   qrCodeContainer.innerHTML = "";
   qrCode = null;
 
@@ -98,19 +97,19 @@ function handleLogoUpload(event) {
   reader.readAsDataURL(file);
 }
 
-// ✅ More options toggle handler (fixed and clean)
+// ✅ FIXED: More options toggle behaves like tooltip
 toggleOptionsBtn.addEventListener("click", () => {
   const isExpanded = toggleOptionsBtn.getAttribute("aria-expanded") === "true";
 
-  // Toggle hidden attribute on the more options section
-  moreOptions.hidden = isExpanded;
-
-  // Toggle aria-expanded attribute on button
-  toggleOptionsBtn.setAttribute("aria-expanded", String(!isExpanded));
-
-  // Update button label text only (keep icon)
-  const labelSpan = toggleOptionsBtn.querySelector(".options-label");
-  labelSpan.textContent = isExpanded ? "More options" : "Less options";
+  if (isExpanded) {
+    moreOptions.hidden = true;
+    toggleOptionsBtn.setAttribute("aria-expanded", "false");
+    toggleOptionsBtn.innerHTML = `More options <i class="fas fa-chevron-down arrow"></i>`;
+  } else {
+    moreOptions.hidden = false;
+    toggleOptionsBtn.setAttribute("aria-expanded", "true");
+    toggleOptionsBtn.innerHTML = `Less options <i class="fas fa-chevron-down arrow"></i>`;
+  }
 });
 
 // Tooltip toggle handler
@@ -167,8 +166,10 @@ resetBtn.addEventListener("click", () => {
 
 // Initial setup
 window.addEventListener("load", () => {
+  // Start with more options panel hidden and button reset
   moreOptions.hidden = true;
   toggleOptionsBtn.setAttribute("aria-expanded", "false");
+  toggleOptionsBtn.innerHTML = `More options <i class="fas fa-chevron-down arrow"></i>`;
 
   resetSettings();
   createQRCode();
