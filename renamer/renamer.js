@@ -7,9 +7,8 @@ const startNumberInput = document.getElementById('start-number');
 const sortOrderSelect = document.getElementById('sort-order');
 const previewBox = document.getElementById('preview-box');
 const underscoreCheckbox = document.getElementById('use-underscore');
-
-const toggleInfoBtn = document.getElementById('toggle-info');
-const infoText = document.getElementById('info-text');
+const howToToggle = document.getElementById('how-to-toggle');
+const howToText = document.getElementById('how-to-text');
 
 let files = [];
 let customOrder = [];
@@ -58,7 +57,7 @@ function updateFileOrder() {
     files.sort((a, b) => extractNumericPrefix(b.name) - extractNumericPrefix(a.name));
   }
 
-  customOrder = [...files];
+  customOrder = [...files]; // fallback for manual drag (not yet implemented)
 }
 
 function extractNumericPrefix(filename) {
@@ -93,7 +92,7 @@ renameBtn.addEventListener('click', async () => {
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const ext = file.name.includes('.') ? '.' + file.name.split('.').pop() : '';
-    const num = (startNumber + i).toString();
+    const num = (startNumber + i).toString().padStart(startNumberInput.value.length, '0');
     const newName = `${prefix}${underscore}${num}${ext}`;
     const content = await file.arrayBuffer();
     zip.file(newName, content);
@@ -108,7 +107,6 @@ renameBtn.addEventListener('click', async () => {
   URL.revokeObjectURL(url);
 });
 
-// Preview feature
 function updatePreview() {
   const prefix = prefixInput.value.trim() || "file";
   const startNum = startNumberInput.value.trim();
@@ -129,17 +127,14 @@ function updatePreview() {
 prefixInput.addEventListener('input', updatePreview);
 startNumberInput.addEventListener('input', updatePreview);
 underscoreCheckbox.addEventListener('change', updatePreview);
-
 updatePreview();
 
-// Toggle info text
-toggleInfoBtn.addEventListener('click', () => {
-  const isHidden = infoText.hasAttribute('hidden');
+// 💡 Toggle handler
+howToToggle.addEventListener('click', () => {
+  const isHidden = howToText.hasAttribute('hidden');
   if (isHidden) {
-    infoText.removeAttribute('hidden');
-    toggleInfoBtn.setAttribute('aria-expanded', 'true');
+    howToText.removeAttribute('hidden');
   } else {
-    infoText.setAttribute('hidden', '');
-    toggleInfoBtn.setAttribute('aria-expanded', 'false');
+    howToText.setAttribute('hidden', true);
   }
 });
