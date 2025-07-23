@@ -31,7 +31,8 @@ function getSelectedStyle() {
 function createQRCode() {
   const text = qrInput.value.trim();
   if (!text) {
-    qrCodeContainer.innerHTML = "<p style='color:#999'>Enter text or URL to generate QR code</p>";
+    qrCodeContainer.innerHTML =
+      "<p style='color:#999'>Enter text or URL to generate QR code</p>";
     qrCode = null;
     return;
   }
@@ -71,7 +72,7 @@ function createQRCode() {
 }
 
 function resetSettings() {
-  styleRadios.forEach(radio => {
+  styleRadios.forEach((radio) => {
     radio.checked = radio.value === "square";
   });
   colorDarkInput.value = "#000000";
@@ -99,23 +100,18 @@ function handleLogoUpload(event) {
 
 // More options toggle handler
 toggleOptionsBtn.addEventListener("click", () => {
-  const expanded = toggleOptionsBtn.getAttribute("aria-expanded") === "true";
-  toggleOptionsBtn.setAttribute("aria-expanded", String(!expanded));
-  moreOptions.hidden = expanded;
+  const isExpanded = toggleOptionsBtn.getAttribute("aria-expanded") === "true";
 
-  // Clear button content
-  toggleOptionsBtn.innerHTML = "";
+  // Toggle hidden attribute on the more options section
+  moreOptions.hidden = isExpanded;
 
-  // Create label span
-  const textSpan = document.createElement("span");
-  textSpan.className = "text";
-  textSpan.textContent = expanded ? "More options " : "Less options ";
-  toggleOptionsBtn.appendChild(textSpan);
+  // Toggle aria-expanded attribute on button
+  toggleOptionsBtn.setAttribute("aria-expanded", String(!isExpanded));
 
-  // Create arrow icon
-  const arrowIcon = document.createElement("i");
-  arrowIcon.className = "fas fa-chevron-down arrow";
-  toggleOptionsBtn.appendChild(arrowIcon);
+  // Change button text while preserving icon
+  toggleOptionsBtn.innerHTML =
+    (isExpanded ? "More options " : "Less options ") +
+    '<i class="fas fa-chevron-down arrow"></i>';
 });
 
 // Tooltip toggle handler
@@ -149,9 +145,20 @@ downloadBtn.addEventListener("click", () => {
   });
 });
 
-styleRadios.forEach(radio => radio.addEventListener("change", createQRCode));
-colorDarkInput.addEventListener("input", createQRCode);
-colorLightInput.addEventListener("input", createQRCode);
+styleRadios.forEach((radio) =>
+  radio.addEventListener("change", () => {
+    createQRCode();
+  })
+);
+
+colorDarkInput.addEventListener("input", () => {
+  createQRCode();
+});
+
+colorLightInput.addEventListener("input", () => {
+  createQRCode();
+});
+
 logoUpload.addEventListener("change", handleLogoUpload);
 
 resetBtn.addEventListener("click", () => {
@@ -159,24 +166,14 @@ resetBtn.addEventListener("click", () => {
   createQRCode();
 });
 
-// On page load - initialize properly
-document.addEventListener("DOMContentLoaded", () => {
-  resetSettings();
-  createQRCode();
-
-  // Ensure options panel is collapsed on load
+// Initial setup
+window.addEventListener("load", () => {
+  // Make sure more options start hidden and button aria-expanded is false
   moreOptions.hidden = true;
   toggleOptionsBtn.setAttribute("aria-expanded", "false");
+  toggleOptionsBtn.innerHTML =
+    "More options <i class='fas fa-chevron-down arrow'></i>";
 
-  // Initialize toggle button label and icon
-  toggleOptionsBtn.innerHTML = "";
-
-  const labelSpan = document.createElement("span");
-  labelSpan.className = "text";
-  labelSpan.textContent = "More options ";
-  toggleOptionsBtn.appendChild(labelSpan);
-
-  const arrowIcon = document.createElement("i");
-  arrowIcon.className = "fas fa-chevron-down arrow";
-  toggleOptionsBtn.appendChild(arrowIcon);
+  resetSettings();
+  createQRCode();
 });
