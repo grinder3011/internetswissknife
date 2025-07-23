@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Easy File Renamer</title>
-  <link rel="stylesheet" href="renamer.styles.css" />
+  <link rel="stylesheet" href="renamer.styles.css">
 </head>
 <body>
 
@@ -21,7 +21,7 @@
 
     <div class="form-group">
       <label for="sort-order">Sort Files By:</label>
-      <select id="sort-order" aria-describedby="sort-order-info">
+      <select id="sort-order" aria-describedby="sortOrderInfo">
         <option value="custom">Manual (drag to reorder)</option>
         <option value="name-asc">Filename (A → Z)</option>
         <option value="name-desc">Filename (Z → A)</option>
@@ -30,12 +30,24 @@
         <option value="id-asc">ID Ascending (Based on Leading Number)</option>
         <option value="id-desc">ID Descending (Based on Leading Number)</option>
       </select>
+    </div>
 
-      <button class="info-toggle" aria-expanded="false" aria-controls="sort-order-info" aria-label="Toggle info on Sort Files By">ℹ️ More info</button>
+    <!-- Buttons below the select field, each on own line -->
+    <button type="button" id="howto-btn" aria-expanded="false" aria-controls="howto-text" class="info-button">
+      💡 How to use this tool
+    </button>
 
-      <div id="sort-order-info" class="info-content" hidden>
-        <p>Choose how your files are ordered before renaming. Manual lets you drag & reorder files.</p>
-      </div>
+    <button type="button" id="info-btn" aria-expanded="false" aria-controls="info-text" class="info-button">
+      i
+    </button>
+
+    <!-- Explanation areas toggled by buttons -->
+    <div id="howto-text" class="toggle-text" hidden>
+      <p>Drag your files into the box above or click it to select files. Choose how to sort files, set a prefix and starting number, then rename and download your files as a ZIP archive.</p>
+    </div>
+
+    <div id="info-text" class="toggle-text" hidden>
+      <p>This tool allows batch renaming of files with custom prefixes, numbering, and sorting options to simplify file organization.</p>
     </div>
 
     <div class="input-row">
@@ -55,7 +67,7 @@
       <label><input type="checkbox" id="use-underscore" /> Add underscore before number</label>
     </div>
 
-    <div id="preview-box" class="preview"></div>
+    <div id="preview-box" class="file-preview"></div>
 
     <div class="file-list" id="file-list"></div>
 
