@@ -4,123 +4,56 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>InternetSwissKnife (ISK)</title>
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 2rem;
-      color: #333;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 0.5rem;
-      border: 2px solid #007BFF;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin: 0.2rem 0;
-    }
-
-    .brand {
-      font-size: 1.2rem;
-      color: #666;
-    }
-
-    .highlight {
-      color: #007BFF;
-      font-weight: bold;
-    }
-
-    ul.tool-list {
-      list-style: none;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      padding: 0;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    li.tool-item {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-      padding: 1rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    li.tool-item:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    a.tool-link {
-      text-decoration: none;
-      color: #2c3e50;
-      font-weight: bold;
-      display: block;
-      font-size: 1.1rem;
-    }
-
-    .tool-desc {
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-      color: #555;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<header>
-  <img src="InternetSwissKnife_logo.jpg" alt="ISK Logo" class="logo" />
-  <h1>
-    <span class="highlight">I</span>nternet <span class="highlight">S</span>wiss <span class="highlight">K</span>nife
-  </h1>
-  <div class="brand">(ISK) – A growing collection of practical tools</div>
-</header>
+  <header>
+    <img src="InternetSwissKnife_logo.jpg" alt="ISK Logo" class="logo" />
+    <h1>
+      <span class="highlight">I</span>nternet <span class="highlight">S</span>wiss <span class="highlight">K</span>nife
+    </h1>
+    <div class="brand">(ISK) – A growing collection of practical tools</div>
+  </header>
 
-<ul class="tool-list">
-  <li class="tool-item">
-    <a class="tool-link" href="renamer/index.html">📝 File Renamer</a>
-    <div class="tool-desc">Batch rename files quickly with patterns and rules.</div>
-  </li>
+  <main>
+    <section class="tools">
+      <ul class="tool-list">
+        <li class="tool-item">
+          <a class="tool-link" href="renamer/index.html">📝 File Renamer</a>
+          <p class="tool-desc">Batch rename files quickly with patterns and rules.</p>
+        </li>
 
-  <li class="tool-item">
-    <a class="tool-link" href="multizip/index.html">📦 MultiZip Tool</a>
-    <div class="tool-desc">Zip multiple files together. Supports drag & drop + browse.</div>
-  </li>
+        <li class="tool-item">
+          <a class="tool-link" href="multizip/index.html">📦 MultiZip Tool</a>
+          <p class="tool-desc">Zip multiple files together. Supports drag & drop + browse.</p>
+        </li>
 
-  <li class="tool-item">
-    <a class="tool-link" href="pdfmerger/index.html">📄 PDF Merger</a>
-    <div class="tool-desc">Merge multiple PDF documents into one.</div>
-  </li>
+        <li class="tool-item">
+          <a class="tool-link" href="pdfmerger/index.html">📄 PDF Merger</a>
+          <p class="tool-desc">Merge multiple PDF documents into one.</p>
+        </li>
 
-  <li class="tool-item">
-    <a class="tool-link" href="textdiffchecker/index.html">🔍 Text Diff Checker</a>
-    <div class="tool-desc">Compare two pieces of text to find differences.</div>
-  </li>
+        <li class="tool-item">
+          <a class="tool-link" href="textdiffchecker/index.html">🔍 Text Diff Checker</a>
+          <p class="tool-desc">Compare two pieces of text to find differences.</p>
+        </li>
 
-  <li class="tool-item">
-   <a class="tool-link" href="QR-Code-Generator/index.html">📱 QR Code Generator</a>
-    <div class="tool-desc">Generate QR codes from links, text, or contact info.</div>
-  </li>
+        <li class="tool-item">
+          <a class="tool-link" href="QR-Code-Generator/index.html">📱 QR Code Generator</a>
+          <p class="tool-desc">Generate QR codes from links, text, or contact info.</p>
+        </li>
 
-  <li class="tool-item">
-    <a class="tool-link" href="unitconverter/index.html">📏 Unit Converter</a>
-    <div class="tool-desc">Convert between metric, imperial, time, and more.</div>
-  </li>
-</ul>
+        <li class="tool-item">
+          <a class="tool-link" href="unitconverter/index.html">📏 Unit Converter</a>
+          <p class="tool-desc">Convert between metric, imperial, time, and more.</p>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>🛠️ Made with curiosity & care. Want to contribute or give feedback? <a href="mailto:your@email.com">Contact me</a></p>
+  </footer>
 
 </body>
-</html>
