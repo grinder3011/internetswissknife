@@ -8,9 +8,7 @@ const sortOrderSelect = document.getElementById('sort-order');
 const previewBox = document.getElementById('preview-box');
 const underscoreCheckbox = document.getElementById('use-underscore');
 
-const howtoBtn = document.getElementById('howto-btn');
-const infoBtn = document.getElementById('info-btn');
-const howtoText = document.getElementById('howto-text');
+const toggleInfoBtn = document.getElementById('toggle-info');
 const infoText = document.getElementById('info-text');
 
 let files = [];
@@ -60,12 +58,12 @@ function updateFileOrder() {
     files.sort((a, b) => extractNumericPrefix(b.name) - extractNumericPrefix(a.name));
   }
 
-  customOrder = [...files]; // fallback for manual drag (not yet implemented)
+  customOrder = [...files];
 }
 
 function extractNumericPrefix(filename) {
   const match = filename.match(/^(\d+)/);
-  return match ? parseInt(match[0]) : Infinity; // Return the numeric part or Infinity if no number
+  return match ? parseInt(match[0]) : Infinity;
 }
 
 function displayFileList() {
@@ -128,30 +126,20 @@ function updatePreview() {
   previewBox.textContent = `Example: ${exampleName}`;
 }
 
-// Update preview on any input
 prefixInput.addEventListener('input', updatePreview);
 startNumberInput.addEventListener('input', updatePreview);
 underscoreCheckbox.addEventListener('change', updatePreview);
 
-// Initial preview
 updatePreview();
 
-// Toggle handlers for buttons and explanations
-
-function toggleButton(button, content) {
-  const expanded = button.getAttribute('aria-expanded') === 'true';
-  button.setAttribute('aria-expanded', String(!expanded));
-  if (!expanded) {
-    content.hidden = false;
+// Toggle info text
+toggleInfoBtn.addEventListener('click', () => {
+  const isHidden = infoText.hasAttribute('hidden');
+  if (isHidden) {
+    infoText.removeAttribute('hidden');
+    toggleInfoBtn.setAttribute('aria-expanded', 'true');
   } else {
-    content.hidden = true;
+    infoText.setAttribute('hidden', '');
+    toggleInfoBtn.setAttribute('aria-expanded', 'false');
   }
-}
-
-howtoBtn.addEventListener('click', () => {
-  toggleButton(howtoBtn, howtoText);
-});
-
-infoBtn.addEventListener('click', () => {
-  toggleButton(infoBtn, infoText);
 });
