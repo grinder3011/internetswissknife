@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Easy File Renamer</title>
-  <link rel="stylesheet" href="renamer.styles.css">
+  <link rel="stylesheet" href="renamer.styles.css" />
 </head>
 <body>
 
@@ -30,7 +30,9 @@
         <option value="id-asc">ID Ascending (Based on Leading Number)</option>
         <option value="id-desc">ID Descending (Based on Leading Number)</option>
       </select>
-      <button class="info-toggle" aria-expanded="false" aria-controls="sort-order-info" aria-label="Toggle info on Sort Files By">ℹ️</button>
+
+      <button class="info-toggle" aria-expanded="false" aria-controls="sort-order-info" aria-label="Toggle info on Sort Files By">ℹ️ More info</button>
+
       <div id="sort-order-info" class="info-content" hidden>
         <p>Choose how your files are ordered before renaming. Manual lets you drag & reorder files.</p>
       </div>
@@ -53,40 +55,14 @@
       <label><input type="checkbox" id="use-underscore" /> Add underscore before number</label>
     </div>
 
-    <div id="preview-box" class="preview-group"></div>
+    <div id="preview-box" class="preview"></div>
 
-    <div class="file-list" id="file-list" aria-live="polite" aria-label="List of files to rename"></div>
+    <div class="file-list" id="file-list"></div>
 
     <button id="rename-btn">Rename & Download ZIP</button>
-
-    <!-- Added info section like MultiZip for better UX -->
-    <section class="info-section">
-      <button class="info-toggle" aria-expanded="false" aria-controls="info-text" aria-label="Toggle How to use info">💡 How to use this tool</button>
-      <div id="info-text" class="info-content" hidden>
-        <p>Drag & drop files or click the drop zone to select files. Set sorting, naming prefix, and starting number. Add underscore if you want a separator before numbering. Click “Rename & Download ZIP” to get your renamed files packed into a ZIP archive.</p>
-      </div>
-    </section>
-
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="renamer.js"></script>
-  <script>
-    // Toggle info sections
-    document.querySelectorAll('.info-toggle').forEach(button => {
-      button.addEventListener('click', () => {
-        const controlsId = button.getAttribute('aria-controls');
-        const infoContent = document.getElementById(controlsId);
-        const isHidden = infoContent.hasAttribute('hidden');
-        if (isHidden) {
-          infoContent.removeAttribute('hidden');
-          button.setAttribute('aria-expanded', 'true');
-        } else {
-          infoContent.setAttribute('hidden', '');
-          button.setAttribute('aria-expanded', 'false');
-        }
-      });
-    });
-  </script>
 </body>
 </html>
