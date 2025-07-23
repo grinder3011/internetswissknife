@@ -103,14 +103,16 @@ toggleOptionsBtn.addEventListener("click", () => {
   toggleOptionsBtn.setAttribute("aria-expanded", String(!expanded));
   moreOptions.hidden = expanded;
 
-  // Update button label and icon accordingly
+  // Clear button content
   toggleOptionsBtn.innerHTML = "";
 
+  // Create label span
   const textSpan = document.createElement("span");
   textSpan.className = "text";
   textSpan.textContent = expanded ? "More options " : "Less options ";
   toggleOptionsBtn.appendChild(textSpan);
 
+  // Create arrow icon
   const arrowIcon = document.createElement("i");
   arrowIcon.className = "fas fa-chevron-down arrow";
   toggleOptionsBtn.appendChild(arrowIcon);
@@ -157,22 +159,24 @@ resetBtn.addEventListener("click", () => {
   createQRCode();
 });
 
-// On page load
-resetSettings();
-createQRCode();
+// On page load - initialize properly
+document.addEventListener("DOMContentLoaded", () => {
+  resetSettings();
+  createQRCode();
 
-// Make sure options panel is collapsed on load
-moreOptions.hidden = true;
-toggleOptionsBtn.setAttribute("aria-expanded", "false");
+  // Ensure options panel is collapsed on load
+  moreOptions.hidden = true;
+  toggleOptionsBtn.setAttribute("aria-expanded", "false");
 
-// Initialize "More options" button label and icon on load
-toggleOptionsBtn.innerHTML = "";
+  // Initialize toggle button label and icon
+  toggleOptionsBtn.innerHTML = "";
 
-const labelSpan = document.createElement("span");
-labelSpan.className = "text";
-labelSpan.textContent = "More options ";
-toggleOptionsBtn.appendChild(labelSpan);
+  const labelSpan = document.createElement("span");
+  labelSpan.className = "text";
+  labelSpan.textContent = "More options ";
+  toggleOptionsBtn.appendChild(labelSpan);
 
-const arrowIcon = document.createElement("i");
-arrowIcon.className = "fas fa-chevron-down arrow";
-toggleOptionsBtn.appendChild(arrowIcon);
+  const arrowIcon = document.createElement("i");
+  arrowIcon.className = "fas fa-chevron-down arrow";
+  toggleOptionsBtn.appendChild(arrowIcon);
+});
