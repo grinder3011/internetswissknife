@@ -74,22 +74,48 @@ button:hover {
   flex: 1 1 200px;
 }
 
-.checkbox-group label {
+.form-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.info-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.3s;
+}
+
+.info-button:hover {
+  color: #0056b3;
+  background: none;
+}
+
+.info-text {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f4f8ff;
+  border-left: 4px solid #4b6cb7;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .preview-group {
   margin-top: 1rem;
 }
 
-.preview {
+.file-preview {
   font-family: monospace;
   background: #eef;
   padding: 0.5rem;
   border-radius: 4px;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
   display: inline-block;
 }
 
@@ -103,37 +129,4 @@ button:hover {
   padding: 0.5rem;
   border-bottom: 1px solid #eee;
   font-size: 0.95rem;
-}
-
-/* --- New styles for the info buttons and toggle text --- */
-
-.info-button {
-  background: none;
-  border: none;
-  color: #4b6cb7;
-  font-weight: bold;
-  cursor: pointer;
-  margin: 0.75rem 0 0.25rem 0;
-  padding: 0;
-  font-size: 1rem;
-  transition: color 0.2s ease;
-  display: inline-block;
-}
-
-.info-button:hover,
-.info-button:focus {
-  color: #3d59a1;
-  outline: none;
-  background: transparent; /* no blue background on hover */
-}
-
-.toggle-text {
-  background: #f3f7fb;
-  border-left: 4px solid #4b6cb7;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  border-radius: 4px;
-  color: #333;
-  font-size: 0.9rem;
-  user-select: text;
 }
