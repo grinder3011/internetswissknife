@@ -39,7 +39,6 @@ mergeBtn.addEventListener("click", async () => {
   output.innerHTML = `<a href="${url}" download="merged.pdf">Download Merged PDF</a>`;
 });
 
-// Reset functionality
 resetBtn.addEventListener("click", () => {
   fileInput.value = "";
   selectedFiles = [];
@@ -72,12 +71,12 @@ function toggleAccordion(button, content) {
 
 function openModal(modal) {
   modal.removeAttribute("hidden");
-  document.body.style.overflow = "hidden"; // prevent background scroll
+  document.body.classList.add("modal-open");
 }
 
 function closeModal(modal) {
   modal.setAttribute("hidden", "");
-  document.body.style.overflow = ""; // restore scroll
+  document.body.classList.remove("modal-open");
 }
 
 // Detect screen size once on load
