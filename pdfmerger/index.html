@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PDF Merger</title>
   <link rel="stylesheet" href="pdfmerger.styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -12,46 +12,86 @@
     <h1>PDF Merger Tool</h1>
     <input type="file" id="file-input" accept="application/pdf" multiple />
     <div id="preview-list" class="preview-list"></div>
-
     <div class="buttons">
       <button id="merge-btn">Merge PDFs</button>
       <button id="reset-btn">Reset</button>
     </div>
-
     <div id="output"></div>
 
-    <!-- Usage and Disclaimer toggles -->
-    <div class="info-section">
-      <button id="usage-toggle" class="accordion-toggle" aria-expanded="false" aria-controls="usage-content" aria-haspopup="true" aria-label="How to use this tool">
+    <!-- Accordion container wraps toggles for vertical stacking -->
+    <div class="accordion-container">
+      <button
+        class="accordion-toggle"
+        id="usage-toggle"
+        aria-expanded="false"
+        aria-controls="usage-content"
+      >
         💡 How to use this tool
       </button>
       <div id="usage-content" class="accordion-content" hidden>
-        <p>This basic PDF merger tool combines multiple PDFs by copying their pages into a new document. It may remove some advanced PDF features, resulting in a smaller file size. Use it when you want a quick, simple merge without preserving complex features.</p>
+        <p>
+          This basic PDF merger tool combines multiple PDFs by copying their pages into a
+          new document. It may remove some advanced PDF features, resulting in a smaller
+          file size. Use it when you want a quick, simple merge without preserving
+          complex features.
+        </p>
       </div>
 
-      <button id="disclaimer-toggle" class="accordion-toggle" aria-expanded="false" aria-controls="disclaimer-content" aria-haspopup="true" aria-label="What does Basic PDF Merger mean?">
+      <button
+        class="accordion-toggle"
+        id="disclaimer-toggle"
+        aria-expanded="false"
+        aria-controls="disclaimer-content"
+      >
         ❓ What does Basic PDF Merger mean?
       </button>
       <div id="disclaimer-content" class="accordion-content" hidden>
-        <p>This tool does not preserve all original PDF properties such as annotations, forms, or encryption. It creates a clean, simplified merged PDF ideal for basic use but not for advanced PDF workflows.</p>
+        <p>
+          This tool does not preserve all original PDF properties such as annotations,
+          forms, or encryption. It creates a clean, simplified merged PDF ideal for basic
+          use but not for advanced PDF workflows.
+        </p>
       </div>
     </div>
   </div>
 
   <!-- Modals for mobile -->
-  <div id="usage-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="usage-toggle">
+  <div
+    id="usage-modal"
+    class="modal"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="usage-toggle"
+  >
     <div class="modal-content">
       <button class="modal-close" aria-label="Close">&times;</button>
       <h2>How to use this tool</h2>
-      <p>This basic PDF merger tool combines multiple PDFs by copying their pages into a new document. It may remove some advanced PDF features, resulting in a smaller file size. Use it when you want a quick, simple merge without preserving complex features.</p>
+      <p>
+        This basic PDF merger tool combines multiple PDFs by copying their pages into a
+        new document. It may remove some advanced PDF features, resulting in a smaller
+        file size. Use it when you want a quick, simple merge without preserving complex
+        features.
+      </p>
     </div>
   </div>
 
-  <div id="disclaimer-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="disclaimer-toggle">
+  <div
+    id="disclaimer-modal"
+    class="modal"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="disclaimer-toggle"
+  >
     <div class="modal-content">
       <button class="modal-close" aria-label="Close">&times;</button>
       <h2>What does Basic PDF Merger mean?</h2>
-      <p>This tool does not preserve all original PDF properties such as annotations, forms, or encryption. It creates a clean, simplified merged PDF ideal for basic use but not for advanced PDF workflows.</p>
+      <p>
+        This tool does not preserve all original PDF properties such as annotations,
+        forms, or encryption. It creates a clean, simplified merged PDF ideal for basic
+        use but not for advanced PDF workflows.
+      </p>
     </div>
   </div>
 
