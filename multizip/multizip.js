@@ -1,98 +1,93 @@
-(() => {
-  const fileInput = document.getElementById('file-input');
-  const archiveTypeSelect = document.getElementById('archive-type');
-  const createBtn = document.getElementById('create-archive-btn');
-  const outputArea = document.getElementById('output');
+const fileInput = document.getElementById('file-input');
+const fileList = document.getElementById('file-list');
+const createBtn = document.getElementById('create-archive-btn');
+const downloadBtn = document.getElementById('download-archive-btn');
+const resetBtn = document.getElementById('reset-btn');
+const status = document.getElementById('status');
 
-  let files = [];
+let files = [];
+let zipBlobUrl = null;
 
-  // Enable create button only if files selected
-  function updateButtonState() {
-    createBtn.disabled = files.length === 0;
+fileInput.addEventListener('change', (e) => {
+  // Clear previous files and UI list
+  files = [];
+  fileList.innerHTML = '';
+  status.textContent = '';
+  downloadBtn.disabled = true;
+
+  // Store selected files
+  files = Array.from(e.target.files);
+
+  if (files.length === 0) {
+    status.textContent = 'No files selected.';
+    return;
   }
 
-  // Handle file selection (including drag & drop)
-  fileInput.addEventListener('change', e => {
-    files = Array.from(e.target.files);
-    outputArea.textContent = `Selected ${files.length} file(s):\n` + files.map(f => f.name).join('\n');
-    updateButtonState();
+  // Show file names in list
+  files.forEach((file) => {
+    const li = document.createElement('li');
+    li.textContent = file.name;
+    fileList.appendChild(li);
   });
 
-  // Drag and drop support
-  const fileLabel = document.querySelector('.file-input-label');
-  fileLabel.addEventListener('dragover', e => {
-    e.preventDefault();
-    fileLabel.style.backgroundColor = '#d0e7ff';
-  });
-  fileLabel.addEventListener('dragleave', e => {
-    e.preventDefault();
-    fileLabel.style.backgroundColor = '';
-  });
-  fileLabel.addEventListener('drop', e => {
-    e.preventDefault();
-    files = Array.from(e.dataTransfer.files);
-    fileInput.files = e.dataTransfer.files; // Update input element for consistency
-    outputArea.textContent = `Selected ${files.length} file(s):\n` + files.map(f => f.name).join('\n');
-    updateButtonState();
-    fileLabel.style.backgroundColor = '';
-  });
+  status.textContent = `${files.length} file(s) selected. Ready to create archive.`;
+});
 
-  // Main archive creation
-  createBtn.addEventListener('click', async () => {
-    outputArea.textContent = 'Creating archive... Please wait.';
-    const archiveType = archiveTypeSelect.value;
+createBtn.addEventListener('click', async () => {
+  if (files.length === 0) {
+    alert('Please select files first.');
+    return;
+  }
 
-    if (files.length === 0) {
-      outputArea.textContent = 'No files selected.';
-      return;
-    }
+  status.textContent = 'Creating ZIP archive... Please wait.';
+  createBtn.disabled = true;
+  downloadBtn.disabled = true;
 
-    try {
-      if (archiveType === 'zip') {
-        await createZipArchive(files);
-      } else if (archiveType === '7z') {
-        // 7z compression not fully supported client-side; simulate success
-        outputArea.textContent = '7z compression is not fully supported in-browser. Simulating archive creation...\n' +
-          files.map(f => f.name).join('\n');
-      } else if (archiveType === 'tar') {
-        outputArea.textContent = 'TAR archive creation not supported in-browser.\n' +
-          'Simulating archive creation with files:\n' + files.map(f => f.name).join('\n');
-      } else if (archiveType === 'tar.gz') {
-        outputArea.textContent = 'TAR.GZ archive creation not supported in-browser.\n' +
-          'Simulating archive creation with files:\n' + files.map(f => f.name).join('\n');
-      } else if (archiveType === 'rar') {
-        outputArea.textContent = 'RAR archive creation not supported in-browser.\n' +
-          'Simulating archive creation with files:\n' + files.map(f => f.name).join('\n');
-      } else {
-        outputArea.textContent = 'Unknown archive format.';
-      }
-    } catch (e) {
-      outputArea.textContent = 'Error creating archive: ' + e.message;
-    }
-  });
+  const zip = new JSZip();
 
-  // ZIP archive creation using JSZip
-  async function createZipArchive(files) {
-    const zip = new JSZip();
-    files.forEach(file => {
+  try {
+    for (const file of files) {
       zip.file(file.name, file);
-    });
-
-    try {
-      const blob = await zip.generateAsync({ type: 'blob' });
-
-      // Create download link
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `archive.zip`;
-      link.textContent = 'Download ZIP archive';
-      link.className = 'download-link';
-
-      outputArea.innerHTML = `Archive created successfully! Click below to download:\n`;
-      outputArea.appendChild(link);
-    } catch (error) {
-      outputArea.textContent = 'Error generating ZIP archive: ' + error.message;
     }
+    const content = await zip.generateAsync({ type: 'blob' });
+
+    // Clean up previous blob URL if any
+    if (zipBlobUrl) URL.revokeObjectURL(zipBlobUrl);
+
+    zipBlobUrl = URL.createObjectURL(content);
+
+    status.textContent = 'Archive created successfully!';
+    downloadBtn.disabled = false;
+  } catch (err) {
+    status.textContent = 'Error creating archive.';
+    console.error(err);
+  } finally {
+    createBtn.disabled = false;
   }
-})();
+});
+
+downloadBtn.addEventListener('click', () => {
+  if (!zipBlobUrl) {
+    alert('First create the archive.');
+    return;
+  }
+
+  const a = document.createElement('a');
+  a.href = zipBlobUrl;
+  a.download = 'archive.zip';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+
+resetBtn.addEventListener('click', () => {
+  files = [];
+  fileList.innerHTML = '';
+  fileInput.value = '';
+  status.textContent = '';
+  downloadBtn.disabled = true;
+  if (zipBlobUrl) {
+    URL.revokeObjectURL(zipBlobUrl);
+    zipBlobUrl = null;
+  }
+});
