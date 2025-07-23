@@ -46,12 +46,36 @@ body {
   transition: color 0.3s ease;
   display: flex;
   align-items: center;
+  gap: 8px;
+  font-weight: 600;
 }
 
 .tooltip-button:hover,
 .tooltip-button:focus {
   color: #06326b;
   outline: none;
+}
+
+/* Yellow lightbulb icon and label styling */
+.tooltip-icon {
+  color: #f4c430; /* bright yellow */
+}
+
+.tooltip-button:hover .tooltip-icon,
+.tooltip-button:focus .tooltip-icon {
+  color: #d6a500; /* darker yellow on hover */
+}
+
+.tooltip-label {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* When placed in .main-content area */
+.main-content .tooltip-button {
+  align-self: center;
+  margin-top: -8px;
+  margin-bottom: 4px;
 }
 
 .tooltip-panel {
