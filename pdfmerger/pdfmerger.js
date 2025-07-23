@@ -45,3 +45,17 @@ resetBtn.addEventListener("click", () => {
   previewList.innerHTML = "";
   output.innerHTML = "";
 });
+
+const disclaimerBtn = document.getElementById("disclaimer-toggle");
+const disclaimerContent = document.getElementById("disclaimer-content");
+
+disclaimerBtn.addEventListener("click", () => {
+  const isHidden = disclaimerContent.hasAttribute("hidden");
+  if (isHidden) {
+    disclaimerContent.removeAttribute("hidden");
+    disclaimerBtn.setAttribute("aria-expanded", "true");
+  } else {
+    disclaimerContent.setAttribute("hidden", "");
+    disclaimerBtn.setAttribute("aria-expanded", "false");
+  }
+});
