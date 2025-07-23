@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PDF Merger</title>
-  <link rel="stylesheet" href="pdfmerger.styles.css">
+  <link rel="stylesheet" href="pdfmerger.styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
 <body>
@@ -17,43 +17,84 @@
       <button id="reset-btn">Reset</button>
     </div>
     <div id="output"></div>
-    <!-- Existing elements ... -->
 
-<div id="output"></div>
+    <!-- Usage Section -->
+    <section class="usage-section">
 
-<!-- New How to Use and Disclaimer Section -->
-<section class="usage-section">
-  <h2>How to use this tool</h2>
-  <ul>
-    <li>Select at least two PDF files using the file picker above.</li>
-    <li>Click <strong>Merge PDFs</strong> to combine the files into one PDF.</li>
-    <li>Download the merged PDF using the link that appears below.</li>
-  </ul>
+      <!-- Accordion header for How to use -->
+      <button id="usage-toggle" aria-expanded="false" aria-controls="usage-content" class="accordion-toggle">
+        <span class="icon">💡</span> How to use this tool
+      </button>
 
-  <button id="disclaimer-toggle" aria-expanded="false" aria-controls="disclaimer-content" class="disclaimer-btn">
-    What does “Basic PDF Merger” mean? ℹ️
-  </button>
+      <div id="usage-content" class="accordion-content" hidden>
+        <ul>
+          <li>Select at least two PDF files using the file picker above.</li>
+          <li>Click <strong>Merge PDFs</strong> to combine the files into one PDF.</li>
+          <li>Download the merged PDF using the link that appears below.</li>
+        </ul>
 
-  <div id="disclaimer-content" class="disclaimer-content" hidden>
-    <p><strong>What this tool is great for:</strong></p>
-    <ul>
-      <li>Merging invoices, contracts, reports, and scanned PDFs.</li>
-      <li>Combining multiple PDFs quickly and privately in your browser.</li>
-      <li>Keeping your files secure—nothing is uploaded to a server.</li>
-    </ul>
-    <p><strong>What this tool does NOT preserve:</strong></p>
-    <ul>
-      <li>Bookmarks (chapter navigation)</li>
-      <li>Fillable form fields</li>
-      <li>Annotations or comments</li>
-      <li>Metadata (title, author, etc.)</li>
-      <li>Password protection or digital signatures</li>
-    </ul>
-    <p>If you need those features preserved, consider using a more advanced PDF tool like Adobe Acrobat or PDFsam.</p>
+        <!-- Disclaimer nested inside usage -->
+        <button id="disclaimer-toggle" aria-expanded="false" aria-controls="disclaimer-content" class="accordion-toggle nested-toggle">
+          What does “Basic PDF Merger” mean? 🔆
+        </button>
+
+        <div id="disclaimer-content" class="accordion-content nested-content" hidden>
+          <p><strong>What this tool is great for:</strong></p>
+          <ul>
+            <li>Merging invoices, contracts, reports, and scanned PDFs.</li>
+            <li>Combining multiple PDFs quickly and privately in your browser.</li>
+            <li>Keeping your files secure—nothing is uploaded to a server.</li>
+          </ul>
+          <p><strong>What this tool does NOT preserve:</strong></p>
+          <ul>
+            <li>Bookmarks (chapter navigation)</li>
+            <li>Fillable form fields</li>
+            <li>Annotations or comments</li>
+            <li>Metadata (title, author, etc.)</li>
+            <li>Password protection or digital signatures</li>
+          </ul>
+          <p>If you need those features preserved, consider using a more advanced PDF tool like Adobe Acrobat or PDFsam.</p>
+        </div>
+      </div>
+
+    </section>
   </div>
-</section>
 
+  <!-- Modals for mobile -->
+  <div id="usage-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="usage-modal-title" hidden>
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close How to use modal">&times;</button>
+      <h2 id="usage-modal-title">How to use this tool</h2>
+      <ul>
+        <li>Select at least two PDF files using the file picker above.</li>
+        <li>Click <strong>Merge PDFs</strong> to combine the files into one PDF.</li>
+        <li>Download the merged PDF using the link that appears below.</li>
+      </ul>
+    </div>
   </div>
+
+  <div id="disclaimer-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="disclaimer-modal-title" hidden>
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close Disclaimer modal">&times;</button>
+      <h2 id="disclaimer-modal-title">What does “Basic PDF Merger” mean?</h2>
+      <p><strong>What this tool is great for:</strong></p>
+      <ul>
+        <li>Merging invoices, contracts, reports, and scanned PDFs.</li>
+        <li>Combining multiple PDFs quickly and privately in your browser.</li>
+        <li>Keeping your files secure—nothing is uploaded to a server.</li>
+      </ul>
+      <p><strong>What this tool does NOT preserve:</strong></p>
+      <ul>
+        <li>Bookmarks (chapter navigation)</li>
+        <li>Fillable form fields</li>
+        <li>Annotations or comments</li>
+        <li>Metadata (title, author, etc.)</li>
+        <li>Password protection or digital signatures</li>
+      </ul>
+      <p>If you need those features preserved, consider using a more advanced PDF tool like Adobe Acrobat or PDFsam.</p>
+    </div>
+  </div>
+
   <script src="pdfmerger.js"></script>
 </body>
 </html>
