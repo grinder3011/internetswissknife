@@ -1,6 +1,6 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f6f8fa;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f5f7fb;
   margin: 0;
   padding: 2rem;
   color: #333;
@@ -10,6 +10,15 @@ body {
   max-width: 400px;
   margin: auto;
   text-align: center;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+  margin-bottom: 1rem;
+  color: #222;
 }
 
 input[type="text"] {
@@ -18,6 +27,7 @@ input[type="text"] {
   margin: 1rem 0;
   border: 1px solid #ccc;
   border-radius: 8px;
+  font-size: 1rem;
 }
 
 button {
@@ -28,10 +38,15 @@ button {
   font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
 button i {
   margin-right: 6px;
+}
+
+button:hover {
+  background-color: #0056b3;
 }
 
 #qr-output {
@@ -47,21 +62,27 @@ button i {
   font-weight: bold;
   cursor: pointer;
   margin-bottom: 10px;
+  transition: color 0.2s ease;
+}
+
+.tooltip-trigger:hover {
+  color: #0056b3;
 }
 
 .tooltip-trigger i {
   margin-right: 6px;
 }
 
-/* Instructions Panel / Modal */
+/* Instructions Panel */
 .instructions-panel {
   position: fixed;
   top: 0;
   right: -100%;
-  width: 300px;
+  width: 320px;
+  max-width: 100%;
   height: 100%;
   background: #fff;
-  box-shadow: -3px 0 10px rgba(0,0,0,0.1);
+  box-shadow: -4px 0 12px rgba(0,0,0,0.15);
   padding: 20px;
   transition: right 0.3s ease;
   z-index: 1000;
@@ -73,18 +94,19 @@ button i {
 
 .instructions-content h2 {
   margin-top: 0;
-  color: #333;
+  color: #222;
 }
 
 .instructions-content ul {
   list-style: none;
   padding: 0;
   margin: 1rem 0;
+  font-size: 0.95rem;
 }
 
 .instructions-content ul li {
   margin-bottom: 1rem;
-  font-size: 0.95rem;
+  text-align: left;
 }
 
 .instructions-content button {
