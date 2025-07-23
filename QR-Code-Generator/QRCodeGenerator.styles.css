@@ -1,133 +1,93 @@
 body {
   font-family: Arial, sans-serif;
-  max-width: 480px;
-  margin: 2rem auto;
-  padding: 1rem 2rem 3rem;
-  background: #f9f9f9;
-  text-align: center;
+  background: #f6f8fa;
+  margin: 0;
+  padding: 2rem;
   color: #333;
 }
 
-h1 {
-  margin-bottom: 1rem;
-  font-weight: 700;
-  font-size: 2rem;
+.container {
+  max-width: 400px;
+  margin: auto;
+  text-align: center;
 }
 
-input[type="text"], select, input[type="color"], input[type="file"] {
+input[type="text"] {
   width: 100%;
-  max-width: 320px;
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 5px;
+  padding: 12px;
+  margin: 1rem 0;
   border: 1px solid #ccc;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus,
-select:focus,
-input[type="color"]:focus,
-input[type="file"]:focus {
-  outline: none;
-  border-color: #007acc;
-  box-shadow: 0 0 5px rgba(0, 122, 204, 0.5);
-}
-
-.buttons-row {
-  margin-bottom: 1.5rem;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  border-radius: 8px;
 }
 
 button {
-  padding: 0.6rem 1.6rem;
-  font-size: 1rem;
+  padding: 10px 16px;
+  background-color: #007bff;
   border: none;
-  border-radius: 6px;
-  background-color: #007acc;
   color: white;
+  font-size: 1rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.25s ease;
 }
 
-button:hover,
-button:focus {
-  background-color: #005fa3;
-  outline: none;
+button i {
+  margin-right: 6px;
 }
 
-#qrcode {
-  margin-top: 2rem;
+#qr-output {
+  margin-top: 20px;
+}
+
+/* Tooltip Trigger */
+.tooltip-trigger {
   display: flex;
+  align-items: center;
   justify-content: center;
-  border: 2px solid #ddd;
-  padding: 1rem;
-  border-radius: 12px;
-  background: white;
-}
-
-.more-options {
-  margin-top: 1rem;
-  border: 1px solid #ccc;
-  padding: 1rem 1.5rem;
-  border-radius: 10px;
-  background: white;
-  max-width: 340px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
-}
-
-.more-options fieldset {
-  border: none;
-  padding: 0;
-  margin-bottom: 1rem;
-}
-
-.more-options legend {
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-}
-
-.more-options label {
-  display: block;
-  margin-bottom: 0.6rem;
+  color: #007bff;
+  font-weight: bold;
   cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.tooltip-trigger i {
+  margin-right: 6px;
+}
+
+/* Instructions Panel / Modal */
+.instructions-panel {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 300px;
+  height: 100%;
+  background: #fff;
+  box-shadow: -3px 0 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: right 0.3s ease;
+  z-index: 1000;
+}
+
+.instructions-panel.active {
+  right: 0;
+}
+
+.instructions-content h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.instructions-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.instructions-content ul li {
+  margin-bottom: 1rem;
   font-size: 0.95rem;
 }
 
-#toggle-options-btn {
-  background: transparent;
-  color: #007acc;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  user-select: none;
-  margin-top: 1.5rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3em;
-  transition: color 0.25s ease;
-}
-
-#toggle-options-btn:hover,
-#toggle-options-btn:focus {
-  color: #005fa3;
-  outline: none;
-}
-
-.arrow {
-  display: inline-block;
-  transition: transform 0.3s ease;
-  font-weight: bold;
-  font-size: 1.3rem;
-  line-height: 1;
-}
-
-#toggle-options-btn[aria-expanded="true"] .arrow {
-  transform: rotate(180deg);
+.instructions-content button {
+  margin-top: 20px;
+  background-color: #dc3545;
 }
