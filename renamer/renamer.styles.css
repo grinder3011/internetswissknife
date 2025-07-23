@@ -74,49 +74,10 @@ button:hover {
   flex: 1 1 200px;
 }
 
-.form-row {
+.checkbox-group label {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 1.5rem;
-}
-
-.info-button {
-  background: none;
-  border: none;
-  color: #007bff;
-  font-size: 0.95rem;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  transition: color 0.3s;
-}
-
-.info-button:hover {
-  color: #0056b3;
-  background: none;
-}
-
-.info-text {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f4f8ff;
-  border-left: 4px solid #4b6cb7;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.preview-group {
-  margin-top: 1rem;
-}
-
-.file-preview {
-  font-family: monospace;
-  background: #eef;
-  padding: 0.5rem;
-  border-radius: 4px;
-  margin-top: 0.5rem;
-  display: inline-block;
+  gap: 0.5rem;
 }
 
 .file-list {
@@ -129,4 +90,57 @@ button:hover {
   padding: 0.5rem;
   border-bottom: 1px solid #eee;
   font-size: 0.95rem;
+}
+
+.preview {
+  font-family: monospace;
+  background: #eef;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+  display: inline-block;
+}
+
+.file-preview {
+  margin-top: 1rem;
+}
+
+/* How-to styles */
+.form-row-spread {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.how-to-container {
+  text-align: right;
+}
+
+.how-to-toggle {
+  background-color: #f0f0f0;
+  border: none;
+  color: #333;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s ease;
+}
+
+.how-to-toggle:hover {
+  background-color: #e4e4e4;
+}
+
+.how-to-text {
+  background: #fefefe;
+  border-left: 4px solid #4b6cb7;
+  padding: 0.8rem;
+  margin-top: 0.5rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  border-radius: 6px;
+  color: #333;
 }
