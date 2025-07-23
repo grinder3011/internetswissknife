@@ -16,7 +16,7 @@ header {
 main {
   max-width: 800px;
   margin: 2rem auto;
-  padding: 1rem 2rem 2rem;
+  padding: 1rem;
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
@@ -28,19 +28,18 @@ main {
   text-align: center;
   cursor: pointer;
   border-radius: 8px;
-  transition: background 0.3s, border-color 0.3s;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .drop-zone:hover,
 .drop-zone:focus {
-  background: #f1f1f1;
+  background-color: #e6f0ff; /* subtle light blue */
   border-color: #4b6cb7;
   outline: none;
 }
 
 .form-group {
   margin-top: 1rem;
-  position: relative;
 }
 
 input[type="text"], input[type="number"], select {
@@ -64,10 +63,8 @@ button {
   transition: background 0.3s;
 }
 
-button:hover,
-button:focus {
+button:hover {
   background: #3d59a1;
-  outline: none;
 }
 
 .input-row {
@@ -88,6 +85,9 @@ button:focus {
 
 .preview-group {
   margin-top: 1rem;
+}
+
+.preview {
   font-family: monospace;
   background: #eef;
   padding: 0.5rem;
@@ -98,69 +98,42 @@ button:focus {
 
 .file-list {
   margin-top: 1rem;
-  border-top: 1px solid #eee;
-  padding-top: 0.5rem;
-  max-height: 220px;
-  overflow-y: auto;
-  font-size: 0.95rem;
 }
 
 .file-list div {
   display: flex;
   justify-content: space-between;
-  padding: 0.3rem 0.5rem;
+  padding: 0.5rem;
   border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
 }
 
-.info-section {
-  margin-top: 2rem;
-  border-top: 1px solid #ddd;
-  padding-top: 1rem;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-}
+/* Info toggle button styles */
 
 .info-toggle {
   background: none;
   border: none;
   color: #4b6cb7;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
   padding: 0;
+  margin: 0.25rem 0 1rem 0;
   user-select: none;
-  transition: color 0.3s;
+  line-height: 1;
+  text-decoration: underline;
+  display: inline-block;
 }
 
 .info-toggle:hover,
 .info-toggle:focus {
   color: #3d59a1;
   outline: none;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .info-content {
-  margin-top: 0.5rem;
   font-size: 0.9rem;
   color: #555;
-  line-height: 1.4;
-}
-
-.form-group > .info-toggle {
-  position: absolute;
-  right: 0.25rem;
-  top: 0.25rem;
-  font-size: 1.1rem;
-  padding: 0 0.25rem;
-  user-select: none;
-}
-
-@media (max-width: 600px) {
-  .input-row {
-    flex-direction: column;
-  }
+  margin-top: 0;
 }
