@@ -130,3 +130,13 @@ underscoreCheckbox.addEventListener('change', updatePreview);
 
 // Initial preview
 updatePreview();
+
+// Info toggle for Sort Files By explanation
+const infoToggle = document.querySelector('.info-toggle');
+const infoContent = document.getElementById('sort-order-info');
+
+infoToggle.addEventListener('click', () => {
+  const isExpanded = infoToggle.getAttribute('aria-expanded') === 'true';
+  infoToggle.setAttribute('aria-expanded', String(!isExpanded));
+  infoContent.hidden = isExpanded;
+});
