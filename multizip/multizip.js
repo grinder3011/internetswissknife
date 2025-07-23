@@ -1,93 +1,65 @@
-const fileInput = document.getElementById('file-input');
-const fileList = document.getElementById('file-list');
-const createBtn = document.getElementById('create-archive-btn');
-const downloadBtn = document.getElementById('download-archive-btn');
-const resetBtn = document.getElementById('reset-btn');
-const status = document.getElementById('status');
+const fileInput = document.getElementById('fileInput');
+const fileList = document.getElementById('fileList');
+const createZipBtn = document.getElementById('createZipBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const resetBtn = document.getElementById('resetBtn');
 
-let files = [];
-let zipBlobUrl = null;
+const helpPanel = document.getElementById('helpPanel');
+const openHelp = document.getElementById('open-help');
+const closeHelp = document.getElementById('close-help');
+
+let zip = new JSZip();
+let zipBlob = null;
 
 fileInput.addEventListener('change', (e) => {
-  // Clear previous files and UI list
-  files = [];
+  zip = new JSZip(); // reset zip
+  zipBlob = null; // reset blob
   fileList.innerHTML = '';
-  status.textContent = '';
-  downloadBtn.disabled = true;
 
-  // Store selected files
-  files = Array.from(e.target.files);
-
-  if (files.length === 0) {
-    status.textContent = 'No files selected.';
-    return;
-  }
-
-  // Show file names in list
-  files.forEach((file) => {
-    const li = document.createElement('li');
-    li.textContent = file.name;
-    fileList.appendChild(li);
+  Array.from(e.target.files).forEach(file => {
+    zip.file(file.name, file);
+    const listItem = document.createElement('div');
+    listItem.textContent = `📄 ${file.name}`;
+    fileList.appendChild(listItem);
   });
-
-  status.textContent = `${files.length} file(s) selected. Ready to create archive.`;
 });
 
-createBtn.addEventListener('click', async () => {
-  if (files.length === 0) {
-    alert('Please select files first.');
+createZipBtn.addEventListener('click', async () => {
+  if (!Object.keys(zip.files).length) {
+    alert('No files selected!');
     return;
   }
-
-  status.textContent = 'Creating ZIP archive... Please wait.';
-  createBtn.disabled = true;
-  downloadBtn.disabled = true;
-
-  const zip = new JSZip();
-
-  try {
-    for (const file of files) {
-      zip.file(file.name, file);
-    }
-    const content = await zip.generateAsync({ type: 'blob' });
-
-    // Clean up previous blob URL if any
-    if (zipBlobUrl) URL.revokeObjectURL(zipBlobUrl);
-
-    zipBlobUrl = URL.createObjectURL(content);
-
-    status.textContent = 'Archive created successfully!';
-    downloadBtn.disabled = false;
-  } catch (err) {
-    status.textContent = 'Error creating archive.';
-    console.error(err);
-  } finally {
-    createBtn.disabled = false;
-  }
+  zipBlob = await zip.generateAsync({ type: 'blob' });
+  alert('Archive created! Now you can download it.');
 });
 
 downloadBtn.addEventListener('click', () => {
-  if (!zipBlobUrl) {
+  if (!zipBlob) {
     alert('First create the archive.');
     return;
   }
 
+  const url = URL.createObjectURL(zipBlob);
   const a = document.createElement('a');
-  a.href = zipBlobUrl;
+  a.href = url;
   a.download = 'archive.zip';
-  document.body.appendChild(a);
   a.click();
-  a.remove();
+  URL.revokeObjectURL(url);
 });
 
 resetBtn.addEventListener('click', () => {
-  files = [];
-  fileList.innerHTML = '';
+  zip = new JSZip();
+  zipBlob = null;
   fileInput.value = '';
-  status.textContent = '';
-  downloadBtn.disabled = true;
-  if (zipBlobUrl) {
-    URL.revokeObjectURL(zipBlobUrl);
-    zipBlobUrl = null;
-  }
+  fileList.innerHTML = '';
+});
+
+openHelp.addEventListener('click', () => {
+  helpPanel.classList.remove('hidden');
+  helpPanel.classList.add('visible');
+});
+
+closeHelp.addEventListener('click', () => {
+  helpPanel.classList.remove('visible');
+  helpPanel.classList.add('hidden');
 });
