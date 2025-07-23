@@ -57,7 +57,6 @@ button {
   color: white;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -69,36 +68,28 @@ button:hover {
   margin-top: 1rem;
 }
 
-/* Accordion toggles */
-
+/* Updated accordion toggles */
 .accordion-toggle {
-  width: 100%;
-  text-align: left;
-  font-weight: 600;
-  font-size: 1rem;
-  border: none;
   background: none;
   color: #007bff;
+  border: none;
   padding: 0.5rem 0;
   cursor: pointer;
-  user-select: none;
+  font-weight: 600;
+  text-align: left;
   transition: color 0.3s ease;
 }
 
 .accordion-toggle:hover,
 .accordion-toggle:focus {
-  color: #0056b3;
-  outline: none;
+  background: none; /* no bg on hover/focus */
+  color: #0056b3; /* darker blue text */
   text-decoration: underline;
+  outline: none;
 }
 
-/* Accordion content */
-.accordion-content {
-  padding: 0 0 1rem 1rem;
-  color: #444;
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
+/* Modal styles and others remain unchanged */
+
 
 /* Modal styles */
 .modal[hidden] {
