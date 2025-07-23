@@ -4,39 +4,60 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QR Code Generator</title>
-  <link rel="stylesheet" href="QRCodeGenerator.styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="qr.styles.css">
 </head>
 <body>
-  <div class="container">
+  <header>
     <h1>QR Code Generator</h1>
+    <button id="help-btn" class="help-button">💡 Help</button>
+  </header>
 
-    <!-- Instructions trigger -->
-    <div class="tooltip-trigger" id="open-instructions">
-      <i class="fas fa-lightbulb"></i>
-      <span class="tooltip-text">How to Use</span>
+  <main>
+    <input id="qr-input" type="text" placeholder="Enter text or URL..." />
+    <button id="generate-btn">Generate</button>
+    <button id="download-btn">⬇️ Download</button>
+    <button id="reset-btn">Reset</button>
+
+    <button id="toggle-options-btn" aria-expanded="false">
+      More options <span class="arrow">▼</span>
+    </button>
+
+    <div id="more-options" hidden>
+      <label>Style:</label>
+      <label><input type="radio" name="style" value="square" checked> Square</label>
+      <label><input type="radio" name="style" value="dots"> Dots</label>
+
+      <label for="color-dark">Dot Color:</label>
+      <input type="color" id="color-dark" value="#000000">
+
+      <label for="color-light">Background Color:</label>
+      <input type="color" id="color-light" value="#ffffff">
+
+      <label for="format">Download Format:</label>
+      <select id="format">
+        <option value="png">PNG</option>
+        <option value="svg">SVG</option>
+      </select>
+
+      <label for="logo-upload">Upload Logo (optional):</label>
+      <input type="file" id="logo-upload" accept="image/*">
     </div>
 
-    <input type="text" id="qr-input" placeholder="Enter text or URL..." />
-    <button id="generate-btn"><i class="fas fa-qrcode"></i> Generate</button>
+    <div id="qrcode"></div>
+  </main>
 
-    <div id="qr-output"></div>
-  </div>
+  <aside id="help-panel" class="help-panel hidden">
+    <button id="close-help-btn" class="close-help">✖</button>
+    <h2>How to Use</h2>
+    <ul>
+      <li>🔤 Enter text or a URL to generate the QR code.</li>
+      <li>🎨 Customize style, color, and add a logo under “More options”.</li>
+      <li>⬇️ Click “Download” to save your QR code.</li>
+      <li>♻️ Use “Reset” to clear everything.</li>
+    </ul>
+  </aside>
 
-  <!-- Instructions Panel -->
-  <div class="instructions-panel" id="instructions-panel">
-    <div class="instructions-content">
-      <h2><i class="fas fa-circle-info"></i> How to Use</h2>
-      <ul>
-        <li><strong>🔤 Input Field:</strong> Enter any text or link to encode.</li>
-        <li><strong><i class="fas fa-qrcode"></i> Generate:</strong> Press to create a QR code.</li>
-        <li><strong>📱 Scan:</strong> Most phones can scan it right off the screen.</li>
-      </ul>
-      <button id="close-instructions"><i class="fas fa-times"></i> Close</button>
-    </div>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="QRCodeGenerator.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+  <script src="qr.js"></script>
 </body>
 </html>
