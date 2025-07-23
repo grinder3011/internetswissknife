@@ -57,6 +57,7 @@ button {
   color: white;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -68,92 +69,79 @@ button:hover {
   margin-top: 1rem;
 }
 
-/* ===== Usage Section ===== */
-
-.usage-section {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #ddd;
-  color: #444;
-}
+/* Accordion toggles */
 
 .accordion-toggle {
   width: 100%;
   text-align: left;
-  background: none;
-  border: none;
-  padding: 0.5rem 0;
-  font-size: 1.1rem;
   font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  background: none;
   color: #007bff;
+  padding: 0.5rem 0;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  text-decoration: underline;
+  user-select: none;
+  transition: color 0.3s ease;
 }
 
 .accordion-toggle:hover,
 .accordion-toggle:focus {
-  color: #004085; /* darker but readable */
+  color: #0056b3;
   outline: none;
+  text-decoration: underline;
 }
 
-.accordion-toggle .icon {
-  font-size: 1.3rem;
-  line-height: 1;
-}
-
-.nested-toggle {
-  font-weight: 500;
-  font-size: 1rem;
-  margin-top: 0.8rem;
-  margin-bottom: 0.3rem;
-}
-
+/* Accordion content */
 .accordion-content {
-  margin-left: 1.2rem;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-  color: #333;
+  padding: 0 0 1rem 1rem;
+  color: #444;
+  font-size: 0.95rem;
+  line-height: 1.4;
 }
 
-/* ===== Modal styles ===== */
+/* Modal styles */
+.modal[hidden] {
+  display: none !important;
+}
 
 .modal {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
   z-index: 9999;
   padding: 1rem;
+  overflow-y: auto;
 }
 
 .modal-content {
+  max-height: 80vh;
+  overflow-y: auto;
   background: white;
   max-width: 500px;
   width: 100%;
-  max-height: 80vh;
-  overflow-y: auto;
-  border-radius: 8px;
   padding: 1.5rem 2rem;
+  border-radius: 8px;
   position: relative;
-  color: #333;
   box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  color: #333;
 }
 
 .modal-close {
   position: absolute;
   top: 0.4rem;
-  right: 0.6rem;
+  right: 0.7rem;
   font-size: 1.8rem;
-  background: none;
   border: none;
+  background: none;
   cursor: pointer;
-  color: #777;
+  color: #666;
   font-weight: 700;
+  line-height: 1;
+  transition: color 0.3s ease;
 }
 
 .modal-close:hover,
@@ -162,18 +150,19 @@ button:hover {
   outline: none;
 }
 
-/* Responsive behavior */
-
-@media (max-width: 767px) {
-  .accordion-toggle,
-  .accordion-content {
-    display: none !important;
-  }
+/* Prevent background scroll when modal open */
+body.modal-open {
+  overflow: hidden;
 }
 
-@media (min-width: 768px) {
-  #usage-modal,
-  #disclaimer-modal {
-    display: none !important;
+/* Responsive tweaks */
+@media (max-width: 767px) {
+  .buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  button {
+    width: 100%;
   }
 }
