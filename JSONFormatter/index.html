@@ -9,53 +9,46 @@
 <body>
 
   <header>
-    <h1>📄 JSON Formatter & Validator</h1>
-    <p>Paste, upload, validate, and format your JSON easily.</p>
+    <h1>🧰 JSON Formatter & Validator</h1>
+    <p>Paste or upload your JSON to validate and format it for readability</p>
   </header>
 
   <main>
-    <section class="json-tool">
-      <label for="json-input" class="label-text">JSON Input (paste or upload file):</label>
-      <textarea id="json-input" placeholder="Paste your JSON here..."></textarea>
+    <div class="actions-bar">
+      <label for="upload-json" class="upload-label" title="Upload a JSON file">📁 Upload JSON
+        <input type="file" id="upload-json" accept=".json,application/json" hidden />
+      </label>
+      <button id="format-btn" title="Format and validate JSON">✨ Format</button>
+      <button id="validate-btn" title="Only validate JSON">✅ Validate</button>
+      <button id="clear-btn" title="Clear input">🗑️ Clear</button>
+      <button id="copy-btn" title="Copy formatted JSON to clipboard">📋 Copy</button>
+      <button id="download-btn" title="Download formatted JSON">⬇️ Download</button>
+    </div>
 
-      <div class="buttons-row">
-        <label for="upload-json" class="upload-label" title="Upload JSON file">📁 Upload JSON
-          <input type="file" id="upload-json" accept=".json,application/json" hidden />
-        </label>
+    <textarea id="json-input" placeholder="Paste your JSON here..."></textarea>
 
-        <button id="validate-btn" title="Validate JSON">✔️ Validate</button>
-        <button id="format-btn" title="Format JSON" disabled>✨ Format</button>
-        <button id="clear-btn" title="Clear input">🗑️ Clear</button>
-        <button id="copy-btn" title="Copy formatted JSON" disabled>📋 Copy</button>
-        <button id="download-btn" title="Download formatted JSON" disabled>⬇️ Download</button>
-      </div>
-      
-      <div class="tool-hint-section">
-        <button class="hint-toggle" id="toggle-hint">💡 How to use this tool</button>
-        <div class="hint-box hidden" id="hint-box">
-          <ul>
-            <li>📁 <strong>Upload JSON</strong> — Select a `.json` file or paste JSON directly into the text box.</li>
-            <li>✨ <strong>Format</strong> — Neatly formats your JSON for readability.</li>
-            <li>✔️ <strong>Validate</strong> — Checks if the JSON is correct and highlights any syntax errors.</li>
-            <li>📋 <strong>Copy</strong> — Copies the formatted result to your clipboard.</li>
-            <li>⬇️ <strong>Download</strong> — Saves the output as a `.json` file.</li>
-            <li>🗑️ <strong>Clear</strong> — Resets the input and output.</li>
-          </ul>
-        </div>
-      </div>
+    <div class="tooltip-toggle-row">
+      <label><input type="checkbox" id="show-tooltip" /> 💡 How to use this tool</label>
+    </div>
 
-      <div id="progress-container" class="progress-container hidden" aria-live="polite" aria-atomic="true">
-        <div id="progress-bar" class="progress-bar"></div>
-        <div id="progress-text" class="progress-text"></div>
-      </div>
-
-      <div id="result-popup" class="result-popup hidden" role="alert" aria-live="assertive">
-        <button id="close-popup" class="close-popup" aria-label="Close message">&times;</button>
-        <div id="result-message"></div>
-      </div>
-    </section>
+    <div id="tooltip-content" class="tooltip-content hidden">
+      <ul>
+        <li>📋 <strong>Paste</strong> or 📁 <strong>Upload</strong> your JSON file.</li>
+        <li>✨ Click <strong>Format</strong> to prettify and validate your JSON.</li>
+        <li>✅ Or use <strong>Validate</strong> to just check for syntax issues.</li>
+        <li>📋 <strong>Copy</strong> the result or ⬇️ <strong>Download</strong> it as a file.</li>
+      </ul>
+    </div>
   </main>
 
+  <!-- ✅ Popup for feedback -->
+  <div id="popup" class="popup hidden">
+    <div class="popup-content">
+      <span id="popup-message"></span>
+      <button id="popup-close" title="Close popup">✖️</button>
+    </div>
+  </div>
+
+  <script src="JSONFormatter.js"></script>
 </body>
-<script src="JSONFormatter.js"></script>
 </html>
