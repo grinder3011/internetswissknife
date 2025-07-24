@@ -86,11 +86,15 @@
         <legend>Style</legend>
         <label>
           <input type="radio" name="style" value="square" checked />
-          Square
+          <i class="fas fa-border-all"></i> Square
         </label>
         <label>
           <input type="radio" name="style" value="dots" />
-          Dots
+          <i class="fas fa-circle"></i> Dots
+        </label>
+        <label>
+          <input type="radio" name="style" value="extra-dots" />
+          <i class="fas fa-th-large"></i> Extra Dots
         </label>
       </fieldset>
 
@@ -113,7 +117,7 @@
         </select>
       </fieldset>
 
-      <fieldset class="fieldset-logo">
+      <fieldset class="fieldset-logo extra-spacing">
         <legend>Add Logo</legend>
         <input
           type="file"
@@ -123,7 +127,7 @@
         />
       </fieldset>
 
-      <button id="reset-btn" class="btn reset-btn">Reset</button>
+      <button id="reset-btn" class="btn reset-btn extra-spacing">Reset option</button>
     </section>
   </main>
 </div>
