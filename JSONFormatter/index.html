@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JSON Formatter</title>
+  <link rel="stylesheet" href="JSONFormatter.styles.css">
+</head>
+<body>
+
+  <header>
+    <h1>🛠️ JSON Formatter</h1>
+    <p>Paste your JSON below to format and validate it.</p>
+  </header>
+
+  <main>
+    <div class="controls">
+      <button id="format-btn">Format JSON</button>
+      <button id="clear-btn">Clear All</button>
+    </div>
+
+    <div class="editor-container">
+      <div class="line-numbers" id="line-numbers"></div>
+      <textarea id="json-input" spellcheck="false" placeholder="{\n  \"example\": true\n}"></textarea>
+    </div>
+  </main>
+
+  <div class="popup" id="popup" hidden>
+    <div class="popup-content">
+      <span class="close-btn" id="close-popup">&times;</span>
+      <div class="popup-message">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div id="result-message">Validating...</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="JSONFormatter.js"></script>
+</body>
+</html>
