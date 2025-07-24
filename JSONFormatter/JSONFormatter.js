@@ -1,81 +1,91 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const input = document.getElementById('json-input');
-  const output = document.getElementById('json-output');
-  const formatBtn = document.getElementById('format-btn');
-  const clearBtn = document.getElementById('clear-btn');
-  const copyBtn = document.getElementById('copy-btn');
-  const downloadBtn = document.getElementById('download-btn');
-  const uploadInput = document.getElementById('upload-json');
+const jsonInput = document.getElementById('json-input');
+const fileInput = document.getElementById('file-input');
+const formatBtn = document.getElementById('format-btn');
+const copyBtn = document.getElementById('copy-btn');
+const clearBtn = document.getElementById('clear-btn');
+const jsonOutput = document.getElementById('json-output');
+const popup = document.getElementById('popup');
+const popupClose = document.getElementById('popup-close');
+const popupMessage = document.getElementById('popup-message');
+const progressBar = document.getElementById('progress-bar');
 
-  const popup = document.getElementById('popup');
-  const popupMessage = document.getElementById('popup-message');
-  const popupClose = document.getElementById('popup-close');
+function showPopup(message, isError = false) {
+  popupMessage.textContent = message;
+  popup.style.borderColor = isError ? '#d9534f' : '#4b6cb7';
+  popupMessage.style.color = isError ? '#d9534f' : '#333';
+  progressBar.style.backgroundColor = isError ? '#d9534f' : '#4b6cb7';
+  progressBar.style.width = '0%';
+  popup.classList.add('visible');
 
-  formatBtn.addEventListener('click', () => {
-    const raw = input.value.trim();
-    if (!raw) return;
+  // Animate progress bar fill
+  setTimeout(() => {
+    progressBar.style.width = '100%';
+  }, 10);
+}
 
-    try {
-      showPopup("Validating...");
-      const parsed = JSON.parse(raw);
-      const formatted = JSON.stringify(parsed, null, 2);
-      output.innerHTML = formatted
-        .split('\n')
-        .map(line => `<span>${line}</span>`)
-        .join('\n');
+function hidePopup() {
+  popup.classList.remove('visible');
+  progressBar.style.width = '0%';
+}
 
-      showPopup("✅ JSON formatted successfully.");
-    } catch (err) {
-      showPopup("❌ Invalid JSON: " + err.message);
-      output.textContent = '';
-    }
-  });
+popupClose.addEventListener('click', hidePopup);
 
-  clearBtn.addEventListener('click', () => {
-    input.value = '';
-    output.textContent = '';
-  });
-
-  copyBtn.addEventListener('click', () => {
-    const text = output.textContent.trim();
-    if (!text) return;
-    navigator.clipboard.writeText(text);
-    showPopup("📋 Copied to clipboard");
-  });
-
-  downloadBtn.addEventListener('click', () => {
-    const text = output.textContent.trim();
-    if (!text) return;
-
-    const blob = new Blob([text], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'formatted.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  });
-
-  uploadInput.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      input.value = reader.result;
-    };
-    reader.readAsText(file);
-  });
-
-  popupClose.addEventListener('click', () => {
-    popup.hidden = true;
-  });
-
-  function showPopup(message) {
-    popupMessage.textContent = message;
-    popup.hidden = false;
-    const bar = document.getElementById('popup-bar');
-    bar.style.animation = 'none';
-    void bar.offsetWidth; // restart animation
-    bar.style.animation = null;
+// File upload handler
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+  if (!file.name.endsWith('.json')) {
+    showPopup('Please upload a valid JSON file.', true);
+    return;
   }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    jsonInput.value = e.target.result;
+  };
+  reader.readAsText(file);
+});
+
+// Format JSON on button click
+formatBtn.addEventListener('click', () => {
+  const text = jsonInput.value.trim();
+  if (!text) {
+    showPopup('Input is empty. Please paste JSON or upload a file.', true);
+    return;
+  }
+
+  showPopup('Validating and formatting...');
+
+  setTimeout(() => {
+    try {
+      const parsed = JSON.parse(text);
+      const formatted = JSON.stringify(parsed, null, 2);
+      jsonOutput.textContent = formatted;
+      showPopup('✅ Formatting completed. No errors found.');
+    } catch (err) {
+      jsonOutput.textContent = '';
+      showPopup('⚠️ JSON Error: ' + err.message, true);
+    }
+  }, 200); // Simulate a short delay for progress bar effect
+});
+
+// Copy formatted JSON to clipboard
+copyBtn.addEventListener('click', () => {
+  const formattedText = jsonOutput.textContent;
+  if (!formattedText) {
+    showPopup('Nothing to copy. Format some JSON first.', true);
+    return;
+  }
+  navigator.clipboard.writeText(formattedText).then(() => {
+    showPopup('Copied formatted JSON to clipboard!');
+  }).catch(() => {
+    showPopup('Failed to copy. Please try manually.', true);
+  });
+});
+
+// Clear all fields
+clearBtn.addEventListener('click', () => {
+  jsonInput.value = '';
+  jsonOutput.textContent = '';
+  fileInput.value = '';
+  hidePopup();
 });
