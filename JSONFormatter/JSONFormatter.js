@@ -1,208 +1,100 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const jsonInput = document.getElementById('json-input');
-  const uploadInput = document.getElementById('upload-json');
-  const validateBtn = document.getElementById('validate-btn');
+  const inputArea = document.getElementById('json-input');
   const formatBtn = document.getElementById('format-btn');
+  const validateBtn = document.getElementById('validate-btn');
   const clearBtn = document.getElementById('clear-btn');
   const copyBtn = document.getElementById('copy-btn');
   const downloadBtn = document.getElementById('download-btn');
+  const uploadInput = document.getElementById('upload-json');
 
-  const progressContainer = document.getElementById('progress-container');
-  const progressBar = document.getElementById('progress-bar');
-  const progressText = document.getElementById('progress-text');
+  const popup = document.getElementById('popup');
+  const popupText = document.getElementById('popup-text');
+  const closePopup = document.getElementById('close-popup');
+  const progressBar = document.getElementById('progress');
 
-  const resultPopup = document.getElementById('result-popup');
-  const resultMessage = document.getElementById('result-message');
-  const closePopupBtn = document.getElementById('close-popup');
-
-  // Helpers
-  function showProgress(text = '', percent = 0) {
-    progressContainer.classList.remove('hidden');
-    progressBar.style.width = `${percent}%`;
-    progressText.textContent = text;
-  }
-
-  function hideProgress() {
-    progressContainer.classList.add('hidden');
+  function showPopup(message, isError = false) {
+    popupText.textContent = message;
+    popup.classList.add('visible');
+    popup.classList.toggle('error', isError);
+    popup.classList.toggle('success', !isError);
     progressBar.style.width = '0%';
-    progressText.textContent = '';
+
+    // Animate progress bar to 100%
+    setTimeout(() => {
+      progressBar.style.transition = 'width 0.5s ease-in-out';
+      progressBar.style.width = '100%';
+    }, 50);
+
+    // Auto close after 3.5s
+    setTimeout(() => {
+      popup.classList.remove('visible');
+      progressBar.style.transition = 'none';
+      progressBar.style.width = '0%';
+    }, 3500);
   }
 
-  function showResult(message, isError = false) {
-    resultPopup.classList.remove('hidden');
-    resultPopup.classList.toggle('error', isError);
-    resultMessage.textContent = message;
-  }
+  closePopup.addEventListener('click', () => {
+    popup.classList.remove('visible');
+    progressBar.style.transition = 'none';
+    progressBar.style.width = '0%';
+  });
 
-  function hideResult() {
-    resultPopup.classList.add('hidden');
-    resultMessage.textContent = '';
-  }
+  formatBtn.addEventListener('click', () => {
+    const text = inputArea.value.trim();
+    try {
+      const json = JSON.parse(text);
+      const formatted = JSON.stringify(json, null, 2);
+      inputArea.value = formatted;
+      showPopup('✅ JSON formatted successfully.');
+    } catch (e) {
+      showPopup('❌ Invalid JSON. Please check for syntax errors.', true);
+    }
+  });
 
-  function enableButton(button) {
-    button.disabled = false;
-  }
-
-  function disableButton(button) {
-    button.disabled = true;
-  }
-
-  // Validate JSON text, return {valid, error}
-  function validateJSON(text) {
+  validateBtn.addEventListener('click', () => {
+    const text = inputArea.value.trim();
     try {
       JSON.parse(text);
-      return { valid: true, error: null };
-    } catch (err) {
-      return { valid: false, error: err.message };
+      showPopup('✅ JSON is valid.');
+    } catch (e) {
+      showPopup('❌ Invalid JSON: ' + e.message, true);
     }
-  }
-
-  // Format JSON text with indentation
-  function formatJSON(text) {
-    const parsed = JSON.parse(text);
-    return JSON.stringify(parsed, null, 2);
-  }
-
-  // Update buttons state based on input and validity
-  function updateButtonsState() {
-    const text = jsonInput.value.trim();
-    if (!text) {
-      disableButton(validateBtn);
-      disableButton(formatBtn);
-      disableButton(copyBtn);
-      disableButton(downloadBtn);
-      hideResult();
-      hideProgress();
-      return;
-    }
-    enableButton(validateBtn);
-
-    // Validate for enabling format and other buttons
-    const validation = validateJSON(text);
-    if (validation.valid) {
-      enableButton(formatBtn);
-      enableButton(copyBtn);
-      enableButton(downloadBtn);
-      hideResult();
-    } else {
-      disableButton(formatBtn);
-      disableButton(copyBtn);
-      disableButton(downloadBtn);
-      showResult(`Error found: ${validation.error}`, true);
-    }
-  }
-
-  // Format button click
-  formatBtn.addEventListener('click', () => {
-    hideResult();
-    const text = jsonInput.value.trim();
-    if (!text) {
-      showResult('Input is empty.', true);
-      return;
-    }
-
-    // Show quick progress bar animation
-    showProgress('Formatting...', 30);
-    setTimeout(() => {
-      try {
-        const formatted = formatJSON(text);
-        jsonInput.value = formatted;
-        showProgress('Completed', 100);
-        showResult('JSON formatted successfully!');
-        updateButtonsState();
-      } catch (err) {
-        showResult(`Formatting error: ${err.message}`, true);
-      } finally {
-        setTimeout(hideProgress, 1200);
-      }
-    }, 300);
   });
 
-  // Validate button click
-  validateBtn.addEventListener('click', () => {
-    hideResult();
-    const text = jsonInput.value.trim();
-    if (!text) {
-      showResult('Input is empty.', true);
-      return;
-    }
-
-    showProgress('Validating...', 50);
-    setTimeout(() => {
-      const validation = validateJSON(text);
-      if (validation.valid) {
-        showResult('✔️ No errors found. JSON is valid!');
-      } else {
-        showResult(`❌ JSON Error: ${validation.error}`, true);
-      }
-      hideProgress();
-    }, 400);
-  });
-
-  // Clear button click
   clearBtn.addEventListener('click', () => {
-    jsonInput.value = '';
-    hideResult();
-    hideProgress();
-    updateButtonsState();
-    jsonInput.focus();
+    inputArea.value = '';
   });
 
-  // Copy button click
   copyBtn.addEventListener('click', () => {
-    const text = jsonInput.value.trim();
-    if (!text) return;
-
-    navigator.clipboard.writeText(text).then(() => {
-      showResult('📋 Formatted JSON copied to clipboard!');
-      setTimeout(hideResult, 2000);
-    }).catch(() => {
-      showResult('Failed to copy to clipboard.', true);
-    });
+    navigator.clipboard.writeText(inputArea.value)
+      .then(() => showPopup('📋 Copied to clipboard.'))
+      .catch(() => showPopup('❌ Failed to copy.', true));
   });
 
-  // Download button click
   downloadBtn.addEventListener('click', () => {
-    const text = jsonInput.value.trim();
-    if (!text) return;
-
-    const blob = new Blob([text], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+    const blob = new Blob([inputArea.value], { type: 'application/json' });
     const a = document.createElement('a');
-    a.href = url;
+    a.href = URL.createObjectURL(blob);
     a.download = 'formatted.json';
-    document.body.appendChild(a);
     a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-    showResult('⬇️ JSON downloaded!');
-    setTimeout(hideResult, 2000);
   });
 
-  // Upload file input change
   uploadInput.addEventListener('change', () => {
     const file = uploadInput.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function (e) {
-      jsonInput.value = e.target.result;
-      updateButtonsState();
+    reader.onload = () => {
+      inputArea.value = reader.result;
     };
     reader.readAsText(file);
   });
 
-  // Close popup button
-  closePopupBtn.addEventListener('click', () => {
-    hideResult();
-  });
+  // 💡 Toggle "How to use this tool" box
+  const toggleHintBtn = document.getElementById('toggle-hint');
+  const hintBox = document.getElementById('hint-box');
 
-  // On input change in textarea
-  jsonInput.addEventListener('input', () => {
-    hideResult();
-    updateButtonsState();
+  toggleHintBtn.addEventListener('click', () => {
+    hintBox.classList.toggle('hidden');
   });
-
-  // Initial state
-  updateButtonsState();
 });
