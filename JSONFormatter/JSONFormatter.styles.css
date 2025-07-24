@@ -168,6 +168,49 @@ button:hover:not([disabled]), .upload-label:hover:not([disabled]) {
   color: #000;
 }
 
+.tool-hint-section {
+  margin-top: 1.5rem;
+}
+
+.hint-toggle {
+  background: transparent;
+  color: #333;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  text-align: left;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.hint-toggle:hover {
+  text-decoration: underline;
+  color: #4b6cb7;
+}
+
+.hint-box {
+  background: #e8f1fc;
+  border-left: 4px solid #4b6cb7;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+
+.hint-box.hidden {
+  display: none;
+}
+
+.hint-box ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.hint-box li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
 @media (max-width: 500px) {
   textarea#json-input {
     height: 200px;
