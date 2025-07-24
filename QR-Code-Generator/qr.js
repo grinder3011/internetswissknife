@@ -60,7 +60,7 @@ function createQRCode() {
       dotsType = "extra-rounded";  // This will render extra dots style as per your library
       break;
     case "classy":
-      dotsType = "classy"; // The classy style
+      dotsType = "classy-rounded"; // The classy style
       break;
     default:
       dotsType = "square";
