@@ -37,6 +37,7 @@ function createQRCode() {
     return;
   }
 
+  // ✅ Clear previous QR code and reset reference
   qrCodeContainer.innerHTML = "";
   qrCode = null;
 
@@ -97,25 +98,28 @@ function handleLogoUpload(event) {
   reader.readAsDataURL(file);
 }
 
-// ✅ More options toggle (stupid simple with display)
+// More options toggle handler
 toggleOptionsBtn.addEventListener("click", () => {
-  const isVisible = moreOptions.style.display !== "none";
-  moreOptions.style.display = isVisible ? "none" : "block";
-  toggleOptionsBtn.setAttribute("aria-expanded", String(!isVisible));
+  const isExpanded = toggleOptionsBtn.getAttribute("aria-expanded") === "true";
+
+  // Toggle visibility
+  if (isExpanded) {
+    moreOptions.style.display = "none";
+  } else {
+    moreOptions.style.display = "block";
+  }
+
+  toggleOptionsBtn.setAttribute("aria-expanded", String(!isExpanded));
   toggleOptionsBtn.innerHTML =
-    (!isVisible ? "Less options " : "More options ") +
+    (!isExpanded ? "Less options " : "More options ") +
     '<i class="fas fa-chevron-down arrow"></i>';
 });
 
 // Tooltip toggle handler
 tooltipToggleBtn.addEventListener("click", () => {
-  if (tooltipPanel.hidden) {
-    tooltipPanel.hidden = false;
-    tooltipToggleBtn.setAttribute("aria-expanded", "true");
-  } else {
-    tooltipPanel.hidden = true;
-    tooltipToggleBtn.setAttribute("aria-expanded", "false");
-  }
+  const isExpanded = tooltipToggleBtn.getAttribute("aria-expanded") === "true";
+  tooltipPanel.hidden = isExpanded;
+  tooltipToggleBtn.setAttribute("aria-expanded", String(!isExpanded));
 });
 
 // Tooltip close button handler
@@ -140,7 +144,7 @@ downloadBtn.addEventListener("click", () => {
 
 styleRadios.forEach((radio) =>
   radio.addEventListener("change", () => {
-    createQRCode();
+    createQRCode(); // ✅ Will always regenerate clean QR
   })
 );
 
@@ -159,8 +163,9 @@ resetBtn.addEventListener("click", () => {
   createQRCode();
 });
 
-// ✅ Initial setup (start with options hidden)
+// Initial setup
 window.addEventListener("load", () => {
+  // Force "more options" section to start hidden
   moreOptions.style.display = "none";
   toggleOptionsBtn.setAttribute("aria-expanded", "false");
   toggleOptionsBtn.innerHTML =
