@@ -8,43 +8,36 @@
 </head>
 <body>
   <main class="container">
-    <h1>🔧 JSON Formatter / Validator</h1>
+    <h1>🧾 JSON Formatter / Validator</h1>
 
-    <label for="upload-json" class="upload-label" title="Upload or paste JSON file">
+    <label for="upload-json" class="upload-label" title="Upload JSON file">
       📁 Upload JSON
       <input type="file" id="upload-json" accept=".json,application/json" hidden />
     </label>
 
-    <textarea id="json-input" placeholder="Paste your JSON here..." spellcheck="false"></textarea>
+    <textarea id="json-input" placeholder="Paste or type your JSON here..." spellcheck="false"></textarea>
 
-    <div class="button-row">
-      <button id="format-btn" title="Format JSON">✨ Format</button>
-      <button id="validate-btn" title="Validate JSON">✅ Validate</button>
-      <button id="clear-btn" title="Clear input">🗑️ Clear</button>
-      <button id="copy-btn" title="Copy JSON">📋 Copy</button>
-      <button id="download-btn" title="Download JSON">⬇️ Download</button>
+    <div class="buttons-row">
+      <button id="format-btn" title="Format JSON">✨ Format JSON</button>
+      <button id="validate-btn" title="Validate JSON">🔍 Validate JSON</button>
+      <button id="clear-btn" title="Clear input" disabled>🗑️ Clear</button>
+      <button id="copy-btn" title="Copy formatted JSON to clipboard" disabled>📋 Copy</button>
+      <button id="download-btn" title="Download formatted JSON" disabled>⬇️ Download</button>
 
-      <button id="help-toggle" class="tooltip-btn" aria-expanded="false" title="How to use this tool">
-        💡 How to use
-      </button>
+      <button id="tooltip-btn" class="tooltip-btn" title="How to use this tool?">💡 How to use this tool?</button>
     </div>
 
-    <div id="help-text" class="help-text hidden" role="region" aria-live="polite">
+    <div id="tooltip-text" class="tooltip-text hidden" aria-live="polite">
+      <p>💡 <strong>How to use this tool:</strong></p>
       <ul>
-        <li><strong>Paste or upload</strong> JSON in the textarea.</li>
-        <li><strong>Format:</strong> Beautify JSON with proper indentation.</li>
-        <li><strong>Validate:</strong> Check if JSON is valid and show errors if any.</li>
-        <li><strong>Clear:</strong> Remove all input quickly.</li>
-        <li><strong>Copy:</strong> Copy formatted JSON to clipboard.</li>
-        <li><strong>Download:</strong> Save formatted JSON as a file.</li>
+        <li>📋 Paste or upload JSON to format or validate.</li>
+        <li>✨ Click <em>Format JSON</em> to prettify your JSON.</li>
+        <li>🔍 Click <em>Validate JSON</em> to check for errors.</li>
+        <li>⬇️ Download or 📋 Copy your formatted JSON.</li>
       </ul>
     </div>
 
-    <div id="status-popup" class="status-popup hidden" role="alert" aria-live="assertive">
-      <span id="status-icon" aria-hidden="true">✔️</span>
-      <span id="status-message"></span>
-      <button id="status-close" aria-label="Dismiss status message">✖️</button>
-    </div>
+    <div id="validation-result" class="validation-result" aria-live="polite"></div>
   </main>
 
   <script src="JSONFormatter.js"></script>
