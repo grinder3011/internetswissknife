@@ -214,16 +214,18 @@ button:hover:not([disabled]), .upload-label:hover:not([disabled]) {
 #toggle-hint {
   background: none;
   border: none;
-  color: #333;
+  color: #444;
   font-size: 0.95rem;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
-  text-decoration: underline;
+  text-decoration: none;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+  border-bottom: 2px solid transparent;
 }
 
 #toggle-hint:hover {
-  background: transparent; /* ✅ Remove blue bg */
-  color: #222; /* Optional: Slightly darker on hover */
+  color: #007BFF; /* Bootstrap-like modern blue */
+  border-bottom: 2px solid #007BFF;
 }
 
 @media (max-width: 500px) {
