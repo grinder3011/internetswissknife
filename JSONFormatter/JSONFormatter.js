@@ -1,62 +1,81 @@
-const formatBtn = document.getElementById('format-btn');
-const copyBtn = document.getElementById('copy-btn');
-const clearBtn = document.getElementById('clear-btn');
-const downloadBtn = document.getElementById('download-btn');
-const inputArea = document.getElementById('json-input');
-const outputArea = document.getElementById('json-output');
-const modal = document.getElementById('modal');
-const modalClose = document.getElementById('modal-close');
-const modalMessage = document.getElementById('modal-message');
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('json-input');
+  const output = document.getElementById('json-output');
+  const formatBtn = document.getElementById('format-btn');
+  const clearBtn = document.getElementById('clear-btn');
+  const copyBtn = document.getElementById('copy-btn');
+  const downloadBtn = document.getElementById('download-btn');
+  const uploadInput = document.getElementById('upload-json');
 
-formatBtn.addEventListener('click', () => {
-  showModal('⏳ Validating...');
+  const popup = document.getElementById('popup');
+  const popupMessage = document.getElementById('popup-message');
+  const popupClose = document.getElementById('popup-close');
 
-  setTimeout(() => {
-    const raw = inputArea.value.trim();
+  formatBtn.addEventListener('click', () => {
+    const raw = input.value.trim();
+    if (!raw) return;
 
     try {
+      showPopup("Validating...");
       const parsed = JSON.parse(raw);
       const formatted = JSON.stringify(parsed, null, 2);
-      outputArea.textContent = formatted;
-      showModal('✅ Format successful. No errors found!');
-    } catch (e) {
-      outputArea.textContent = '';
-      showModal(`❌ Invalid JSON: ${e.message}`);
+      output.innerHTML = formatted
+        .split('\n')
+        .map(line => `<span>${line}</span>`)
+        .join('\n');
+
+      showPopup("✅ JSON formatted successfully.");
+    } catch (err) {
+      showPopup("❌ Invalid JSON: " + err.message);
+      output.textContent = '';
     }
-  }, 300);
-});
-
-copyBtn.addEventListener('click', () => {
-  const content = outputArea.textContent;
-  if (!content) return;
-  navigator.clipboard.writeText(content).then(() => {
-    showModal('📋 Copied to clipboard!');
   });
+
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    output.textContent = '';
+  });
+
+  copyBtn.addEventListener('click', () => {
+    const text = output.textContent.trim();
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    showPopup("📋 Copied to clipboard");
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    const text = output.textContent.trim();
+    if (!text) return;
+
+    const blob = new Blob([text], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'formatted.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  uploadInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      input.value = reader.result;
+    };
+    reader.readAsText(file);
+  });
+
+  popupClose.addEventListener('click', () => {
+    popup.hidden = true;
+  });
+
+  function showPopup(message) {
+    popupMessage.textContent = message;
+    popup.hidden = false;
+    const bar = document.getElementById('popup-bar');
+    bar.style.animation = 'none';
+    void bar.offsetWidth; // restart animation
+    bar.style.animation = null;
+  }
 });
-
-clearBtn.addEventListener('click', () => {
-  inputArea.value = '';
-  outputArea.textContent = '';
-});
-
-downloadBtn.addEventListener('click', () => {
-  const content = outputArea.textContent;
-  if (!content) return;
-
-  const blob = new Blob([content], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'formatted.json';
-  link.click();
-  URL.revokeObjectURL(url);
-});
-
-modalClose.addEventListener('click', () => {
-  modal.classList.add('hidden');
-});
-
-function showModal(message) {
-  modalMessage.innerHTML = `<p>${message}</p>`;
-  modal.classList.remove('hidden');
-}
