@@ -3,38 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🧾 JSON Formatter</title>
+  <title>JSON Formatter</title>
   <link rel="stylesheet" href="JSONFormatter.styles.css" />
 </head>
 <body>
 
   <header>
-    <h1>JSON Formatter</h1>
-    <p>Paste your JSON below to format it and check for errors.</p>
+    <h1>📦 JSON Formatter</h1>
+    <p>Paste your JSON below and format it with one click.</p>
   </header>
 
   <main>
-    <div class="editor-container">
-      <div class="line-numbers" id="line-numbers"></div>
-      <textarea id="json-input" placeholder="Paste or type your JSON here..."></textarea>
+    <textarea id="json-input" placeholder='Paste or type your JSON here...'></textarea>
+
+    <div class="buttons">
+      <button id="format-btn">🛠️ Format JSON</button>
+      <button id="copy-btn">📋 Copy</button>
+      <button id="download-btn">⬇️ Download</button>
+      <button id="clear-btn">🧹 Clear All</button>
     </div>
 
-    <div class="button-group">
-      <button id="format-btn">Format JSON</button>
-      <button id="clear-btn">🗑️ Clear All</button>
-    </div>
-
-    <div class="output-container">
-      <h3>Formatted JSON Output:</h3>
-      <textarea id="json-output" readonly></textarea>
-    </div>
+    <pre id="json-output" class="formatted-output" aria-label="Formatted JSON output"></pre>
   </main>
 
-  <!-- Popup Modal -->
-  <div id="popup-overlay" class="popup-overlay">
-    <div class="popup-box" id="popup-box">
-      <span id="popup-message"></span>
-      <button id="close-popup" class="close-btn">✖</button>
+  <!-- Modal -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <span id="modal-close" class="modal-close" title="Close">&times;</span>
+      <div id="modal-message">
+        <p>⏳ Validating...</p>
+      </div>
     </div>
   </div>
 
