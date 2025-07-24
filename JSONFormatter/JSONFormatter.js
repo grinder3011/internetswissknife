@@ -1,91 +1,131 @@
-const jsonInput = document.getElementById('json-input');
-const fileInput = document.getElementById('file-input');
-const formatBtn = document.getElementById('format-btn');
-const copyBtn = document.getElementById('copy-btn');
-const clearBtn = document.getElementById('clear-btn');
-const jsonOutput = document.getElementById('json-output');
-const popup = document.getElementById('popup');
-const popupClose = document.getElementById('popup-close');
-const popupMessage = document.getElementById('popup-message');
-const progressBar = document.getElementById('progress-bar');
+document.addEventListener('DOMContentLoaded', () => {
+  const uploadInput = document.getElementById('upload-json');
+  const formatBtn = document.getElementById('format-btn');
+  const clearBtn = document.getElementById('clear-btn');
+  const copyBtn = document.getElementById('copy-btn');
+  const downloadBtn = document.getElementById('download-btn');
+  const jsonInput = document.getElementById('json-input');
+  const progressBar = document.getElementById('progress-bar');
+  const progressFill = progressBar.querySelector('.progress-fill');
+  const progressText = progressBar.querySelector('.progress-text');
+  const resultPopup = document.getElementById('result-popup');
+  const resultIcon = document.getElementById('result-icon');
+  const resultText = document.getElementById('result-text');
+  const resultCloseBtn = document.getElementById('result-close-btn');
 
-function showPopup(message, isError = false) {
-  popupMessage.textContent = message;
-  popup.style.borderColor = isError ? '#d9534f' : '#4b6cb7';
-  popupMessage.style.color = isError ? '#d9534f' : '#333';
-  progressBar.style.backgroundColor = isError ? '#d9534f' : '#4b6cb7';
-  progressBar.style.width = '0%';
-  popup.classList.add('visible');
+  // Upload file and read
+  uploadInput.addEventListener('change', () => {
+    const file = uploadInput.files[0];
+    if (!file) return;
 
-  // Animate progress bar fill
-  setTimeout(() => {
-    progressBar.style.width = '100%';
-  }, 10);
-}
-
-function hidePopup() {
-  popup.classList.remove('visible');
-  progressBar.style.width = '0%';
-}
-
-popupClose.addEventListener('click', hidePopup);
-
-// File upload handler
-fileInput.addEventListener('change', () => {
-  const file = fileInput.files[0];
-  if (!file) return;
-  if (!file.name.endsWith('.json')) {
-    showPopup('Please upload a valid JSON file.', true);
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    jsonInput.value = e.target.result;
-  };
-  reader.readAsText(file);
-});
-
-// Format JSON on button click
-formatBtn.addEventListener('click', () => {
-  const text = jsonInput.value.trim();
-  if (!text) {
-    showPopup('Input is empty. Please paste JSON or upload a file.', true);
-    return;
-  }
-
-  showPopup('Validating and formatting...');
-
-  setTimeout(() => {
-    try {
-      const parsed = JSON.parse(text);
-      const formatted = JSON.stringify(parsed, null, 2);
-      jsonOutput.textContent = formatted;
-      showPopup('✅ Formatting completed. No errors found.');
-    } catch (err) {
-      jsonOutput.textContent = '';
-      showPopup('⚠️ JSON Error: ' + err.message, true);
-    }
-  }, 200); // Simulate a short delay for progress bar effect
-});
-
-// Copy formatted JSON to clipboard
-copyBtn.addEventListener('click', () => {
-  const formattedText = jsonOutput.textContent;
-  if (!formattedText) {
-    showPopup('Nothing to copy. Format some JSON first.', true);
-    return;
-  }
-  navigator.clipboard.writeText(formattedText).then(() => {
-    showPopup('Copied formatted JSON to clipboard!');
-  }).catch(() => {
-    showPopup('Failed to copy. Please try manually.', true);
+    const reader = new FileReader();
+    reader.onload = e => {
+      jsonInput.value = e.target.result;
+      hideResult();
+      hideProgress();
+    };
+    reader.readAsText(file);
   });
-});
 
-// Clear all fields
-clearBtn.addEventListener('click', () => {
-  jsonInput.value = '';
-  jsonOutput.textContent = '';
-  fileInput.value = '';
-  hidePopup();
+  // Format and validate JSON
+  formatBtn.addEventListener('click', () => {
+    hideResult();
+    showProgress();
+
+    progressFill.style.width = '0%';
+    setTimeout(() => {
+      progressFill.style.width = '100%';
+    }, 50);
+
+    setTimeout(() => {
+      const rawText = jsonInput.value.trim();
+      if (!rawText) {
+        showResult('error', 'Input is empty. Please paste or upload JSON.');
+        hideProgress();
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(rawText);
+        const pretty = JSON.stringify(parsed, null, 2);
+        jsonInput.value = pretty;
+        showResult('success', '✔️ JSON is valid and formatted.');
+      } catch (err) {
+        showResult('error', `❌ JSON error: ${err.message}`);
+      }
+
+      hideProgress();
+    }, 500);
+  });
+
+  // Clear input
+  clearBtn.addEventListener('click', () => {
+    jsonInput.value = '';
+    hideResult();
+    hideProgress();
+  });
+
+  // Copy to clipboard
+  copyBtn.addEventListener('click', () => {
+    if (!jsonInput.value.trim()) {
+      showResult('error', 'Nothing to copy: input is empty.');
+      return;
+    }
+    navigator.clipboard.writeText(jsonInput.value).then(() => {
+      showResult('success', '📋 JSON copied to clipboard!');
+    }).catch(() => {
+      showResult('error', 'Failed to copy to clipboard.');
+    });
+  });
+
+  // Download formatted JSON
+  downloadBtn.addEventListener('click', () => {
+    if (!jsonInput.value.trim()) {
+      showResult('error', 'Nothing to download: input is empty.');
+      return;
+    }
+    const blob = new Blob([jsonInput.value], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'formatted.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 0);
+  });
+
+  // Close popup
+  resultCloseBtn.addEventListener('click', hideResult);
+
+  // Helpers
+  function showProgress() {
+    progressBar.classList.remove('hidden');
+    progressFill.style.width = '0%';
+  }
+  function hideProgress() {
+    progressBar.classList.add('hidden');
+    progressFill.style.width = '0%';
+  }
+  function showResult(type, message) {
+    resultPopup.classList.remove('hidden');
+    if (type === 'success') {
+      resultPopup.style.background = '#d4edda';
+      resultPopup.style.borderColor = '#28a745';
+      resultIcon.textContent = '✅';
+      resultText.textContent = message;
+      resultText.style.color = '#155724';
+    } else {
+      resultPopup.style.background = '#f8d7da';
+      resultPopup.style.borderColor = '#dc3545';
+      resultIcon.textContent = '❌';
+      resultText.textContent = message;
+      resultText.style.color = '#721c24';
+    }
+  }
+  function hideResult() {
+    resultPopup.classList.add('hidden');
+  }
 });
