@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyBtn = document.getElementById("copy-btn");
   const downloadBtn = document.getElementById("download-btn");
   const uploadInput = document.getElementById("upload-json");
-  const uploadLabel = document.getElementById("upload-label");
+  // Fixed IDs below to match the HTML
+  const tooltipBtn = document.getElementById("tooltip-btn");
+  const tooltipBox = document.getElementById("tooltip-text");
   const validationResult = document.getElementById("validation-result");
-  const tooltipBtn = document.getElementById("toggle-tooltip");
-  const tooltipBox = document.getElementById("tooltip-box");
 
   const enableActions = () => {
     formatBtn.disabled = false;
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const toggleTooltip = () => {
-    tooltipBox.classList.toggle("visible");
+    tooltipBox.classList.toggle("hidden");
   };
 
   // Listeners
