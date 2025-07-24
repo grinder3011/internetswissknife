@@ -3,51 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JSON Formatter & Validator</title>
+  <title>JSON Formatter / Validator</title>
   <link rel="stylesheet" href="JSONFormatter.styles.css" />
 </head>
 <body>
 
-  <header>
-    <h1>🧰 JSON Formatter & Validator</h1>
-    <p>Paste or upload your JSON to validate and format it for readability</p>
-  </header>
-
   <main>
-    <div class="actions-bar">
-      <label for="upload-json" class="upload-label" title="Upload a JSON file">📁 Upload JSON
-        <input type="file" id="upload-json" accept=".json,application/json" hidden />
-      </label>
-      <button id="format-btn" title="Format and validate JSON">✨ Format</button>
-      <button id="validate-btn" title="Only validate JSON">✅ Validate</button>
-      <button id="clear-btn" title="Clear input">🗑️ Clear</button>
-      <button id="copy-btn" title="Copy formatted JSON to clipboard">📋 Copy</button>
-      <button id="download-btn" title="Download formatted JSON">⬇️ Download</button>
-    </div>
+    <h1>JSON Formatter / Validator</h1>
 
     <textarea id="json-input" placeholder="Paste your JSON here..."></textarea>
 
-    <div class="tooltip-toggle-row">
-      <label><input type="checkbox" id="show-tooltip" /> 💡 How to use this tool</label>
+    <div class="button-row">
+      <label for="upload-json" class="upload-label" title="Upload a JSON file">📁 Upload JSON
+        <input type="file" id="upload-json" accept=".json,application/json" hidden />
+      </label>
+
+      <button id="format-btn" title="Format JSON">✨ Format</button>
+      <button id="validate-btn" title="Validate JSON">✅ Validate</button>
+      <button id="clear-btn" title="Clear input">🗑️ Clear</button>
+      <button id="copy-btn" title="Copy formatted JSON">📋 Copy</button>
+      <button id="download-btn" title="Download formatted JSON">⬇️ Download</button>
+      
+      <button id="tooltip-toggle" class="tooltip-btn" title="How to use this tool">💡 How to use this tool</button>
     </div>
 
-    <div id="tooltip-content" class="tooltip-content hidden">
-      <ul>
-        <li>📋 <strong>Paste</strong> or 📁 <strong>Upload</strong> your JSON file.</li>
-        <li>✨ Click <strong>Format</strong> to prettify and validate your JSON.</li>
-        <li>✅ Or use <strong>Validate</strong> to just check for syntax issues.</li>
-        <li>📋 <strong>Copy</strong> the result or ⬇️ <strong>Download</strong> it as a file.</li>
-      </ul>
+    <div id="tooltip-text" class="tooltip-text hidden">
+      <p>Paste or upload your JSON in the box above.</p>
+      <p>Click "Format" to pretty-print your JSON.</p>
+      <p>Click "Validate" to check for errors.</p>
+      <p>You can also copy or download the formatted JSON.</p>
+      <p>Clear to start fresh.</p>
     </div>
+
+    <div id="result-message" class="result-message hidden"></div>
+
   </main>
-
-  <!-- ✅ Popup for feedback -->
-  <div id="popup" class="popup hidden">
-    <div class="popup-content">
-      <span id="popup-message"></span>
-      <button id="popup-close" title="Close popup">✖️</button>
-    </div>
-  </div>
 
   <script src="JSONFormatter.js"></script>
 </body>
