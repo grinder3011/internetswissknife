@@ -1,138 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>QR Code Generator</title>
-<link rel="stylesheet" href="qr.styles.css" />
-<!-- FontAwesome for icons -->
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  rel="stylesheet"
-/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QR Code Generator</title>
+  <link rel="stylesheet" href="qr.styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
 <body>
-<div class="container">
-  <header class="header">
-    <h1 class="tool-title">QR Code Generator</h1>
-  </header>
+  <div class="container">
+    <header class="header">
+      <h1 class="tool-title">QR Code Generator</h1>
+    </header>
 
-  <main class="main-content">
-    <label for="qr-input" class="sr-only">Text or URL for QR code</label>
-    <input
-      type="text"
-      id="qr-input"
-      placeholder="Enter text or URL here"
-      autocomplete="off"
-      spellcheck="false"
-      aria-describedby="qr-input-desc"
-    />
-    <div id="qr-input-desc" class="sr-only">
-      Input your text or URL to generate a QR code
-    </div>
+    <main class="main-content">
+      <label for="qr-input" class="sr-only">Text or URL for QR code</label>
+      <input type="text" id="qr-input" placeholder="Enter text or URL here" autocomplete="off" spellcheck="false" aria-describedby="qr-input-desc" />
+      <div id="qr-input-desc" class="sr-only">Input your text or URL to generate a QR code</div>
 
-    <div class="button-row">
-      <button id="generate-btn" class="btn primary-btn">Generate</button>
-      <button id="download-btn" class="btn secondary-btn">
-        <i class="fas fa-download"></i> Download
+      <div class="button-row">
+        <button id="generate-btn" class="btn primary-btn">Generate</button>
+        <button id="download-btn" class="btn secondary-btn"><i class="fas fa-download"></i> Download</button>
+      </div>
+
+      <div id="qrcode" class="qr-code-container" aria-live="polite"></div>
+
+      <button id="tooltip-toggle" class="tooltip-button" aria-label="How to use" title="How to use">
+        <i class="fas fa-lightbulb tooltip-icon"></i>
+        <span class="tooltip-label">How to use this tool</span>
       </button>
-    </div>
 
-    <div id="qrcode" class="qr-code-container" aria-live="polite"></div>
-
-    <button
-      id="tooltip-toggle"
-      class="tooltip-button"
-      aria-label="How to use"
-      title="How to use"
-    >
-      <i class="fas fa-lightbulb tooltip-icon"></i>
-      <span class="tooltip-label">How to use this tool</span>
-    </button>
-
-    <button
-      id="toggle-options-btn"
-      class="btn toggle-options-btn"
-      aria-expanded="false"
-      aria-controls="more-options"
-      type="button"
-    >
-      <span class="options-label">More options</span>
-      <i class="fas fa-chevron-down arrow"></i>
-    </button>
-
-
-    <div id="tooltip-panel" class="tooltip-panel" hidden>
-      <button id="tooltip-close" class="tooltip-close" aria-label="Close tooltip">
-        &times;
+      <button id="toggle-options-btn" class="btn toggle-options-btn" aria-expanded="false" aria-controls="more-options" type="button">
+        <span class="options-label">More options</span>
+        <i class="fas fa-chevron-down arrow"></i>
       </button>
-      <h2>How to Use This Tool</h2>
-      <p>
-        Enter your text or URL in the input box below, then press
-        <strong>Generate</strong> to create your QR code.
-      </p>
-      <p>
-        Customize the style, colors, format, or add a logo image.
-        When ready, click <strong>Download</strong> to save your QR code.
-      </p>
-      <p>
-        Use the <i class="fas fa-chevron-down"></i> <em>More Options</em> button to
-        toggle advanced settings.
-      </p>
-    </div>
 
-    <section id="more-options" class="more-options" hidden>
-      <fieldset class="fieldset-style">
-        <legend>Style</legend>
-        <label>
-          <input type="radio" name="style" value="square" checked />
-          <i class="fas fa-border-all"></i> Square
-        </label>
-        <label>
-          <input type="radio" name="style" value="dots" />
-          <i class="fas fa-circle"></i> Dots
-        </label>
-        <label>
-          <input type="radio" name="style" value="extra-dots" />
-          <i class="fas fa-th-large"></i> Extra Dots
-        </label>
-      </fieldset>
+      <div id="tooltip-panel" class="tooltip-panel" hidden>
+        <button id="tooltip-close" class="tooltip-close" aria-label="Close tooltip">&times;</button>
+        <h2>How to Use This Tool</h2>
+        <p>Enter your text or URL in the input box below, then press <strong>Generate</strong> to create your QR code.</p>
+        <p>Customize the style, colors, format, or add a logo image. When ready, click <strong>Download</strong> to save your QR code.</p>
+        <p>Use the <i class="fas fa-chevron-down"></i> <em>More Options</em> button to toggle advanced settings.</p>
+      </div>
 
-      <fieldset class="fieldset-color">
-        <legend>Colors</legend>
-        <label for="color-dark">Dark Color</label>
-        <input type="color" id="color-dark" value="#000000" />
+      <section id="more-options" class="more-options" hidden>
+        <fieldset class="fieldset-style">
+          <legend>Style</legend>
+          <label>
+            <input type="radio" name="style" value="square" checked />
+            <i class="fas fa-th-large"></i> Square
+          </label>
+          <label>
+            <input type="radio" name="style" value="extra-rounded" />
+            <i class="fas fa-circle-dot"></i> Dots
+          </label>
+          <label>
+            <input type="radio" name="style" value="classy" />
+            <i class="fas fa-gem"></i> Classy
+          </label>
+        </fieldset>
 
-        <label for="color-light">Light Color</label>
-        <input type="color" id="color-light" value="#ffffff" />
-      </fieldset>
+        <fieldset class="fieldset-color">
+          <legend>Colors</legend>
+          <label for="color-dark">Dark Color</label>
+          <input type="color" id="color-dark" value="#000000" />
 
-      <fieldset class="fieldset-format">
-        <legend>Format</legend>
-        <select id="format" aria-label="Select download format">
-          <option value="png">PNG</option>
-          <option value="jpeg">JPEG</option>
-          <option value="webp">WEBP</option>
-          <option value="svg">SVG</option>
-        </select>
-      </fieldset>
+          <label for="color-light">Light Color</label>
+          <input type="color" id="color-light" value="#ffffff" />
+        </fieldset>
 
-      <fieldset class="fieldset-logo extra-spacing">
-        <legend>Add Logo</legend>
-        <input
-          type="file"
-          id="logo-upload"
-          accept="image/*"
-          aria-label="Upload logo image"
-        />
-      </fieldset>
+        <fieldset class="fieldset-format">
+          <legend>Format</legend>
+          <select id="format" aria-label="Select download format">
+            <option value="png">PNG</option>
+            <option value="jpeg">JPEG</option>
+            <option value="webp">WEBP</option>
+            <option value="svg">SVG</option>
+          </select>
+        </fieldset>
 
-      <button id="reset-btn" class="btn reset-btn extra-spacing">Reset option</button>
-    </section>
-  </main>
-</div>
+        <fieldset class="fieldset-logo extra-spacing">
+          <legend>Add Logo</legend>
+          <input type="file" id="logo-upload" accept="image/*" aria-label="Upload logo image" />
+        </fieldset>
 
-<script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
-<script src="qr.js"></script>
+        <button id="reset-btn" class="btn reset-btn extra-spacing">
+          <i class="fas fa-undo"></i> Reset options
+        </button>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+  <script src="qr.js"></script>
 </body>
 </html>
