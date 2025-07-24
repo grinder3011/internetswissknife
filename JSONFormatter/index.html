@@ -3,48 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JSON Formatter - InternetSwissKnife</title>
+  <title>JSON Formatter Tool</title>
   <link rel="stylesheet" href="JSONFormatter.styles.css" />
 </head>
 <body>
 
-  <header>
-    <h1>JSON Formatter</h1>
-    <p>Paste or upload JSON to format and validate it easily.</p>
-  </header>
+  <main class="container">
+    <h1>🧰 JSON Formatter</h1>
 
-  <main>
-    <section class="json-tools">
+    <div class="controls-row">
+      <label for="upload-json" class="upload-label" title="Upload JSON file">📁 Upload JSON
+        <input type="file" id="upload-json" accept=".json,application/json" hidden />
+      </label>
 
-      <div class="input-area">
-        <label for="upload-json" class="upload-label" title="Upload JSON file">
-          📁 Upload JSON
-          <input type="file" id="upload-json" accept=".json,application/json" hidden />
-        </label>
-
-        <button id="format-btn" title="Format and validate JSON">✨ Format</button>
-        <button id="clear-btn" title="Clear input">🗑️ Clear</button>
-        <button id="copy-btn" title="Copy formatted JSON to clipboard">📋 Copy</button>
-        <button id="download-btn" title="Download formatted JSON">⬇️ Download</button>
-      </div>
-
-      <textarea id="json-input" aria-label="JSON input area" placeholder="Paste or type JSON here"></textarea>
-
-      <div id="line-numbers" aria-hidden="true"></div>
-
-    </section>
-  </main>
-
-  <div id="popup" class="popup hidden" role="alert" aria-live="assertive">
-    <div class="popup-content">
-      <span id="popup-message"></span>
-      <button id="popup-close" aria-label="Close notification">✖</button>
+      <button id="format-btn" title="Format and validate JSON">✨ Format</button>
+      <button id="clear-btn" title="Clear input">🗑️ Clear</button>
+      <button id="copy-btn" title="Copy formatted JSON to clipboard">📋 Copy</button>
+      <button id="download-btn" title="Download formatted JSON">⬇️ Download</button>
     </div>
-  </div>
 
-  <div id="progress-bar-container" class="progress-bar-container hidden" aria-hidden="true">
-    <div id="progress-bar" class="progress-bar"></div>
-  </div>
+    <textarea id="json-input" placeholder="Paste or type your JSON here..." spellcheck="false" aria-label="JSON input"></textarea>
+
+    <div id="progress-bar" class="progress-bar hidden" aria-live="polite">
+      <div class="progress-fill"></div>
+      <span class="progress-text">Processing...</span>
+    </div>
+
+    <div id="result-popup" class="result-popup hidden" role="alert" aria-live="assertive">
+      <span id="result-icon" aria-hidden="true"></span>
+      <span id="result-text"></span>
+      <button id="result-close-btn" aria-label="Close result popup">✖️</button>
+    </div>
+  </main>
 
   <script src="JSONFormatter.js"></script>
 </body>
