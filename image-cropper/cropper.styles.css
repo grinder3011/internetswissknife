@@ -1,0 +1,95 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: auto;
+  padding: 1rem;
+  background: #f0f2f5;
+  color: #222;
+}
+
+header, footer {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.cropper-container {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.cropper-wrapper {
+  position: relative;
+  width: 100%;
+  max-height: 500px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #333;
+}
+
+.cropper-viewer {
+  position: relative;
+  max-width: 100%;
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.cropper-viewer img {
+  max-width: 100%;
+  max-height: 500px;
+  user-select: none;
+  cursor: grab;
+  transform-origin: center center;
+  position: relative;
+}
+
+.controls {
+  margin: 1rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.control-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+button {
+  cursor: pointer;
+  background-color: #4a90e2;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #357abd;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-right: 0.5rem;
+}
+
+.preview-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+#previewCanvas {
+  border: 1px solid #ccc;
+  max-width: 100%;
+  max-height: 300px;
+}
