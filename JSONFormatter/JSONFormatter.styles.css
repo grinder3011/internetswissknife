@@ -211,6 +211,21 @@ button:hover:not([disabled]), .upload-label:hover:not([disabled]) {
   line-height: 1.4;
 }
 
+#toggle-hint {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  text-decoration: underline;
+}
+
+#toggle-hint:hover {
+  background: transparent; /* ✅ Remove blue bg */
+  color: #222; /* Optional: Slightly darker on hover */
+}
+
 @media (max-width: 500px) {
   textarea#json-input {
     height: 200px;
