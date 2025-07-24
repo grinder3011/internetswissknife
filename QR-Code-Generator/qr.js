@@ -57,14 +57,15 @@ function createQRCode() {
       dotsType = "square";
       break;
     case "dots":
-      dotsType = "dots";
+      dotsType = "dots";  // This will render extra dots style as per your library
       break;
-    case "extra-dots":
-      dotsType = "classy"; // <-- This is the added/adapted part
+    case "classy":
+      dotsType = "classy"; // The classy style
       break;
     default:
       dotsType = "square";
   }
+
 
   qrCode = new QRCodeStyling({
     width: 256,
