@@ -67,8 +67,8 @@ h1 {
   align-items: center;
 }
 
-/* General button styling */
-button {
+/* Main buttons styling with .btn class */
+.btn {
   background: #4b6cb7;
   color: white;
   border: none;
@@ -81,19 +81,18 @@ button {
   transition: background 0.3s;
 }
 
-button:hover:not(:disabled),
-button:focus:not(:disabled) {
+.btn:hover:not(:disabled),
+.btn:focus:not(:disabled) {
   background: #3a539b;
   outline: none;
 }
 
-/* Disabled buttons */
-button:disabled {
+.btn:disabled {
   background: #a0a5ad;
   cursor: not-allowed;
 }
 
-/* Tooltip button with subtle underline on hover */
+/* Tooltip button with custom styling */
 .tooltip-btn {
   background: transparent;
   color: #4b6cb7;
@@ -109,11 +108,11 @@ button:disabled {
 
 .tooltip-btn:hover,
 .tooltip-btn:focus {
+  background: transparent;
   color: #4b6cb7;
   border-color: transparent;
   outline: none;
   text-decoration: underline;
-  background: transparent;
 }
 
 /* Tooltip text box */
