@@ -60,7 +60,7 @@ function createQRCode() {
       dotsType = "dots";
       break;
     case "extra-dots":
-      dotsType = "classy"; // this will look different than regular dots
+      dotsType = "classy"; // <-- This is the added/adapted part
       break;
     default:
       dotsType = "square";
