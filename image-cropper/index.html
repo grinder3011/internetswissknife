@@ -3,61 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Image Cropper Tool - InternetSwissKnife (ISK)</title>
+  <title>Simple Image Cropper Tool</title>
   <link rel="stylesheet" href="cropper.styles.css" />
 </head>
 <body>
 
   <header>
-    <h1>🖼️ Image Cropper Tool</h1>
-    <p>Upload an image, crop, rotate, flip and export.</p>
+    <h1>🖼️ Simple Image Cropper</h1>
   </header>
 
   <main>
-    <section class="cropper-container">
-
-      <input type="file" id="imageInput" accept="image/*" />
-
-      <div class="cropper-wrapper">
-        <div class="cropper-viewer">
-          <img id="image" alt="Upload an image to start cropping" />
-        </div>
-      </div>
-
-      <div class="controls">
-
-        <div class="control-group">
-          <label><input type="checkbox" id="aspectRatioToggle" /> Lock Aspect Ratio (16:9)</label>
-        </div>
-
-        <div class="control-group">
-          <button id="zoomInBtn">Zoom +</button>
-          <button id="zoomOutBtn">Zoom -</button>
-          <button id="rotateLeftBtn">Rotate ↺</button>
-          <button id="rotateRightBtn">Rotate ↻</button>
-          <button id="flipHorizontalBtn">Flip ↔</button>
-          <button id="flipVerticalBtn">Flip ↕</button>
-          <button id="resetBtn">Reset</button>
-        </div>
-
-        <div class="control-group">
-          <button id="exportBtn">Export Cropped Image</button>
-        </div>
-
-      </div>
-
-      <section class="preview-section">
-        <h2>Cropped Preview</h2>
-        <canvas id="previewCanvas"></canvas>
-      </section>
-
-    </section>
+    <input type="file" id="imageInput" accept="image/*" />
+    <div class="cropper-container">
+      <img id="image" alt="Upload an image to crop" />
+      <div id="cropArea"></div>
+    </div>
+    <button id="cropBtn" disabled>Crop</button>
+    <div id="resultContainer">
+      <h2>Cropped Result:</h2>
+      <canvas id="resultCanvas"></canvas>
+    </div>
   </main>
 
-  <footer>
-    <p>🛠️ Made with care by ISK</p>
-  </footer>
-
-  <script src="cropper.script.js"></script>
+  <script src="cropper.js"></script>
 </body>
 </html>
