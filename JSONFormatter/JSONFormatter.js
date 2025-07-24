@@ -1,132 +1,131 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const jsonInput = document.getElementById('json-input');
-  const uploadJson = document.getElementById('upload-json');
-  const formatBtn = document.getElementById('format-btn');
-  const validateBtn = document.getElementById('validate-btn');
-  const clearBtn = document.getElementById('clear-btn');
-  const copyBtn = document.getElementById('copy-btn');
-  const downloadBtn = document.getElementById('download-btn');
-  const helpToggle = document.getElementById('help-toggle');
-  const helpText = document.getElementById('help-text');
-  const statusPopup = document.getElementById('status-popup');
-  const statusMessage = document.getElementById('status-message');
-  const statusIcon = document.getElementById('status-icon');
-  const statusClose = document.getElementById('status-close');
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.getElementById("json-input");
+  const formatBtn = document.getElementById("format-btn");
+  const validateBtn = document.getElementById("validate-btn");
+  const clearBtn = document.getElementById("clear-btn");
+  const copyBtn = document.getElementById("copy-btn");
+  const downloadBtn = document.getElementById("download-btn");
+  const uploadInput = document.getElementById("upload-json");
+  const uploadLabel = document.getElementById("upload-label");
+  const validationResult = document.getElementById("validation-result");
+  const tooltipBtn = document.getElementById("toggle-tooltip");
+  const tooltipBox = document.getElementById("tooltip-box");
 
-  // Helper to enable/disable buttons based on textarea content
-  function updateButtonStates() {
-    const hasText = jsonInput.value.trim().length > 0;
-    [formatBtn, validateBtn, clearBtn, copyBtn, downloadBtn].forEach(btn => {
-      btn.disabled = !hasText;
+  const enableActions = () => {
+    formatBtn.disabled = false;
+    validateBtn.disabled = false;
+    clearBtn.disabled = false;
+    copyBtn.disabled = false;
+    downloadBtn.disabled = false;
+
+    formatBtn.classList.remove("disabled");
+    validateBtn.classList.remove("disabled");
+    clearBtn.classList.remove("disabled");
+    copyBtn.classList.remove("disabled");
+    downloadBtn.classList.remove("disabled");
+  };
+
+  const disableActions = () => {
+    formatBtn.disabled = true;
+    validateBtn.disabled = true;
+    clearBtn.disabled = true;
+    copyBtn.disabled = true;
+    downloadBtn.disabled = true;
+
+    formatBtn.classList.add("disabled");
+    validateBtn.classList.add("disabled");
+    clearBtn.classList.add("disabled");
+    copyBtn.classList.add("disabled");
+    downloadBtn.classList.add("disabled");
+  };
+
+  const showResult = (message, isSuccess) => {
+    validationResult.textContent = message;
+    validationResult.className = isSuccess ? "success" : "error";
+  };
+
+  const formatJSON = () => {
+    const raw = input.value.trim();
+    try {
+      const obj = JSON.parse(raw);
+      const formatted = JSON.stringify(obj, null, 2);
+      input.value = formatted;
+      showResult("✅ JSON formatted successfully.", true);
+    } catch (err) {
+      showResult("❌ Error: Invalid JSON. " + err.message, false);
+    }
+  };
+
+  const validateJSON = () => {
+    const raw = input.value.trim();
+    try {
+      JSON.parse(raw);
+      showResult("✅ No errors found. JSON is valid.", true);
+    } catch (err) {
+      showResult("❌ Error: Invalid JSON. " + err.message, false);
+    }
+  };
+
+  const clearInput = () => {
+    input.value = "";
+    showResult("", true);
+    disableActions();
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(input.value).then(() => {
+      showResult("✅ Copied to clipboard.", true);
+    }).catch(() => {
+      showResult("❌ Failed to copy.", false);
     });
-  }
+  };
 
-  // Show status popup
-  function showPopup(message, success = true) {
-    statusMessage.textContent = message;
-    statusIcon.textContent = success ? '✔️' : '❌';
-    statusPopup.style.backgroundColor = success ? '#4b6cb7' : '#d9534f';
-    statusPopup.classList.remove('hidden');
-    // Auto-hide after 4 seconds
-    clearTimeout(showPopup.hideTimeout);
-    showPopup.hideTimeout = setTimeout(() => {
-      statusPopup.classList.add('hidden');
-    }, 4000);
-  }
-
-  // Close popup on button click
-  statusClose.addEventListener('click', () => {
-    statusPopup.classList.add('hidden');
-    clearTimeout(showPopup.hideTimeout);
-  });
-
-  // Format JSON
-  formatBtn.addEventListener('click', () => {
-    try {
-      const parsed = JSON.parse(jsonInput.value);
-      const formatted = JSON.stringify(parsed, null, 2);
-      jsonInput.value = formatted;
-      showPopup('JSON formatted successfully.', true);
-      updateButtonStates();
-    } catch (e) {
-      showPopup(`Error: Invalid JSON. ${e.message}`, false);
-    }
-  });
-
-  // Validate JSON
-  validateBtn.addEventListener('click', () => {
-    try {
-      JSON.parse(jsonInput.value);
-      showPopup('No errors found. JSON is valid.', true);
-    } catch (e) {
-      showPopup(`Error: Invalid JSON. ${e.message}`, false);
-    }
-  });
-
-  // Clear input
-  clearBtn.addEventListener('click', () => {
-    jsonInput.value = '';
-    updateButtonStates();
-    showPopup('Input cleared.', true);
-  });
-
-  // Copy to clipboard
-  copyBtn.addEventListener('click', () => {
-    if (!navigator.clipboard) {
-      // fallback for older browsers
-      jsonInput.select();
-      document.execCommand('copy');
-      showPopup('Copied to clipboard.', true);
-    } else {
-      navigator.clipboard.writeText(jsonInput.value)
-        .then(() => showPopup('Copied to clipboard.', true))
-        .catch(() => showPopup('Failed to copy.', false));
-    }
-  });
-
-  // Download JSON file
-  downloadBtn.addEventListener('click', () => {
-    const blob = new Blob([jsonInput.value], { type: 'application/json' });
+  const downloadJSON = () => {
+    const blob = new Blob([input.value], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'formatted.json';
-    document.body.appendChild(a);
+    a.download = "formatted.json";
     a.click();
-    a.remove();
     URL.revokeObjectURL(url);
-    showPopup('Download started.', true);
-  });
+  };
 
-  // Help toggle
-  helpToggle.addEventListener('click', () => {
-    const expanded = helpToggle.getAttribute('aria-expanded') === 'true';
-    if (expanded) {
-      helpText.classList.add('hidden');
-      helpToggle.setAttribute('aria-expanded', 'false');
-    } else {
-      helpText.classList.remove('hidden');
-      helpToggle.setAttribute('aria-expanded', 'true');
-    }
-  });
-
-  // Upload JSON file and place content in textarea
-  uploadJson.addEventListener('change', (e) => {
+  const handleUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = () => {
-      jsonInput.value = reader.result;
-      updateButtonStates();
-      showPopup(`Loaded file: ${file.name}`, true);
-      uploadJson.value = ''; // reset input to allow same file upload
+    reader.onload = (event) => {
+      input.value = event.target.result;
+      enableActions();
+      validationResult.textContent = "";
     };
     reader.readAsText(file);
+    e.target.value = ""; // allow same file to be uploaded again
+  };
+
+  const toggleTooltip = () => {
+    tooltipBox.classList.toggle("visible");
+  };
+
+  // Listeners
+  input.addEventListener("input", () => {
+    if (input.value.trim() === "") {
+      disableActions();
+      validationResult.textContent = "";
+    } else {
+      enableActions();
+    }
   });
 
-  // Update buttons on input change
-  jsonInput.addEventListener('input', updateButtonStates);
+  formatBtn.addEventListener("click", formatJSON);
+  validateBtn.addEventListener("click", validateJSON);
+  clearBtn.addEventListener("click", clearInput);
+  copyBtn.addEventListener("click", copyToClipboard);
+  downloadBtn.addEventListener("click", downloadJSON);
+  uploadInput.addEventListener("change", handleUpload);
+  tooltipBtn.addEventListener("click", toggleTooltip);
 
-  // Initial disable buttons on page load
-  updateButtonStates();
+  // Initialize
+  disableActions();
 });
