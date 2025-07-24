@@ -237,6 +237,8 @@ input[type="text"]:focus {
   gap: 16px;
 }
 
+#more-options { display:none; }
+
 /* Fieldsets */
 .fieldset-style,
 .fieldset-color,
