@@ -37,7 +37,7 @@ function createQRCode() {
     return;
   }
 
-  // ✅ Clear previous QR code and reset reference
+  // Clear previous QR code and reset reference
   qrCodeContainer.innerHTML = "";
   qrCode = null;
 
@@ -49,6 +49,23 @@ function createQRCode() {
       }
     : undefined;
 
+  // Map "extra-dots" style to a valid type for QRCodeStyling:
+  // Using "classy" here as an example variant for extra dots.
+  let dotsType;
+  switch (getSelectedStyle()) {
+    case "square":
+      dotsType = "square";
+      break;
+    case "dots":
+      dotsType = "dots";
+      break;
+    case "extra-dots":
+      dotsType = "classy"; // this will look different than regular dots
+      break;
+    default:
+      dotsType = "square";
+  }
+
   qrCode = new QRCodeStyling({
     width: 256,
     height: 256,
@@ -56,7 +73,7 @@ function createQRCode() {
     image: logoConfig?.image || "",
     dotsOptions: {
       color: colorDarkInput.value,
-      type: getSelectedStyle(),
+      type: dotsType,
     },
     backgroundOptions: {
       color: colorLightInput.value,
@@ -118,59 +135,52 @@ toggleOptionsBtn.addEventListener("click", () => {
 // Tooltip toggle handler
 tooltipToggleBtn.addEventListener("click", () => {
   const isExpanded = tooltipToggleBtn.getAttribute("aria-expanded") === "true";
-  tooltipPanel.hidden = isExpanded;
+  if (isExpanded) {
+    tooltipPanel.hidden = true;
+  } else {
+    tooltipPanel.hidden = false;
+  }
   tooltipToggleBtn.setAttribute("aria-expanded", String(!isExpanded));
 });
 
-// Tooltip close button handler
 tooltipCloseBtn.addEventListener("click", () => {
   tooltipPanel.hidden = true;
   tooltipToggleBtn.setAttribute("aria-expanded", "false");
 });
 
-// QR code related event listeners
-generateBtn.addEventListener("click", () => {
-  createQRCode();
-});
+// Generate button
+generateBtn.addEventListener("click", createQRCode);
 
+// Download button
 downloadBtn.addEventListener("click", () => {
-  if (!qrCode) return;
-
-  const format = formatSelect.value;
-  qrCode.download({
-    extension: format,
-  });
+  if (!qrCode) {
+    alert("Please generate a QR code first.");
+    return;
+  }
+  qrCode.download({ extension: formatSelect.value });
 });
 
-styleRadios.forEach((radio) =>
-  radio.addEventListener("change", () => {
-    createQRCode(); // ✅ Will always regenerate clean QR
-  })
-);
-
-colorDarkInput.addEventListener("input", () => {
-  createQRCode();
-});
-
-colorLightInput.addEventListener("input", () => {
-  createQRCode();
-});
-
-logoUpload.addEventListener("change", handleLogoUpload);
-
+// Reset button
 resetBtn.addEventListener("click", () => {
   resetSettings();
   createQRCode();
 });
 
-// Initial setup
-window.addEventListener("load", () => {
-  // Force "more options" section to start hidden
-  moreOptions.style.display = "none";
-  toggleOptionsBtn.setAttribute("aria-expanded", "false");
-  toggleOptionsBtn.innerHTML =
-    "More options <i class='fas fa-chevron-down arrow'></i>";
+// Listen for changes to regenerate QR code
+[colorDarkInput, colorLightInput, formatSelect].forEach((el) =>
+  el.addEventListener("input", () => {
+    if (qrCode) createQRCode();
+  })
+);
 
-  resetSettings();
-  createQRCode();
-});
+styleRadios.forEach((radio) =>
+  radio.addEventListener("change", () => {
+    if (qrCode) createQRCode();
+  })
+);
+
+logoUpload.addEventListener("change", handleLogoUpload);
+
+// Initial state
+resetSettings();
+createQRCode();
