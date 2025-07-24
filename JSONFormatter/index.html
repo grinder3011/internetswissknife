@@ -2,37 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JSON Formatter</title>
   <link rel="stylesheet" href="JSONFormatter.styles.css" />
 </head>
 <body>
 
   <header>
-    <h1>📦 JSON Formatter</h1>
-    <p>Paste your JSON below and format it with one click.</p>
+    <h1>📂 JSON Formatter</h1>
+    <p class="subheading">Format and validate your JSON easily. Paste or upload your file, then click format.</p>
   </header>
 
   <main>
-    <textarea id="json-input" placeholder='Paste or type your JSON here...'></textarea>
+    <div class="input-controls">
+      <textarea id="json-input" placeholder="Paste your JSON here..."></textarea>
 
-    <div class="buttons">
-      <button id="format-btn">🛠️ Format JSON</button>
-      <button id="copy-btn">📋 Copy</button>
-      <button id="download-btn">⬇️ Download</button>
-      <button id="clear-btn">🧹 Clear All</button>
+      <div class="toolbar">
+        <label class="upload-btn">
+          📁 Upload JSON
+          <input type="file" id="upload-json" accept=".json,application/json" hidden />
+        </label>
+        <button id="format-btn" title="Format and validate JSON">✨ Format</button>
+        <button id="clear-btn" title="Clear input">🗑️ Clear</button>
+        <button id="copy-btn" title="Copy formatted JSON to clipboard">📋 Copy</button>
+        <button id="download-btn" title="Download formatted JSON">⬇️ Download</button>
+      </div>
     </div>
 
-    <pre id="json-output" class="formatted-output" aria-label="Formatted JSON output"></pre>
+    <div id="json-output-container">
+      <pre id="json-output" class="line-numbers"></pre>
+    </div>
   </main>
 
-  <!-- Modal -->
-  <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <span id="modal-close" class="modal-close" title="Close">&times;</span>
-      <div id="modal-message">
-        <p>⏳ Validating...</p>
-      </div>
+  <!-- Popup for progress and results -->
+  <div id="popup" class="popup" hidden>
+    <div class="popup-content">
+      <span id="popup-close" class="popup-close">×</span>
+      <div id="popup-message"></div>
+      <div id="popup-bar" class="popup-bar"></div>
     </div>
   </div>
 
