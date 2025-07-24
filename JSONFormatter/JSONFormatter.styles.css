@@ -1,118 +1,165 @@
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Reset and base */
+body, html {
   margin: 0;
-  padding: 1rem;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f9f9fb;
   color: #333;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-header {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-textarea#json-input {
-  width: 100%;
-  height: 200px;
-  font-family: monospace;
-  font-size: 1rem;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  resize: vertical;
+.container {
+  max-width: 720px;
+  width: 90%;
+  background: #fff;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  border-radius: 10px;
   box-sizing: border-box;
 }
 
-#file-input {
-  margin-top: 0.5rem;
+h1 {
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-align: center;
+  color: #4b6cb7;
 }
 
-.button-row {
-  margin-top: 0.75rem;
+.controls-row {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-label {
+  cursor: pointer;
+  user-select: none;
+  background: #e6f0ff;
+  border: 1px solid #4b6cb7;
+  color: #4b6cb7;
+  padding: 0.5rem 0.8rem;
+  border-radius: 5px;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.upload-label:hover {
+  background: #d0e2ff;
 }
 
 button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 5px;
-  border: 1px solid transparent;
-  background-color: #4b6cb7;
+  background: #4b6cb7;
   color: white;
-  transition: background-color 0.3s ease;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+  min-width: 90px;
 }
 
 button:hover {
-  background-color: #3d59a1;
+  background: #3d59a1;
 }
 
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.output-section {
-  margin-top: 1.5rem;
-  background: #f0f4ff;
-  border-radius: 6px;
-  padding: 1rem;
-  max-height: 400px;
-  overflow: auto;
-  white-space: pre-wrap;
+#json-input {
+  width: 100%;
+  height: 320px;
+  resize: vertical;
   font-family: monospace;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  border: 1px solid #a3bffa;
-}
-
-.popup {
-  position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #e6f0ff;
-  border: 1px solid #4b6cb7;
-  border-radius: 8px;
-  width: 300px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  z-index: 1000;
+  font-size: 1rem;
   padding: 1rem;
-  display: none; /* hidden by default */
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #222;
+  background: #fefefe;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+  transition: border-color 0.3s;
 }
 
-.popup.visible {
-  display: flex;
+#json-input:focus {
+  border-color: #4b6cb7;
+  outline: none;
+  box-shadow: 0 0 6px #4b6cb7aa;
 }
 
-.popup-close {
-  position: absolute;
-  top: 6px;
-  right: 10px;
-  font-size: 1.5rem;
-  color: #4b6cb7;
-  cursor: pointer;
+/* Progress bar */
+.progress-bar {
+  margin-top: 1rem;
+  height: 22px;
+  width: 100%;
+  background: #dbe8ff;
+  border-radius: 11px;
+  overflow: hidden;
+  position: relative;
   user-select: none;
 }
 
-.progress-bar-container {
-  width: 100%;
-  height: 10px;
-  background: #d0d7f9;
-  border-radius: 5px;
-  margin-top: 15px;
-  overflow: hidden;
+.progress-bar.hidden {
+  display: none;
 }
 
-.progress-bar {
-  height: 100%;
-  width: 0%;
+.progress-fill {
   background: #4b6cb7;
-  border-radius: 5px;
-  transition: width 0.3s ease;
+  height: 100%;
+  width: 0;
+  transition: width 0.4s ease;
+}
+
+.progress-text {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+  line-height: 22px;
+}
+
+/* Result popup */
+.result-popup {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #e6f0ff;
+  border-radius: 8px;
+  border: 1px solid #4b6cb7;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  color: #2a3a7a;
+  position: relative;
+}
+
+.result-popup.hidden {
+  display: none;
+}
+
+#result-icon {
+  font-size: 1.4rem;
+}
+
+#result-close-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: #4b6cb7;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+#result-close-btn:hover {
+  color: #1a2a58;
 }
