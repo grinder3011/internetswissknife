@@ -1,117 +1,132 @@
 document.addEventListener('DOMContentLoaded', () => {
   const jsonInput = document.getElementById('json-input');
-  const uploadInput = document.getElementById('upload-json');
+  const uploadJson = document.getElementById('upload-json');
   const formatBtn = document.getElementById('format-btn');
   const validateBtn = document.getElementById('validate-btn');
   const clearBtn = document.getElementById('clear-btn');
   const copyBtn = document.getElementById('copy-btn');
   const downloadBtn = document.getElementById('download-btn');
-  const tooltipToggle = document.getElementById('tooltip-toggle');
-  const tooltipText = document.getElementById('tooltip-text');
-  const resultMessage = document.getElementById('result-message');
+  const helpToggle = document.getElementById('help-toggle');
+  const helpText = document.getElementById('help-text');
+  const statusPopup = document.getElementById('status-popup');
+  const statusMessage = document.getElementById('status-message');
+  const statusIcon = document.getElementById('status-icon');
+  const statusClose = document.getElementById('status-close');
 
-  // Toggle tooltip text visibility
-  tooltipToggle.addEventListener('click', () => {
-    if (tooltipText.classList.contains('hidden')) {
-      tooltipText.classList.remove('hidden');
-    } else {
-      tooltipText.classList.add('hidden');
-    }
+  // Helper to enable/disable buttons based on textarea content
+  function updateButtonStates() {
+    const hasText = jsonInput.value.trim().length > 0;
+    [formatBtn, validateBtn, clearBtn, copyBtn, downloadBtn].forEach(btn => {
+      btn.disabled = !hasText;
+    });
+  }
+
+  // Show status popup
+  function showPopup(message, success = true) {
+    statusMessage.textContent = message;
+    statusIcon.textContent = success ? '✔️' : '❌';
+    statusPopup.style.backgroundColor = success ? '#4b6cb7' : '#d9534f';
+    statusPopup.classList.remove('hidden');
+    // Auto-hide after 4 seconds
+    clearTimeout(showPopup.hideTimeout);
+    showPopup.hideTimeout = setTimeout(() => {
+      statusPopup.classList.add('hidden');
+    }, 4000);
+  }
+
+  // Close popup on button click
+  statusClose.addEventListener('click', () => {
+    statusPopup.classList.add('hidden');
+    clearTimeout(showPopup.hideTimeout);
   });
 
-  // Upload JSON file and populate textarea
-  uploadInput.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (!file.type.includes('json') && !file.name.endsWith('.json')) {
-      alert('Please upload a valid JSON file.');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = evt => {
-      jsonInput.value = evt.target.result;
-      resultMessage.classList.add('hidden');
-    };
-    reader.readAsText(file);
-  });
-
-  // Format JSON (pretty print)
+  // Format JSON
   formatBtn.addEventListener('click', () => {
-    const raw = jsonInput.value.trim();
-    if (!raw) {
-      showResult('Input is empty.', true);
-      return;
-    }
     try {
-      const obj = JSON.parse(raw);
-      const pretty = JSON.stringify(obj, null, 2);
-      jsonInput.value = pretty;
-      showResult('JSON formatted successfully. No errors found.', false);
-    } catch (err) {
-      showResult('Error: Invalid JSON. ' + err.message, true);
+      const parsed = JSON.parse(jsonInput.value);
+      const formatted = JSON.stringify(parsed, null, 2);
+      jsonInput.value = formatted;
+      showPopup('JSON formatted successfully.', true);
+      updateButtonStates();
+    } catch (e) {
+      showPopup(`Error: Invalid JSON. ${e.message}`, false);
     }
   });
 
-  // Validate JSON only
+  // Validate JSON
   validateBtn.addEventListener('click', () => {
-    const raw = jsonInput.value.trim();
-    if (!raw) {
-      showResult('Input is empty.', true);
-      return;
-    }
     try {
-      JSON.parse(raw);
-      showResult('Validation complete. No errors found.', false);
-    } catch (err) {
-      showResult('Validation error: ' + err.message, true);
+      JSON.parse(jsonInput.value);
+      showPopup('No errors found. JSON is valid.', true);
+    } catch (e) {
+      showPopup(`Error: Invalid JSON. ${e.message}`, false);
     }
   });
 
   // Clear input
   clearBtn.addEventListener('click', () => {
     jsonInput.value = '';
-    resultMessage.classList.add('hidden');
+    updateButtonStates();
+    showPopup('Input cleared.', true);
   });
 
-  // Copy formatted JSON to clipboard
+  // Copy to clipboard
   copyBtn.addEventListener('click', () => {
-    if (!jsonInput.value.trim()) {
-      showResult('Nothing to copy.', true);
-      return;
+    if (!navigator.clipboard) {
+      // fallback for older browsers
+      jsonInput.select();
+      document.execCommand('copy');
+      showPopup('Copied to clipboard.', true);
+    } else {
+      navigator.clipboard.writeText(jsonInput.value)
+        .then(() => showPopup('Copied to clipboard.', true))
+        .catch(() => showPopup('Failed to copy.', false));
     }
-    navigator.clipboard.writeText(jsonInput.value)
-      .then(() => showResult('Copied to clipboard!', false))
-      .catch(() => showResult('Failed to copy.', true));
   });
 
-  // Download formatted JSON as file
+  // Download JSON file
   downloadBtn.addEventListener('click', () => {
-    if (!jsonInput.value.trim()) {
-      showResult('Nothing to download.', true);
-      return;
-    }
     const blob = new Blob([jsonInput.value], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'formatted.json';
+    document.body.appendChild(a);
     a.click();
+    a.remove();
     URL.revokeObjectURL(url);
-    showResult('Download started.', false);
+    showPopup('Download started.', true);
   });
 
-  // Helper to show result messages with styling
-  function showResult(message, isError) {
-    resultMessage.textContent = message;
-    if (isError) {
-      resultMessage.style.backgroundColor = '#f8d7da'; // red-ish
-      resultMessage.style.color = '#721c24';
-      resultMessage.style.border = '1px solid #f5c6cb';
+  // Help toggle
+  helpToggle.addEventListener('click', () => {
+    const expanded = helpToggle.getAttribute('aria-expanded') === 'true';
+    if (expanded) {
+      helpText.classList.add('hidden');
+      helpToggle.setAttribute('aria-expanded', 'false');
     } else {
-      resultMessage.style.backgroundColor = '#d1e7dd'; // green-ish
-      resultMessage.style.color = '#0f5132';
-      resultMessage.style.border = '1px solid #badbcc';
+      helpText.classList.remove('hidden');
+      helpToggle.setAttribute('aria-expanded', 'true');
     }
-    resultMessage.classList.remove('hidden');
-  }
+  });
+
+  // Upload JSON file and place content in textarea
+  uploadJson.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      jsonInput.value = reader.result;
+      updateButtonStates();
+      showPopup(`Loaded file: ${file.name}`, true);
+      uploadJson.value = ''; // reset input to allow same file upload
+    };
+    reader.readAsText(file);
+  });
+
+  // Update buttons on input change
+  jsonInput.addEventListener('input', updateButtonStates);
+
+  // Initial disable buttons on page load
+  updateButtonStates();
 });
