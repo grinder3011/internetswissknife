@@ -3,72 +3,44 @@ const image = document.getElementById('image');
 const cropArea = document.getElementById('cropArea');
 const cropBtn = document.getElementById('cropBtn');
 const resultCanvas = document.getElementById('resultCanvas');
-const ctx = resultCanvas.getContext('2d');
 const downloadBtn = document.getElementById('downloadBtn');
+const aspectRatioSelect = document.getElementById('aspectRatio');
 const zoomInBtn = document.getElementById('zoomIn');
 const zoomOutBtn = document.getElementById('zoomOut');
-const aspectSelect = document.getElementById('aspectRatio');
+
+const ctx = resultCanvas.getContext('2d');
 
 let imgNaturalWidth, imgNaturalHeight;
-let displayedWidth, displayedHeight;
-let zoomLevel = 1;
-
+let scale = 1;
 let isDragging = false;
-let isResizing = false;
 let dragStartX, dragStartY;
 
-let cropRect = { x: 50, y: 50, width: 150, height: 150 };
-let aspectRatio = null; // null = freeform
-
-let uploadedFileType = 'image/png';
-
-function fitImageToContainer() {
-  const container = document.querySelector('.cropper-container');
-  const maxWidth = container.clientWidth;
-  const maxHeight = container.clientHeight;
-
-  let width = imgNaturalWidth;
-  let height = imgNaturalHeight;
-
-  const widthRatio = maxWidth / width;
-  const heightRatio = maxHeight / height;
-  const scale = Math.min(widthRatio, heightRatio, 1); // no upscale
-
-  width = width * scale;
-  height = height * scale;
-
-  image.style.width = width + 'px';
-  image.style.height = height + 'px';
-
-  displayedWidth = width;
-  displayedHeight = height;
-
-  return { width, height };
-}
+let cropRect = { x: 50, y: 50, width: 100, height: 100 };
+let aspectRatio = null;
 
 imageInput.addEventListener('change', () => {
   const file = imageInput.files[0];
   if (!file) return;
 
-  uploadedFileType = file.type || 'image/png';
   const url = URL.createObjectURL(file);
   image.src = url;
 
   image.onload = () => {
     imgNaturalWidth = image.naturalWidth;
     imgNaturalHeight = image.naturalHeight;
-    zoomLevel = 1;
 
-    fitImageToContainer();
-
-    image.width = displayedWidth;
-    image.height = displayedHeight;
+    // Reset image scale to fit container
+    scale = Math.min(
+      800 / imgNaturalWidth,
+      500 / imgNaturalHeight,
+      1
+    );
+    image.style.transform = `scale(${scale})`;
 
     resetCropArea();
     cropArea.style.display = 'block';
     cropBtn.disabled = false;
-    downloadBtn.disabled = true;
-    applyZoom();
+    downloadBtn.disabled = false;
   };
 });
 
@@ -84,82 +56,58 @@ function updateCropArea() {
   cropArea.style.height = cropRect.height + 'px';
 }
 
-// Clamp crop box inside the visible image area
-function clampCropToImage() {
-  cropRect.x = clamp(cropRect.x, 0, displayedWidth * zoomLevel - cropRect.width);
-  cropRect.y = clamp(cropRect.y, 0, displayedHeight * zoomLevel - cropRect.height);
-}
-
-function applyZoom() {
-  image.style.transform = `scale(${zoomLevel})`;
-  cropArea.style.transform = `scale(${zoomLevel})`;
-  image.style.transformOrigin = 'top left';
-  cropArea.style.transformOrigin = 'top left';
-  clampCropToImage();
-  updateCropArea();
-}
-
-// Zoom buttons
-zoomInBtn.addEventListener('click', () => {
-  zoomLevel = Math.min(zoomLevel + 0.1, 3);
-  applyZoom();
-});
-zoomOutBtn.addEventListener('click', () => {
-  zoomLevel = Math.max(zoomLevel - 0.1, 0.2);
-  applyZoom();
-});
-
-// Mouse wheel zoom
-document.querySelector('.cropper-container').addEventListener('wheel', (e) => {
-  e.preventDefault();
-  if (e.deltaY < 0) zoomLevel = Math.min(zoomLevel + 0.1, 3);
-  else zoomLevel = Math.max(zoomLevel - 0.1, 0.2);
-  applyZoom();
-}, { passive: false });
-
-// Aspect ratio select
-aspectSelect.addEventListener('change', () => {
-  const value = aspectSelect.value;
-  if (value === 'free') {
-    aspectRatio = null;
-  } else {
-    const [w, h] = value.split(':').map(Number);
-    aspectRatio = w / h;
-    cropRect.height = cropRect.width / aspectRatio;
-    updateCropArea();
-  }
-});
-
-// Drag crop area
-cropArea.addEventListener('mousedown', (e) => {
+// Dragging
+cropArea.addEventListener('mousedown', e => {
   isDragging = true;
   dragStartX = e.clientX;
   dragStartY = e.clientY;
-  e.preventDefault();
 });
 
 window.addEventListener('mouseup', () => {
   isDragging = false;
 });
 
-window.addEventListener('mousemove', (e) => {
+window.addEventListener('mousemove', e => {
   if (!isDragging) return;
 
   const dx = e.clientX - dragStartX;
   const dy = e.clientY - dragStartY;
+
   dragStartX = e.clientX;
   dragStartY = e.clientY;
 
-  cropRect.x = clamp(cropRect.x + dx, 0, displayedWidth * zoomLevel - cropRect.width);
-  cropRect.y = clamp(cropRect.y + dy, 0, displayedHeight * zoomLevel - cropRect.height);
+  cropRect.x = Math.min(Math.max(0, cropRect.x + dx), image.width - cropRect.width);
+  cropRect.y = Math.min(Math.max(0, cropRect.y + dy), image.height - cropRect.height);
 
   updateCropArea();
 });
 
-// Crop button click
+// Sync cropRect with native resize changes
+const resizeObserver = new ResizeObserver(entries => {
+  for (const entry of entries) {
+    const rect = entry.target.getBoundingClientRect();
+    const containerRect = image.getBoundingClientRect();
+
+    cropRect.width = rect.width;
+    cropRect.height = rect.height;
+    cropRect.x = rect.left - containerRect.left;
+    cropRect.y = rect.top - containerRect.top;
+
+    // If aspect ratio is set, adjust height or width
+    if (aspectRatio) {
+      cropRect.height = cropRect.width / aspectRatio;
+      cropArea.style.height = cropRect.height + 'px';
+    }
+
+    updateCropArea();
+  }
+});
+resizeObserver.observe(cropArea);
+
+// Crop button
 cropBtn.addEventListener('click', () => {
-  const scaleX = imgNaturalWidth / (displayedWidth * zoomLevel);
-  const scaleY = imgNaturalHeight / (displayedHeight * zoomLevel);
+  const scaleX = imgNaturalWidth / (image.width * scale);
+  const scaleY = imgNaturalHeight / (image.height * scale);
 
   const sx = cropRect.x * scaleX;
   const sy = cropRect.y * scaleY;
@@ -171,19 +119,39 @@ cropBtn.addEventListener('click', () => {
 
   ctx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
   ctx.drawImage(image, sx, sy, sw, sh, 0, 0, cropRect.width, cropRect.height);
-
-  downloadBtn.disabled = false;
 });
 
-// Download button
+// Zoom controls
+zoomInBtn.addEventListener('click', () => {
+  scale = Math.min(scale + 0.1, 3);
+  image.style.transform = `scale(${scale})`;
+});
+
+zoomOutBtn.addEventListener('click', () => {
+  scale = Math.max(scale - 0.1, 0.2);
+  image.style.transform = `scale(${scale})`;
+});
+
+// Aspect ratio
+aspectRatioSelect.addEventListener('change', () => {
+  const val = aspectRatioSelect.value;
+  if (val === 'free') {
+    aspectRatio = null;
+  } else {
+    const [w, h] = val.split(':').map(Number);
+    aspectRatio = w / h;
+
+    cropRect.height = cropRect.width / aspectRatio;
+    updateCropArea();
+  }
+});
+
+// Download cropped image
 downloadBtn.addEventListener('click', () => {
-  const link = document.createElement('a');
-  link.download = 'cropped.' + uploadedFileType.split('/')[1];
-  link.href = resultCanvas.toDataURL(uploadedFileType);
-  link.click();
+  resultCanvas.toBlob(blob => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'cropped.png';
+    a.click();
+  }, 'image/png');
 });
-
-// Utility
-function clamp(val, min, max) {
-  return Math.max(min, Math.min(max, val));
-}
