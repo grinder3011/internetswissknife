@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🖼️ Simple Image Cropper</title>
+  <title>Simple Image Cropper Tool</title>
   <link rel="stylesheet" href="cropper.styles.css" />
 </head>
 <body>
@@ -14,19 +14,23 @@
 
   <main>
     <input type="file" id="imageInput" accept="image/*" />
+    
+    <div class="controls-row">
+      <button id="drawCropBtn">Draw new crop area</button>
+      <button id="clearCropBtn" disabled>Clear crop area</button>
 
-    <div class="controls">
-      <button id="zoomOut">➖ Zoom Out</button>
-      <button id="zoomIn">➕ Zoom In</button>
+      <!-- zoom buttons -->
+      <button id="zoomInBtn" title="Zoom In">➕</button>
+      <button id="zoomOutBtn" title="Zoom Out">➖</button>
 
-      <select id="aspectRatio">
-        <option value="free">🔓 Free</option>
-        <option value="1:1">1:1 (Square)</option>
-        <option value="4:5">4:5 (Instagram Portrait)</option>
-        <option value="16:9">16:9 (Widescreen)</option>
+      <!-- aspect ratio presets -->
+      <select id="aspectRatioSelect" title="Select aspect ratio">
+        <option value="free">Free</option>
+        <option value="1">1:1 (Square)</option>
+        <option value="4/5">4:5 (Instagram Portrait)</option>
+        <option value="16/9">16:9 (Widescreen)</option>
+        <option value="3/2">3:2</option>
       </select>
-
-      <button id="downloadBtn" disabled>⬇️ Download Cropped</button>
     </div>
 
     <div class="cropper-container">
@@ -34,8 +38,8 @@
       <div id="cropArea"></div>
     </div>
 
-    <button id="cropBtn" disabled>✂️ Crop</button>
-
+    <button id="cropBtn" disabled>Crop</button>
+    
     <div id="resultContainer">
       <h2>Cropped Result:</h2>
       <canvas id="resultCanvas"></canvas>
