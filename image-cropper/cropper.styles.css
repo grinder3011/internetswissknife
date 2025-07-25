@@ -4,6 +4,24 @@ body {
   text-align: center;
 }
 
+header h1 {
+  margin-bottom: 1rem;
+}
+
+input[type="file"] {
+  margin-bottom: 10px;
+}
+
+.zoom-controls {
+  margin: 10px 0;
+}
+
+.zoom-controls button {
+  padding: 6px 12px;
+  margin: 0 4px;
+  font-size: 1.1rem;
+}
+
 .cropper-container {
   position: relative;
   display: inline-block;
@@ -19,6 +37,7 @@ body {
   display: block;
   user-select: none;
   -webkit-user-drag: none;
+  transition: transform 0.2s ease-in-out;
 }
 
 #cropArea {
@@ -27,12 +46,35 @@ body {
   cursor: move;
   display: none;
   background-color: rgba(255, 0, 0, 0.2);
+  box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
-#cropBtn {
+#cropArea:hover,
+#cropArea:active {
+  border-color: #ff6600;
+  background-color: rgba(255, 165, 0, 0.2);
+}
+
+.resize-handle {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #f00;
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+  z-index: 10;
+}
+
+.actions {
   margin-top: 15px;
+}
+
+button {
   padding: 10px 20px;
   font-size: 1rem;
+  margin: 0 5px;
 }
 
 #resultContainer {
