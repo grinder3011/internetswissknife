@@ -8,18 +8,19 @@ const resultCanvas = document.getElementById('resultCanvas');
 const ctx = resultCanvas.getContext('2d');
 const zoomInBtn = document.getElementById('zoomInBtn');
 const zoomOutBtn = document.getElementById('zoomOutBtn');
+const aspectBtns = document.querySelectorAll('.aspect-btn');
 
 let imgNaturalWidth, imgNaturalHeight;
 let uploadedFileType = 'image/png';
+let zoomLevel = 1;
 
 let isDragging = false;
 let isResizing = false;
 let dragStartX, dragStartY;
-let zoomLevel = 1;
 
 let cropRect = { x: 50, y: 50, width: 100, height: 100 };
+let aspectRatio = null; // null = free
 
-// Handle image input
 imageInput.addEventListener('change', () => {
   const file = imageInput.files[0];
   if (!file) return;
@@ -39,7 +40,6 @@ imageInput.addEventListener('change', () => {
   };
 });
 
-// Crop area dragging
 cropArea.addEventListener('mousedown', e => {
   if (e.target === resizeHandle) return;
   isDragging = true;
@@ -61,8 +61,8 @@ window.addEventListener('mousemove', e => {
     dragStartX = e.clientX;
     dragStartY = e.clientY;
 
-    cropRect.x = Math.min(Math.max(0, cropRect.x + dx / zoomLevel), image.width - cropRect.width);
-    cropRect.y = Math.min(Math.max(0, cropRect.y + dy / zoomLevel), image.height - cropRect.height);
+    cropRect.x = clamp(cropRect.x + dx / zoomLevel, 0, image.width - cropRect.width);
+    cropRect.y = clamp(cropRect.y + dy / zoomLevel, 0, image.height - cropRect.height);
     updateCropArea();
   }
 
@@ -70,60 +70,59 @@ window.addEventListener('mousemove', e => {
     dragStartX = e.clientX;
     dragStartY = e.clientY;
 
-    cropRect.width = Math.min(Math.max(20, cropRect.width + dx / zoomLevel), image.width - cropRect.x);
-    cropRect.height = Math.min(Math.max(20, cropRect.height + dy / zoomLevel), image.height - cropRect.y);
+    let newWidth = cropRect.width + dx / zoomLevel;
+    let newHeight = cropRect.height + dy / zoomLevel;
+
+    if (aspectRatio) {
+      const [w, h] = aspectRatio.split(':').map(Number);
+      const ratio = h / w;
+      newHeight = newWidth * ratio;
+    }
+
+    newWidth = Math.min(newWidth, image.width - cropRect.x);
+    newHeight = Math.min(newHeight, image.height - cropRect.y);
+
+    cropRect.width = Math.max(20, newWidth);
+    cropRect.height = Math.max(20, newHeight);
     updateCropArea();
   }
 });
 
-// Resize handle logic
 resizeHandle.addEventListener('mousedown', e => {
   isResizing = true;
   dragStartX = e.clientX;
   dragStartY = e.clientY;
-  e.stopPropagation();
   e.preventDefault();
+  e.stopPropagation();
 });
 
-// Keyboard arrow controls
-window.addEventListener('keydown', e => {
-  const step = e.shiftKey ? 10 : 1;
-  switch (e.key) {
-    case 'ArrowUp':
-      cropRect.y = Math.max(0, cropRect.y - step);
-      break;
-    case 'ArrowDown':
-      cropRect.y = Math.min(image.height - cropRect.height, cropRect.y + step);
-      break;
-    case 'ArrowLeft':
-      cropRect.x = Math.max(0, cropRect.x - step);
-      break;
-    case 'ArrowRight':
-      cropRect.x = Math.min(image.width - cropRect.width, cropRect.x + step);
-      break;
-    default:
-      return;
-  }
-  updateCropArea();
+aspectBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    aspectBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const val = btn.dataset.ratio;
+    aspectRatio = val === 'free' ? null : val;
+
+    if (aspectRatio) {
+      const [w, h] = aspectRatio.split(':').map(Number);
+      const ratio = h / w;
+      cropRect.height = cropRect.width * ratio;
+      updateCropArea();
+    }
+  });
 });
 
-// Zoom controls
 zoomInBtn.addEventListener('click', () => {
   zoomLevel = Math.min(3, zoomLevel + 0.1);
   applyZoom();
 });
 
 zoomOutBtn.addEventListener('click', () => {
-  zoomLevel = Math.max(0.1, zoomLevel - 0.1);
+  zoomLevel = Math.max(0.5, zoomLevel - 0.1);
   applyZoom();
 });
 
-function applyZoom() {
-  image.style.transform = `scale(${zoomLevel})`;
-  cropArea.style.transform = `scale(${zoomLevel})`;
-}
-
-// Crop button
 cropBtn.addEventListener('click', () => {
   const scaleX = imgNaturalWidth / (image.width);
   const scaleY = imgNaturalHeight / (image.height);
@@ -138,27 +137,33 @@ cropBtn.addEventListener('click', () => {
 
   ctx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
   ctx.drawImage(image, sx, sy, sw, sh, 0, 0, cropRect.width, cropRect.height);
+
   downloadBtn.disabled = false;
 });
 
-// Download button
 downloadBtn.addEventListener('click', () => {
   const link = document.createElement('a');
-  link.download = 'cropped' + (uploadedFileType === 'image/jpeg' ? '.jpg' : '.png');
+  link.download = 'cropped.' + uploadedFileType.split('/')[1];
   link.href = resultCanvas.toDataURL(uploadedFileType);
   link.click();
 });
 
-// Helpers
+function applyZoom() {
+  image.style.transform = `scale(${zoomLevel})`;
+}
+
 function resetCropArea() {
-  cropRect = { x: 50, y: 50, width: 100, height: 100 };
+  cropRect = { x: 50, y: 50, width: 150, height: 150 };
   updateCropArea();
 }
 
 function updateCropArea() {
   cropArea.style.left = cropRect.x + 'px';
   cropArea.style.top = cropRect.y + 'px';
-  cropArea.style.width = cropRect.width
   cropArea.style.width = cropRect.width + 'px';
   cropArea.style.height = cropRect.height + 'px';
+}
+
+function clamp(val, min, max) {
+  return Math.max(min, Math.min(max, val));
 }
