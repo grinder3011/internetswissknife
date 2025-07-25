@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Simple Image Cropper Tool</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="cropper.styles.css" />
 </head>
 <body>
@@ -14,22 +15,25 @@
 
   <main>
     <input type="file" id="imageInput" accept="image/*" />
-    
-    <div class="zoom-controls">
-      <button id="zoomInBtn">🔍+</button>
-      <button id="zoomOutBtn">🔍−</button>
+
+    <div class="aspect-ratio-controls">
+      <span>Aspect Ratio:</span>
+      <button class="aspect-btn" data-ratio="free"><i class="fa-solid fa-expand"></i> Free</button>
+      <button class="aspect-btn" data-ratio="1:1"><i class="fa-solid fa-square"></i> 1:1</button>
+      <button class="aspect-btn" data-ratio="4:5"><i class="fa-regular fa-rectangle-vertical"></i> 4:5</button>
+      <button class="aspect-btn" data-ratio="16:9"><i class="fa-regular fa-rectangle-wide"></i> 16:9</button>
     </div>
 
     <div class="cropper-container">
       <img id="image" alt="Upload an image to crop" />
-      <div id="cropArea">
-        <div class="resize-handle bottom-right"></div>
-      </div>
+      <div id="cropArea"><div class="resize-handle"></div></div>
     </div>
 
-    <div class="actions">
-      <button id="cropBtn" disabled>Crop</button>
-      <button id="downloadBtn" disabled>Download Cropped Image</button>
+    <div class="buttons">
+      <button id="zoomInBtn"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+      <button id="zoomOutBtn"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+      <button id="cropBtn" disabled><i class="fa-solid fa-crop"></i> Crop</button>
+      <button id="downloadBtn" disabled><i class="fa-solid fa-download"></i> Download</button>
     </div>
 
     <div id="resultContainer">
