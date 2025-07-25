@@ -14,18 +14,32 @@
 
   <main>
     <input type="file" id="imageInput" accept="image/*" />
-    <p class="info-note">⚠️ Supports multiple file uploads for cropping, but performance depends on your device capabilities and image sizes.</p>
-
+    
     <div class="cropper-container">
       <img id="image" alt="Upload an image to crop" />
       <div id="cropArea"></div>
     </div>
 
-    <button id="cropBtn" disabled>✂️ Crop</button>
+    <div class="controls-row">
+      <button id="zoomInBtn" disabled>➕ Zoom In</button>
+      <button id="zoomOutBtn" disabled>➖ Zoom Out</button>
 
-    <div id="resultContainer">
+      <select id="aspectRatioSelect" disabled>
+        <option value="free">Free</option>
+        <option value="1:1">Square (1:1)</option>
+        <option value="4:5">Instagram Portrait (4:5)</option>
+        <option value="16:9">16:9</option>
+        <option value="3:2">3:2</option>
+      </select>
+
+      <button id="resetCropBtn" disabled>🔄 Reset Crop Area</button>
+      <button id="cropBtn" disabled>✂️ Crop</button>
+    </div>
+
+    <div id="resultContainer" class="hidden">
       <h2>Cropped Result:</h2>
       <canvas id="resultCanvas"></canvas>
+      <a id="downloadLink" download="cropped-image.png" class="hidden">⬇️ Download Cropped Image</a>
     </div>
   </main>
 
