@@ -5,21 +5,30 @@ body {
 }
 
 header h1 {
-  margin-bottom: 1rem;
+  margin-bottom: 20px;
 }
 
-input[type="file"] {
-  margin-bottom: 10px;
+.aspect-ratio-controls {
+  margin: 15px 0;
 }
 
-.zoom-controls {
-  margin: 10px 0;
-}
-
-.zoom-controls button {
-  padding: 6px 12px;
+.aspect-btn {
+  padding: 8px 10px;
   margin: 0 4px;
-  font-size: 1.1rem;
+  border: none;
+  background: #f0f0f0;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.aspect-btn i {
+  margin-right: 5px;
+}
+
+.aspect-btn.active {
+  background-color: #4b6cb7;
+  color: white;
 }
 
 .cropper-container {
@@ -47,34 +56,27 @@ input[type="file"] {
   display: none;
   background-color: rgba(255, 0, 0, 0.2);
   box-sizing: border-box;
-  transition: border-color 0.2s;
-}
-
-#cropArea:hover,
-#cropArea:active {
-  border-color: #ff6600;
-  background-color: rgba(255, 165, 0, 0.2);
 }
 
 .resize-handle {
   position: absolute;
-  width: 15px;
-  height: 15px;
-  background: #f00;
   bottom: 0;
   right: 0;
+  width: 14px;
+  height: 14px;
+  background-color: #f00;
   cursor: se-resize;
-  z-index: 10;
 }
 
-.actions {
+.buttons {
   margin-top: 15px;
 }
 
-button {
-  padding: 10px 20px;
+.buttons button {
+  padding: 10px 15px;
   font-size: 1rem;
   margin: 0 5px;
+  cursor: pointer;
 }
 
 #resultContainer {
