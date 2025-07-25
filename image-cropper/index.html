@@ -14,11 +14,24 @@
 
   <main>
     <input type="file" id="imageInput" accept="image/*" />
+    
+    <div class="zoom-controls">
+      <button id="zoomInBtn">🔍+</button>
+      <button id="zoomOutBtn">🔍−</button>
+    </div>
+
     <div class="cropper-container">
       <img id="image" alt="Upload an image to crop" />
-      <div id="cropArea"></div>
+      <div id="cropArea">
+        <div class="resize-handle bottom-right"></div>
+      </div>
     </div>
-    <button id="cropBtn" disabled>Crop</button>
+
+    <div class="actions">
+      <button id="cropBtn" disabled>Crop</button>
+      <button id="downloadBtn" disabled>Download Cropped Image</button>
+    </div>
+
     <div id="resultContainer">
       <h2>Cropped Result:</h2>
       <canvas id="resultCanvas"></canvas>
