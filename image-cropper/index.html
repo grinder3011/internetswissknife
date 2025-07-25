@@ -15,31 +15,34 @@
   <main>
     <input type="file" id="imageInput" accept="image/*" />
     
+    <div class="controls-row">
+      <button id="drawCropBtn">Draw new crop area</button>
+      <button id="clearCropBtn" disabled>Clear crop area</button>
+
+      <!-- zoom buttons -->
+      <button id="zoomInBtn" title="Zoom In">➕</button>
+      <button id="zoomOutBtn" title="Zoom Out">➖</button>
+
+      <!-- aspect ratio presets -->
+      <select id="aspectRatioSelect" title="Select aspect ratio">
+        <option value="free">Free</option>
+        <option value="1">1:1 (Square)</option>
+        <option value="4/5">4:5 (Instagram Portrait)</option>
+        <option value="16/9">16:9 (Widescreen)</option>
+        <option value="3/2">3:2</option>
+      </select>
+    </div>
+
     <div class="cropper-container">
       <img id="image" alt="Upload an image to crop" />
       <div id="cropArea"></div>
     </div>
 
-    <div class="controls-row">
-      <button id="zoomInBtn" disabled>➕ Zoom In</button>
-      <button id="zoomOutBtn" disabled>➖ Zoom Out</button>
-
-      <select id="aspectRatioSelect" disabled>
-        <option value="free">Free</option>
-        <option value="1:1">Square (1:1)</option>
-        <option value="4:5">Instagram Portrait (4:5)</option>
-        <option value="16:9">16:9</option>
-        <option value="3:2">3:2</option>
-      </select>
-
-      <button id="resetCropBtn" disabled>🔄 Reset Crop Area</button>
-      <button id="cropBtn" disabled>✂️ Crop</button>
-    </div>
-
-    <div id="resultContainer" class="hidden">
+    <button id="cropBtn" disabled>Crop</button>
+    
+    <div id="resultContainer">
       <h2>Cropped Result:</h2>
       <canvas id="resultCanvas"></canvas>
-      <a id="downloadLink" download="cropped-image.png" class="hidden">⬇️ Download Cropped Image</a>
     </div>
   </main>
 
