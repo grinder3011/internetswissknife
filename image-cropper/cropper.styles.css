@@ -1,4 +1,4 @@
-/* Reset and base styles */
+/* Reset and base styling */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -20,7 +20,6 @@ header h1 {
   color: #2c3e50;
 }
 
-/* Layout */
 main {
   max-width: 960px;
   margin: 0 auto;
@@ -29,9 +28,15 @@ main {
   align-items: center;
 }
 
-/* Upload input */
-#imageInput {
+input[type="file"] {
+  margin-bottom: 0.5rem;
+}
+
+.info-note {
+  font-size: 0.9rem;
+  color: #666;
   margin-bottom: 1rem;
+  max-width: 400px;
 }
 
 /* Cropper container */
@@ -40,7 +45,7 @@ main {
   max-width: 100%;
   max-height: 60vh;
   overflow: hidden;
-  border: 2px dashed #aaa;
+  border: 2px dashed #bbb;
   border-radius: 8px;
   background: white;
   margin-bottom: 1rem;
@@ -48,23 +53,22 @@ main {
 
 #image {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 60vh;
   display: block;
   user-select: none;
   -webkit-user-drag: none;
 }
 
-/* Crop area */
 #cropArea {
   position: absolute;
   border: 2px dashed #e74c3c;
-  background-color: rgba(231, 76, 60, 0.15);
+  background-color: rgba(231, 76, 60, 0.2);
   cursor: move;
   display: none;
   border-radius: 4px;
 }
 
-/* Buttons */
+/* Crop button */
 #cropBtn {
   padding: 0.6rem 1.4rem;
   font-size: 1rem;
@@ -87,7 +91,7 @@ main {
   cursor: not-allowed;
 }
 
-/* Cropped result */
+/* Result section */
 #resultContainer {
   width: 100%;
   max-width: 100%;
@@ -108,7 +112,7 @@ main {
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* Mobile tweaks */
+/* Mobile responsiveness */
 @media (max-width: 600px) {
   #cropBtn {
     width: 100%;
