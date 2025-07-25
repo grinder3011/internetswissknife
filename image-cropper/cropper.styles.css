@@ -1,88 +1,121 @@
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
   text-align: center;
+  padding: 2rem 1rem;
+  line-height: 1.5;
 }
 
-.controls-row {
-  margin: 15px 0;
+header h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+/* Layout */
+main {
+  max-width: 960px;
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
 }
 
-.controls-row button, .controls-row select {
-  padding: 8px 14px;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1.5px solid #4b6cb7;
-  background: white;
-  color: #4b6cb7;
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.3s, color 0.3s;
+/* Upload input */
+#imageInput {
+  margin-bottom: 1rem;
 }
 
-.controls-row button:hover:not(:disabled),
-.controls-row select:hover {
-  background-color: #4b6cb7;
-  color: white;
-}
-
-.controls-row button:disabled {
-  border-color: #a0a5ad;
-  color: #a0a5ad;
-  cursor: not-allowed;
-}
-
+/* Cropper container */
 .cropper-container {
   position: relative;
-  display: inline-block;
-  margin-top: 20px;
-  max-width: 90vw;
+  max-width: 100%;
   max-height: 60vh;
   overflow: hidden;
-  border: 2px solid #ccc;
-  touch-action: none; /* for better touch interaction */
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+  background: white;
+  margin-bottom: 1rem;
 }
 
 #image {
   max-width: 100%;
+  max-height: 100%;
   display: block;
   user-select: none;
   -webkit-user-drag: none;
-  transform-origin: top left;
 }
 
+/* Crop area */
 #cropArea {
   position: absolute;
-  border: 2px dashed #f00;
+  border: 2px dashed #e74c3c;
+  background-color: rgba(231, 76, 60, 0.15);
   cursor: move;
   display: none;
-  background-color: rgba(255, 0, 0, 0.2);
-  box-sizing: border-box;
-  touch-action: none;
-  user-select: none;
+  border-radius: 4px;
 }
 
+/* Buttons */
 #cropBtn {
-  margin-top: 15px;
-  padding: 10px 20px;
+  padding: 0.6rem 1.4rem;
   font-size: 1rem;
+  font-weight: 600;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  transition: background 0.3s;
 }
 
+#cropBtn:hover:enabled {
+  background-color: #2980b9;
+}
+
+#cropBtn:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Cropped result */
 #resultContainer {
-  margin-top: 30px;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+}
+
+#resultContainer h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+  color: #2c3e50;
 }
 
 #resultCanvas {
   max-width: 100%;
   border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* Cursor for draw mode */
-.draw-mode-active #cropper-container,
-.draw-mode-active #image {
-  cursor: crosshair;
+/* Mobile tweaks */
+@media (max-width: 600px) {
+  #cropBtn {
+    width: 100%;
+    font-size: 1.1rem;
+  }
+
+  .cropper-container {
+    max-height: 50vh;
+  }
 }
