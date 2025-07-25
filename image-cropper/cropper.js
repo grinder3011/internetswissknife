@@ -5,11 +5,11 @@ const cropBtn = document.getElementById('cropBtn');
 const resultCanvas = document.getElementById('resultCanvas');
 const ctx = resultCanvas.getContext('2d');
 
-const drawCropBtn = document.getElementById('btnDrawCrop');
-const clearCropBtn = document.getElementById('btnClearCrop');
-const zoomInBtn = document.getElementById('btnZoomIn');
-const zoomOutBtn = document.getElementById('btnZoomOut');
-const aspectRatioSelect = document.getElementById('selectAspect');
+const drawCropBtn = document.getElementById('drawCropBtn');
+const clearCropBtn = document.getElementById('clearCropBtn');
+const zoomInBtn = document.getElementById('zoomInBtn');
+const zoomOutBtn = document.getElementById('zoomOutBtn');
+const aspectRatioSelect = document.getElementById('aspectRatioSelect');
 
 let imgNaturalWidth, imgNaturalHeight;
 let scale = 1;
@@ -188,16 +188,19 @@ function resizeCrop(dx, dy) {
   // Lock aspect ratio if set
   if (aspectRatio) {
     if (['n','s'].includes(resizeHandle)) {
+      // Height changes, width changes accordingly
       width = height * aspectRatio;
       if (resizeHandle === 'n') {
         x = cropRect.x + (cropRect.width - width) / 2;
       }
     } else if (['e','w'].includes(resizeHandle)) {
+      // Width changes, height changes accordingly
       height = width / aspectRatio;
       if (resizeHandle === 'w') {
         y = cropRect.y + (cropRect.height - height) / 2;
       }
     } else {
+      // Corner handles: keep aspect ratio by adjusting height according to width or vice versa
       if (Math.abs(dx) > Math.abs(dy)) {
         height = width / aspectRatio;
         if (['nw','sw'].includes(resizeHandle)) {
@@ -242,6 +245,7 @@ function onCropAreaPointerDown(e) {
 
 function onPointerMove(e) {
   if (isDrawing) {
+    // Drawing new crop rectangle
     e.preventDefault();
     const pos = getRelativePos(e);
     let x = Math.min(pos.x, dragStartX);
@@ -249,6 +253,7 @@ function onPointerMove(e) {
     let width = Math.abs(pos.x - dragStartX);
     let height = Math.abs(pos.y - dragStartY);
 
+    // Lock aspect ratio if set
     if (aspectRatio) {
       if (width / height > aspectRatio) {
         width = height * aspectRatio;
@@ -257,6 +262,7 @@ function onPointerMove(e) {
       }
     }
 
+    // Clamp to image bounds
     x = clamp(x, 0, image.width - width);
     y = clamp(y, 0, image.height - height);
 
@@ -271,11 +277,13 @@ function onPointerMove(e) {
     let newX = cropRect.x + dx;
     let newY = cropRect.y + dy;
 
+    // Clamp position inside image
     newX = clamp(newX, 0, image.width - cropRect.width);
     newY = clamp(newY, 0, image.height - cropRect.height);
 
     cropRect.x = newX;
     cropRect.y = newY;
+
     updateCropArea();
 
     dragStartX = pos.x;
@@ -294,130 +302,185 @@ function onPointerMove(e) {
 }
 
 function onPointerUp(e) {
+  if (isDrawing) {
+    // Finished drawing new crop rectangle
+    if (cropRect && (cropRect.width < 10 || cropRect.height < 10)) {
+      clearCropArea(); // too small, discard
+    }
+    isDrawing = false;
+    cropArea.style.pointerEvents = 'auto';
+    drawCropBtn.textContent = "Draw new crop area";
+    cropBtn.disabled = !cropRect;
+    clearCropBtn.disabled = !cropRect;
+  }
+
   isDragging = false;
   isResizing = false;
   resizeHandle = null;
-  if (isDrawing) {
-    isDrawing = false;
-    cropBtn.disabled = false;
-    clearCropBtn.disabled = false;
+}
+
+// Zoom functions
+function zoom(factor) {
+  const newScale = clamp(scale * factor, minScale, maxScale);
+  if (newScale === scale) return;
+  scale = newScale;
+
+  // Resize image element to zoom
+  image.style.width = (imgNaturalWidth * scale) + 'px';
+  image.style.height = (imgNaturalHeight * scale) + 'px';
+
+  // Adjust crop rect to scale
+  if (cropRect) {
+    cropRect.x *= factor;
+    cropRect.y *= factor;
+    cropRect.width *= factor;
+    cropRect.height *= factor;
+
+    // Clamp inside image
+    cropRect.x = clamp(cropRect.x, 0, image.width - cropRect.width);
+    cropRect.y = clamp(cropRect.y, 0, image.height - cropRect.height);
+
+    updateCropArea();
   }
 }
 
-// Handle image file input
-imageInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const url = URL.createObjectURL(file);
-  image.onload = () => {
-    imgNaturalWidth = image.naturalWidth;
-    imgNaturalHeight = image.naturalHeight;
-
-    // Reset scale and container size to image size
-    scale = 1;
-    image.style.width = imgNaturalWidth + 'px';
-    image.style.height = imgNaturalHeight + 'px';
-    container.style.width = imgNaturalWidth + 'px';
-    container.style.height = imgNaturalHeight + 'px';
-
-    clearCropArea();
-    cropBtn.disabled = true;
-    clearCropBtn.disabled = true;
-
-    URL.revokeObjectURL(url);
-  };
-  image.src = url;
-});
-
-// Draw new crop rectangle button
-drawCropBtn.addEventListener('click', () => {
-  isDrawing = true;
-  cropRect = null;
-  updateCropArea();
-  cropArea.style.display = 'block';
-  cropBtn.disabled = true;
-  clearCropBtn.disabled = true;
-});
-
-// Clear crop rectangle button
-clearCropBtn.addEventListener('click', () => {
-  clearCropArea();
-});
-
-// Crop image button
+// Crop image
 cropBtn.addEventListener('click', () => {
   if (!cropRect) return;
 
-  // Calculate scale factor between displayed image and natural image size
   const scaleX = imgNaturalWidth / image.width;
   const scaleY = imgNaturalHeight / image.height;
 
-  // Crop rectangle relative to natural image size
   const sx = cropRect.x * scaleX;
   const sy = cropRect.y * scaleY;
   const sw = cropRect.width * scaleX;
   const sh = cropRect.height * scaleY;
 
-  // Resize canvas to crop size
-  resultCanvas.width = sw;
-  resultCanvas.height = sh;
+  resultCanvas.width = cropRect.width;
+  resultCanvas.height = cropRect.height;
 
-  ctx.clearRect(0, 0, sw, sh);
-  ctx.drawImage(image, sx, sy, sw, sh, 0, 0, sw, sh);
+  ctx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+  ctx.drawImage(image, sx, sy, sw, sh, 0, 0, cropRect.width, cropRect.height);
 });
 
-// Zoom in/out buttons
-zoomInBtn.addEventListener('click', () => {
-  scale = clamp(scale + 0.2, minScale, maxScale);
-  applyScale();
-});
-
-zoomOutBtn.addEventListener('click', () => {
-  scale = clamp(scale - 0.2, minScale, maxScale);
-  applyScale();
-});
-
-function applyScale() {
-  image.style.width = imgNaturalWidth * scale + 'px';
-  image.style.height = imgNaturalHeight * scale + 'px';
-  container.style.width = imgNaturalWidth * scale + 'px';
-  container.style.height = imgNaturalHeight * scale + 'px';
-
-  if (cropRect) {
-    // Scale crop rectangle to new size
-    cropRect.x *= scale / (cropRect._prevScale || scale);
-    cropRect.y *= scale / (cropRect._prevScale || scale);
-    cropRect.width *= scale / (cropRect._prevScale || scale);
-    cropRect.height *= scale / (cropRect._prevScale || scale);
-
-    cropRect._prevScale = scale;
-    updateCropArea();
+// Draw new crop area toggle
+drawCropBtn.addEventListener('click', () => {
+  if (isDrawing) {
+    // Turn off draw mode
+    isDrawing = false;
+    cropArea.style.pointerEvents = 'auto';
+    drawCropBtn.textContent = "Draw new crop area";
+  } else {
+    // Turn on draw mode
+    isDrawing = true;
+    cropArea.style.pointerEvents = 'none'; // disable normal cropArea interaction
+    drawCropBtn.textContent = "Cancel drawing";
+    clearCropArea();
   }
-}
+  cropBtn.disabled = true;
+  clearCropBtn.disabled = true;
+});
 
-// Aspect ratio change handler
+// Clear crop area button
+clearCropBtn.addEventListener('click', () => {
+  clearCropArea();
+  cropBtn.disabled = true;
+  clearCropBtn.disabled = true;
+});
+
+// Zoom buttons
+zoomInBtn.addEventListener('click', () => zoom(1.2));
+zoomOutBtn.addEventListener('click', () => zoom(1 / 1.2));
+
+// Aspect ratio select
 aspectRatioSelect.addEventListener('change', () => {
   const val = aspectRatioSelect.value;
   if (val === 'free') {
     aspectRatio = null;
   } else {
-    const parts = val.split(':');
-    aspectRatio = parseInt(parts[0]) / parseInt(parts[1]);
+    aspectRatio = eval(val); // convert string "4/5" etc to number
   }
-
-  // If cropRect exists, enforce new aspect ratio immediately
+  // When aspect ratio changes, adjust current crop rectangle accordingly
   if (cropRect && aspectRatio) {
-    cropRect.height = cropRect.width / aspectRatio;
+    let newWidth = cropRect.width;
+    let newHeight = cropRect.height;
+
+    if (cropRect.width / cropRect.height > aspectRatio) {
+      newWidth = cropRect.height * aspectRatio;
+    } else {
+      newHeight = cropRect.width / aspectRatio;
+    }
+
+    cropRect.width = newWidth;
+    cropRect.height = newHeight;
+
     updateCropArea();
   }
 });
 
-// Pointer events for crop area (supports mouse & touch)
+// Image upload and initial setup
+imageInput.addEventListener('change', () => {
+  const file = imageInput.files[0];
+  if (!file) return;
+
+  const url = URL.createObjectURL(file);
+  image.src = url;
+
+  image.onload = () => {
+    imgNaturalWidth = image.naturalWidth;
+    imgNaturalHeight = image.naturalHeight;
+    scale = 1;
+
+    // Fit image inside container max dimensions
+    const containerMaxWidth = container.clientWidth;
+    const containerMaxHeight = container.clientHeight;
+
+    let width = imgNaturalWidth;
+    let height = imgNaturalHeight;
+
+    // Scale down if bigger than container
+    const widthRatio = containerMaxWidth / width;
+    const heightRatio = containerMaxHeight / height;
+    const minRatio = Math.min(widthRatio, heightRatio, 1);
+
+    width *= minRatio;
+    height *= minRatio;
+    scale = width / imgNaturalWidth;
+
+    image.style.width = width + 'px';
+    image.style.height = height + 'px';
+
+    resetCropArea();
+
+    cropBtn.disabled = false;
+    clearCropBtn.disabled = false;
+  };
+});
+
+// Pointer events for desktop and touch devices on container for drawing
+container.addEventListener('pointerdown', e => {
+  if (!isDrawing) return;
+  e.preventDefault();
+  const pos = getRelativePos(e);
+  dragStartX = pos.x;
+  dragStartY = pos.y;
+
+  cropRect = null;
+  updateCropArea();
+  cropArea.style.display = 'block';
+});
+
+container.addEventListener('pointermove', onPointerMove);
+window.addEventListener('pointerup', onPointerUp);
+
+// Crop area pointer events (move and resize)
 cropArea.addEventListener('pointerdown', onCropAreaPointerDown);
 window.addEventListener('pointermove', onPointerMove);
 window.addEventListener('pointerup', onPointerUp);
 
-// Initialize state
-cropBtn.disabled = true;
-clearCropBtn.disabled = true;
-cropArea.style.display = 'none';
+// Mouse wheel zoom
+container.addEventListener('wheel', e => {
+  e.preventDefault();
+  const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+  zoom(zoomFactor);
+}, { passive: false });
