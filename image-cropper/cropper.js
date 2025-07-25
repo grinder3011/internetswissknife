@@ -1,31 +1,55 @@
 const imageInput = document.getElementById('imageInput');
 const image = document.getElementById('image');
 const cropArea = document.getElementById('cropArea');
-const resizeHandle = document.querySelector('.resize-handle');
 const cropBtn = document.getElementById('cropBtn');
-const downloadBtn = document.getElementById('downloadBtn');
 const resultCanvas = document.getElementById('resultCanvas');
 const ctx = resultCanvas.getContext('2d');
-const zoomInBtn = document.getElementById('zoomInBtn');
-const zoomOutBtn = document.getElementById('zoomOutBtn');
-const aspectBtns = document.querySelectorAll('.aspect-btn');
+const downloadBtn = document.createElement('button');
+downloadBtn.textContent = 'Download Cropped Image';
+downloadBtn.disabled = true;
+document.body.appendChild(downloadBtn);
 
 let imgNaturalWidth, imgNaturalHeight;
-let uploadedFileType = 'image/png';
+let displayedWidth, displayedHeight;
 let zoomLevel = 1;
 
 let isDragging = false;
-let isResizing = false;
 let dragStartX, dragStartY;
+let cropRect = { x: 50, y: 50, width: 150, height: 150 };
 
-let cropRect = { x: 50, y: 50, width: 100, height: 100 };
-let aspectRatio = null; // null = free
+let uploadedFileType = 'image/png'; // default fallback
+
+// Function to fit image inside container
+function fitImageToContainer() {
+  const container = document.querySelector('.cropper-container');
+  const maxWidth = container.clientWidth;
+  const maxHeight = container.clientHeight;
+
+  let width = imgNaturalWidth;
+  let height = imgNaturalHeight;
+
+  const widthRatio = maxWidth / width;
+  const heightRatio = maxHeight / height;
+  const scale = Math.min(widthRatio, heightRatio, 1); // don't upscale
+
+  width = width * scale;
+  height = height * scale;
+
+  image.style.width = width + 'px';
+  image.style.height = height + 'px';
+
+  displayedWidth = width;
+  displayedHeight = height;
+
+  return { width, height };
+}
 
 imageInput.addEventListener('change', () => {
   const file = imageInput.files[0];
   if (!file) return;
 
   uploadedFileType = file.type || 'image/png';
+
   const url = URL.createObjectURL(file);
   image.src = url;
 
@@ -33,100 +57,85 @@ imageInput.addEventListener('change', () => {
     imgNaturalWidth = image.naturalWidth;
     imgNaturalHeight = image.naturalHeight;
     zoomLevel = 1;
-    applyZoom();
+
+    // Fit image inside container and get displayed size
+    fitImageToContainer();
+
+    // Set image width and height properties accordingly
+    image.width = displayedWidth;
+    image.height = displayedHeight;
+
     resetCropArea();
     cropArea.style.display = 'block';
     cropBtn.disabled = false;
+    downloadBtn.disabled = true; // reset download on new image
   };
 });
 
+// Drag crop area
 cropArea.addEventListener('mousedown', e => {
-  if (e.target === resizeHandle) return;
   isDragging = true;
   dragStartX = e.clientX;
   dragStartY = e.clientY;
-  e.preventDefault();
 });
 
 window.addEventListener('mouseup', () => {
   isDragging = false;
-  isResizing = false;
 });
 
 window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+
   const dx = e.clientX - dragStartX;
   const dy = e.clientY - dragStartY;
 
-  if (isDragging) {
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-
-    cropRect.x = clamp(cropRect.x + dx / zoomLevel, 0, image.width - cropRect.width);
-    cropRect.y = clamp(cropRect.y + dy / zoomLevel, 0, image.height - cropRect.height);
-    updateCropArea();
-  }
-
-  if (isResizing) {
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-
-    let newWidth = cropRect.width + dx / zoomLevel;
-    let newHeight = cropRect.height + dy / zoomLevel;
-
-    if (aspectRatio) {
-      const [w, h] = aspectRatio.split(':').map(Number);
-      const ratio = h / w;
-      newHeight = newWidth * ratio;
-    }
-
-    newWidth = Math.min(newWidth, image.width - cropRect.x);
-    newHeight = Math.min(newHeight, image.height - cropRect.y);
-
-    cropRect.width = Math.max(20, newWidth);
-    cropRect.height = Math.max(20, newHeight);
-    updateCropArea();
-  }
-});
-
-resizeHandle.addEventListener('mousedown', e => {
-  isResizing = true;
   dragStartX = e.clientX;
   dragStartY = e.clientY;
+
+  cropRect.x = clamp(cropRect.x + dx, 0, displayedWidth - cropRect.width);
+  cropRect.y = clamp(cropRect.y + dy, 0, displayedHeight - cropRect.height);
+
+  updateCropArea();
+});
+
+// Zoom handling (mouse wheel)
+document.querySelector('.cropper-container').addEventListener('wheel', e => {
   e.preventDefault();
-  e.stopPropagation();
-});
 
-aspectBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    aspectBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+  const zoomStep = 0.1;
+  const minZoom = 0.1;
+  const maxZoom = 3;
 
-    const val = btn.dataset.ratio;
-    aspectRatio = val === 'free' ? null : val;
+  if (e.deltaY < 0) {
+    zoomLevel = Math.min(zoomLevel + zoomStep, maxZoom);
+  } else {
+    zoomLevel = Math.max(zoomLevel - zoomStep, minZoom);
+  }
 
-    if (aspectRatio) {
-      const [w, h] = aspectRatio.split(':').map(Number);
-      const ratio = h / w;
-      cropRect.height = cropRect.width * ratio;
-      updateCropArea();
-    }
-  });
-});
-
-zoomInBtn.addEventListener('click', () => {
-  zoomLevel = Math.min(3, zoomLevel + 0.1);
   applyZoom();
-});
 
-zoomOutBtn.addEventListener('click', () => {
-  zoomLevel = Math.max(0.5, zoomLevel - 0.1);
-  applyZoom();
-});
+  // After zoom, clamp cropRect to new image size
+  cropRect.x = clamp(cropRect.x, 0, displayedWidth * zoomLevel - cropRect.width);
+  cropRect.y = clamp(cropRect.y, 0, displayedHeight * zoomLevel - cropRect.height);
+  updateCropArea();
+}, { passive: false });
 
+function applyZoom() {
+  image.style.transform = `scale(${zoomLevel})`;
+  cropArea.style.transform = `scale(${zoomLevel})`;
+
+  // To keep cropArea positioned correctly after scaling:
+  cropArea.style.transformOrigin = 'top left';
+  image.style.transformOrigin = 'top left';
+}
+
+// Crop button click
 cropBtn.addEventListener('click', () => {
-  const scaleX = imgNaturalWidth / (image.width);
-  const scaleY = imgNaturalHeight / (image.height);
+  // Calculate scale between displayed image (after zoom) and natural size
+  const scaleX = imgNaturalWidth / (displayedWidth * zoomLevel);
+  const scaleY = imgNaturalHeight / (displayedHeight * zoomLevel);
 
+  // Calculate cropping area in natural image coordinates
   const sx = cropRect.x * scaleX;
   const sy = cropRect.y * scaleY;
   const sw = cropRect.width * scaleX;
@@ -141,16 +150,13 @@ cropBtn.addEventListener('click', () => {
   downloadBtn.disabled = false;
 });
 
+// Download cropped image button
 downloadBtn.addEventListener('click', () => {
   const link = document.createElement('a');
   link.download = 'cropped.' + uploadedFileType.split('/')[1];
   link.href = resultCanvas.toDataURL(uploadedFileType);
   link.click();
 });
-
-function applyZoom() {
-  image.style.transform = `scale(${zoomLevel})`;
-}
 
 function resetCropArea() {
   cropRect = { x: 50, y: 50, width: 150, height: 150 };
