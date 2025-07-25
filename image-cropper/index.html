@@ -13,37 +13,23 @@
   </header>
 
   <main>
-    <input type="file" id="imageInput" accept="image/*" />
-    
-    <div class="controls-row">
-      <button id="drawCropBtn">Draw new crop area</button>
-      <button id="clearCropBtn" disabled>Clear crop area</button>
+    <section class="upload-section">
+      <input type="file" id="imageInput" accept="image/*" />
+      <p class="upload-note">Supports multiple file uploads for cropping, but performance depends on your device capabilities and image sizes.</p>
+    </section>
 
-      <!-- zoom buttons -->
-      <button id="zoomInBtn" title="Zoom In">➕</button>
-      <button id="zoomOutBtn" title="Zoom Out">➖</button>
+    <section class="crop-section">
+      <div class="cropper-container">
+        <img id="image" alt="Upload an image to crop" />
+        <div id="cropArea"></div>
+      </div>
+      <button id="cropBtn" disabled>✂️ Crop</button>
+    </section>
 
-      <!-- aspect ratio presets -->
-      <select id="aspectRatioSelect" title="Select aspect ratio">
-        <option value="free">Free</option>
-        <option value="1">1:1 (Square)</option>
-        <option value="4/5">4:5 (Instagram Portrait)</option>
-        <option value="16/9">16:9 (Widescreen)</option>
-        <option value="3/2">3:2</option>
-      </select>
-    </div>
-
-    <div class="cropper-container">
-      <img id="image" alt="Upload an image to crop" />
-      <div id="cropArea"></div>
-    </div>
-
-    <button id="cropBtn" disabled>Crop</button>
-    
-    <div id="resultContainer">
+    <section id="resultContainer">
       <h2>Cropped Result:</h2>
       <canvas id="resultCanvas"></canvas>
-    </div>
+    </section>
   </main>
 
   <script src="cropper.js"></script>
