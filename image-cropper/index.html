@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Simple Image Cropper Tool</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <title>🖼️ Simple Image Cropper</title>
   <link rel="stylesheet" href="cropper.styles.css" />
 </head>
 <body>
@@ -16,25 +15,26 @@
   <main>
     <input type="file" id="imageInput" accept="image/*" />
 
-    <div class="aspect-ratio-controls">
-      <span>Aspect Ratio:</span>
-      <button class="aspect-btn" data-ratio="free"><i class="fa-solid fa-expand"></i> Free</button>
-      <button class="aspect-btn" data-ratio="1:1"><i class="fa-solid fa-square"></i> 1:1</button>
-      <button class="aspect-btn" data-ratio="4:5"><i class="fa-regular fa-rectangle-vertical"></i> 4:5</button>
-      <button class="aspect-btn" data-ratio="16:9"><i class="fa-regular fa-rectangle-wide"></i> 16:9</button>
+    <div class="controls">
+      <button id="zoomOut">➖ Zoom Out</button>
+      <button id="zoomIn">➕ Zoom In</button>
+
+      <select id="aspectRatio">
+        <option value="free">🔓 Free</option>
+        <option value="1:1">1:1 (Square)</option>
+        <option value="4:5">4:5 (Instagram Portrait)</option>
+        <option value="16:9">16:9 (Widescreen)</option>
+      </select>
+
+      <button id="downloadBtn" disabled>⬇️ Download Cropped</button>
     </div>
 
     <div class="cropper-container">
       <img id="image" alt="Upload an image to crop" />
-      <div id="cropArea"><div class="resize-handle"></div></div>
+      <div id="cropArea"></div>
     </div>
 
-    <div class="buttons">
-      <button id="zoomInBtn"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
-      <button id="zoomOutBtn"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
-      <button id="cropBtn" disabled><i class="fa-solid fa-crop"></i> Crop</button>
-      <button id="downloadBtn" disabled><i class="fa-solid fa-download"></i> Download</button>
-    </div>
+    <button id="cropBtn" disabled>✂️ Crop</button>
 
     <div id="resultContainer">
       <h2>Cropped Result:</h2>
