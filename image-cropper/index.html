@@ -13,23 +13,20 @@
   </header>
 
   <main>
-    <section class="upload-section">
-      <input type="file" id="imageInput" accept="image/*" />
-      <p class="upload-note">Supports multiple file uploads for cropping, but performance depends on your device capabilities and image sizes.</p>
-    </section>
+    <input type="file" id="imageInput" accept="image/*" />
+    <p class="info-note">⚠️ Supports multiple file uploads for cropping, but performance depends on your device capabilities and image sizes.</p>
 
-    <section class="crop-section">
-      <div class="cropper-container">
-        <img id="image" alt="Upload an image to crop" />
-        <div id="cropArea"></div>
-      </div>
-      <button id="cropBtn" disabled>✂️ Crop</button>
-    </section>
+    <div class="cropper-container">
+      <img id="image" alt="Upload an image to crop" />
+      <div id="cropArea"></div>
+    </div>
 
-    <section id="resultContainer">
+    <button id="cropBtn" disabled>✂️ Crop</button>
+
+    <div id="resultContainer">
       <h2>Cropped Result:</h2>
       <canvas id="resultCanvas"></canvas>
-    </section>
+    </div>
   </main>
 
   <script src="cropper.js"></script>
