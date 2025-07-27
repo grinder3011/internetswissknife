@@ -16,15 +16,15 @@
     <input type="file" id="imageInput" accept="image/*" />
     
     <div class="controls-row">
-      <button id="drawCropBtn">Draw new crop area</button>
+      <button id="drawCropBtn" disabled>Draw new crop area</button>
       <button id="clearCropBtn" disabled>Clear crop area</button>
 
       <!-- zoom buttons -->
-      <button id="zoomInBtn" title="Zoom In">➕</button>
-      <button id="zoomOutBtn" title="Zoom Out">➖</button>
+      <button id="zoomInBtn" disabled title="Zoom In">➕</button>
+      <button id="zoomOutBtn" disabled title="Zoom Out">➖</button>
 
       <!-- aspect ratio presets -->
-      <select id="aspectRatioSelect" title="Select aspect ratio">
+      <select id="aspectRatioSelect" disabled title="Select aspect ratio">
         <option value="free">Free</option>
         <option value="1">1:1 (Square)</option>
         <option value="4/5">4:5 (Instagram Portrait)</option>
@@ -33,14 +33,14 @@
       </select>
     </div>
 
-    <div class="cropper-container">
+    <div class="cropper-container" id="cropperContainer">
       <img id="image" alt="Upload an image to crop" />
       <div id="cropArea"></div>
     </div>
 
     <button id="cropBtn" disabled>Crop</button>
     
-    <div id="resultContainer">
+    <div id="resultContainer" style="display:none;">
       <h2>Cropped Result:</h2>
       <canvas id="resultCanvas"></canvas>
     </div>
