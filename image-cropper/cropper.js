@@ -55,35 +55,14 @@ function resetCrop() {
 
 const container = document.querySelector('.cropper-container');
 
-// Helper to get correct pointer coordinates (mouse or touch)
-function getPointerPos(e) {
-  const rect = image.getBoundingClientRect();
-  let clientX, clientY;
-
-  if (e.touches && e.touches.length > 0) {
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else if (e.changedTouches && e.changedTouches.length > 0) {
-    clientX = e.changedTouches[0].clientX;
-    clientY = e.changedTouches[0].clientY;
-  } else {
-    clientX = e.clientX;
-    clientY = e.clientY;
-  }
-
-  return {
-    x: clientX - rect.left,
-    y: clientY - rect.top
-  };
-}
-
-function pointerDownHandler(e) {
+container.addEventListener('mousedown', (e) => {
   if (!image.src) return;
 
-  e.preventDefault();
+  const rect = image.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const clickY = e.clientY - rect.top;
 
-  const { x: clickX, y: clickY } = getPointerPos(e);
-
+  // Check if clicking inside crop area for dragging
   if (cropRect &&
       clickX >= cropRect.left &&
       clickX <= cropRect.left + cropRect.width &&
@@ -103,25 +82,26 @@ function pointerDownHandler(e) {
     cropArea.style.width = '0px';
     cropArea.style.height = '0px';
   }
-}
+});
 
-function pointerMoveHandler(e) {
-  if (!image.src) return;
-
-  e.preventDefault();
-
-  const { x: currentX, y: currentY } = getPointerPos(e);
+container.addEventListener('mousemove', (e) => {
+  const rect = image.getBoundingClientRect();
+  const currentX = e.clientX - rect.left;
+  const currentY = e.clientY - rect.top;
 
   if (isDrawing) {
     let width = currentX - startX;
     let height = currentY - startY;
 
-    if (aspectRatio && aspectRatio !== 'free') {
-      const ratio = eval(aspectRatio);
-      if (Math.abs(width / height) > ratio) {
-        height = width / ratio;
+    // ✅ Aspect ratio enforcement
+    if (aspectRatio) {
+      const [w, h] = aspectRatio.split(':').map(Number);
+      const ratio = w / h;
+
+      if (Math.abs(width) / Math.abs(height) > ratio) {
+        height = Math.sign(height) * Math.abs(width) / ratio;
       } else {
-        width = height * ratio;
+        width = Math.sign(width) * Math.abs(height) * ratio;
       }
     }
 
@@ -136,13 +116,9 @@ function pointerMoveHandler(e) {
     cropArea.style.left = `${newLeft}px`;
     cropArea.style.top = `${newTop}px`;
   }
-}
+});
 
-function pointerUpHandler(e) {
-  if (!image.src) return;
-
-  e.preventDefault();
-
+container.addEventListener('mouseup', () => {
   if (isDrawing) {
     isDrawing = false;
   } else if (isDragging) {
@@ -150,27 +126,16 @@ function pointerUpHandler(e) {
   }
 
   const rect = cropArea.getBoundingClientRect();
-  const imgRect = image.getBoundingClientRect();
-
   cropRect = {
-    left: rect.left - imgRect.left,
-    top: rect.top - imgRect.top,
+    left: rect.left - image.getBoundingClientRect().left,
+    top: rect.top - image.getBoundingClientRect().top,
     width: rect.width,
     height: rect.height
   };
 
   cropBtn.disabled = false;
   clearCropBtn.disabled = false;
-}
-
-// Add both mouse and touch events
-container.addEventListener('mousedown', pointerDownHandler);
-container.addEventListener('mousemove', pointerMoveHandler);
-container.addEventListener('mouseup', pointerUpHandler);
-
-container.addEventListener('touchstart', pointerDownHandler, { passive: false });
-container.addEventListener('touchmove', pointerMoveHandler, { passive: false });
-container.addEventListener('touchend', pointerUpHandler, { passive: false });
+});
 
 aspectRatioSelect.addEventListener('change', () => {
   const value = aspectRatioSelect.value;
@@ -211,6 +176,7 @@ cropBtn.addEventListener('click', () => {
   };
 });
 
+// ✅ Download button functionality
 downloadBtn.addEventListener('click', () => {
   const format = downloadFormatSelect.value; // "image/png" or "image/jpeg"
   const dataURL = resultCanvas.toDataURL(format);
