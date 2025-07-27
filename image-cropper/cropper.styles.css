@@ -1,79 +1,41 @@
-/* === Base styles unchanged except improved font and background === */
 body {
-  font-family: 'Inter', Arial, sans-serif; /* modern font fallback */
+  font-family: Arial, sans-serif;
   margin: 20px;
   text-align: center;
-  background: #f9fafb; /* light subtle background */
-  color: #1f2937; /* dark gray text for better readability */
 }
 
-/* === Header styling with responsive full-width background box === */
-header {
-  background: #4b6cb7;
-  padding: 20px 15px;
-  margin-bottom: 25px;
-  border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(75, 108, 183, 0.3);
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-header h1 {
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 2rem;
-  margin: 0;
-  user-select: none;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-}
-
-/* === Controls rows: wrap in subtle bounding boxes === */
 .controls-row {
-  margin: 15px auto;
-  max-width: 900px;
-  background: #ffffff;
-  padding: 15px 25px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin: 15px 0;
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
-  border: 1px solid #e0e7ff; /* subtle border */
 }
 
-/* Buttons and selects: refined with shadow and smooth transitions */
-.controls-row button,
-.controls-row select {
-  padding: 10px 18px; /* slightly larger */
+.controls-row button, .controls-row select {
+  padding: 8px 14px;
   font-size: 1rem;
-  border-radius: 10px;
+  border-radius: 6px;
   border: 1.5px solid #4b6cb7;
   background: white;
   color: #4b6cb7;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
-  box-shadow: 0 2px 4px rgba(75,108,183,0.15);
-  min-width: 120px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .controls-row button:hover:not(:disabled),
 .controls-row select:hover {
   background-color: #4b6cb7;
   color: white;
-  box-shadow: 0 4px 12px rgba(75,108,183,0.3);
 }
 
 .controls-row button:disabled {
   border-color: #a0a5ad;
   color: #a0a5ad;
   cursor: not-allowed;
-  box-shadow: none;
 }
 
-/* === Cropper container with subtle modern border and shadow === */
 .cropper-container {
   position: relative;
   display: inline-block;
@@ -81,75 +43,127 @@ header h1 {
   max-width: 90vw;
   max-height: 60vh;
   overflow: hidden;
-  border-radius: 16px;
-  border: 2px solid #cbd5e1; /* lighter blue-gray border */
-  box-shadow: 0 8px 20px rgba(75, 108, 183, 0.1);
-  background: #fff;
+  border: 2px solid #ccc;
   touch-action: none; /* for better touch interaction */
 }
 
-/* Image inside cropper: smoother scaling */
 #image {
   max-width: 100%;
   display: block;
   user-select: none;
   -webkit-user-drag: none;
   transform-origin: top left;
-  border-radius: 16px;
-  transition: transform 0.3s ease;
 }
 
-/* Crop area with softened red highlight */
 #cropArea {
   position: absolute;
-  border: 2px dashed #ef4444; /* nicer red */
+  border: 2px dashed #f00;
   cursor: move;
   display: none;
-  background-color: rgba(239, 68, 68, 0.15);
+  background-color: rgba(255, 0, 0, 0.2);
   box-sizing: border-box;
   touch-action: none;
   user-select: none;
-  border-radius: 12px;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Crop button padding aligned with controls */
+/* ✅ Adjusted crop button padding to match others */
 #cropBtn {
-  padding: 10px 18px; /* consistent with other buttons */
+  padding: 8px 14px; /* Same as .controls-row buttons */
   font-size: 1rem;
-  min-width: 120px;
 }
 
-/* Result container centered and styled */
 #resultContainer {
-  margin-top: 40px;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  background: #fff;
-  padding: 20px 25px;
-  border-radius: 16px;
-  box-shadow: 0 8px 22px rgba(75, 108, 183, 0.1);
-  border: 1px solid #e0e7ff;
-  text-align: left;
-}
-
-#resultContainer h2 {
-  margin-top: 0;
-  color: #334155;
-  font-weight: 600;
-  font-size: 1.5rem;
+  margin-top: 30px;
 }
 
 #resultCanvas {
   max-width: 100%;
-  border-radius: 12px;
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 4px 12px rgba(75, 108, 183, 0.12);
+  border: 1px solid #ccc;
 }
 
 /* Cursor for draw mode */
 .draw-mode-active #cropper-container,
 .draw-mode-active #image {
   cursor: crosshair;
+}
+
+/* Responsive adjustments for mobile devices */
+
+@media (max-width: 480px) {
+  body {
+    margin: 12px 10px;
+  }
+
+  header {
+    padding: 15px 12px;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .controls-row {
+    /* Stack controls-row vertically */
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: nowrap;
+  }
+
+  /* Draw/Clear buttons side by side */
+  #drawCropBtn,
+  #clearCropBtn {
+    display: inline-block;
+    width: auto;
+    min-width: 120px;
+    margin: 0 8px 0 0;
+  }
+
+  /* Zoom buttons side by side */
+  #zoomInBtn,
+  #zoomOutBtn {
+    display: inline-block;
+    width: auto;
+    min-width: 90px;
+    margin: 0 8px 0 0;
+  }
+
+  /* Group draw/clear and zoom buttons on separate lines */
+  /* Trick: make all buttons inline-block and allow .controls-row to stack */
+
+  /* Use a wrapping container for zoom buttons is ideal but since no HTML change,
+     just force the zoom buttons and draw/clear buttons to appear grouped by order */
+
+  /* Put drawCropBtn and clearCropBtn on the first "line" */
+  #drawCropBtn,
+  #clearCropBtn {
+    order: 1;
+  }
+
+  /* Put zoomInBtn and zoomOutBtn on the second "line" */
+  #zoomInBtn,
+  #zoomOutBtn {
+    order: 2;
+  }
+
+  /* Crop button and download controls remain on their own line */
+  #cropBtn,
+  #downloadFormatSelect,
+  #downloadBtn {
+    order: 3;
+  }
+
+  .cropper-container {
+    max-width: 100vw;
+    max-height: 50vh;
+    border-width: 1.5px;
+  }
+
+  #resultContainer {
+    padding: 15px 12px;
+  }
+
+  #resultContainer h2 {
+    font-size: 1.25rem;
+  }
 }
