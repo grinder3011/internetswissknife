@@ -13,8 +13,11 @@ const downloadBtn = document.getElementById('downloadBtn');
 const downloadFormatSelect = document.getElementById('downloadFormatSelect');
 
 let isDrawing = false;
+let isDragging = false;
 let startX = 0;
 let startY = 0;
+let offsetX = 0;
+let offsetY = 0;
 let cropRect = null;
 let scale = 1;
 let aspectRatio = null;
@@ -50,48 +53,74 @@ function resetCrop() {
   clearCropBtn.disabled = true;
 }
 
-document.querySelector('.cropper-container').addEventListener('mousedown', (e) => {
+const container = document.querySelector('.cropper-container');
+
+container.addEventListener('mousedown', (e) => {
   if (!image.src) return;
 
-  isDrawing = true;
   const rect = image.getBoundingClientRect();
-  startX = e.clientX - rect.left;
-  startY = e.clientY - rect.top;
+  const clickX = e.clientX - rect.left;
+  const clickY = e.clientY - rect.top;
 
-  cropArea.style.display = 'block';
-  cropArea.style.left = `${startX}px`;
-  cropArea.style.top = `${startY}px`;
-  cropArea.style.width = '0px';
-  cropArea.style.height = '0px';
-});
+  // Check if clicking inside crop area for dragging
+  if (cropRect &&
+      clickX >= cropRect.left &&
+      clickX <= cropRect.left + cropRect.width &&
+      clickY >= cropRect.top &&
+      clickY <= cropRect.top + cropRect.height) {
+    isDragging = true;
+    offsetX = clickX - cropRect.left;
+    offsetY = clickY - cropRect.top;
+  } else {
+    isDrawing = true;
+    startX = clickX;
+    startY = clickY;
 
-document.querySelector('.cropper-container').addEventListener('mousemove', (e) => {
-  if (!isDrawing) return;
-  const rect = image.getBoundingClientRect();
-  let currentX = e.clientX - rect.left;
-  let currentY = e.clientY - rect.top;
-
-  let width = currentX - startX;
-  let height = currentY - startY;
-
-  if (aspectRatio && aspectRatio !== 'free') {
-    const ratio = eval(aspectRatio);
-    if (Math.abs(width / height) > ratio) {
-      height = width / ratio;
-    } else {
-      width = height * ratio;
-    }
+    cropArea.style.display = 'block';
+    cropArea.style.left = `${startX}px`;
+    cropArea.style.top = `${startY}px`;
+    cropArea.style.width = '0px';
+    cropArea.style.height = '0px';
   }
-
-  cropArea.style.left = `${Math.min(startX, startX + width)}px`;
-  cropArea.style.top = `${Math.min(startY, startY + height)}px`;
-  cropArea.style.width = `${Math.abs(width)}px`;
-  cropArea.style.height = `${Math.abs(height)}px`;
 });
 
-document.querySelector('.cropper-container').addEventListener('mouseup', () => {
-  if (!isDrawing) return;
-  isDrawing = false;
+container.addEventListener('mousemove', (e) => {
+  const rect = image.getBoundingClientRect();
+  const currentX = e.clientX - rect.left;
+  const currentY = e.clientY - rect.top;
+
+  if (isDrawing) {
+    let width = currentX - startX;
+    let height = currentY - startY;
+
+    if (aspectRatio && aspectRatio !== 'free') {
+      const ratio = eval(aspectRatio);
+      if (Math.abs(width / height) > ratio) {
+        height = width / ratio;
+      } else {
+        width = height * ratio;
+      }
+    }
+
+    cropArea.style.left = `${Math.min(startX, startX + width)}px`;
+    cropArea.style.top = `${Math.min(startY, startY + height)}px`;
+    cropArea.style.width = `${Math.abs(width)}px`;
+    cropArea.style.height = `${Math.abs(height)}px`;
+  } else if (isDragging && cropRect) {
+    const newLeft = currentX - offsetX;
+    const newTop = currentY - offsetY;
+
+    cropArea.style.left = `${newLeft}px`;
+    cropArea.style.top = `${newTop}px`;
+  }
+});
+
+container.addEventListener('mouseup', () => {
+  if (isDrawing) {
+    isDrawing = false;
+  } else if (isDragging) {
+    isDragging = false;
+  }
 
   const rect = cropArea.getBoundingClientRect();
   cropRect = {
