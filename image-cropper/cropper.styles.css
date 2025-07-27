@@ -20,7 +20,7 @@ header {
   margin-bottom: 20px;
 }
 
-/* Container for main content */
+/* Main container */
 main {
   display: flex;
   flex-direction: column;
@@ -31,7 +31,7 @@ main {
   padding: 10px;
 }
 
-/* Controls wrapper (card-like) */
+/* ✅ Bounding box for each control section */
 .controls-wrapper {
   width: 100%;
   max-width: 500px;
@@ -89,7 +89,7 @@ main {
   overflow: hidden;
   border: 2px solid #ccc;
   border-radius: 12px;
-  touch-action: none; /* for better touch interaction */
+  touch-action: none;
   background: white;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
