@@ -14,16 +14,16 @@
 
   <main>
     <input type="file" id="imageInput" accept="image/*" />
-    
+
     <div class="controls-row">
       <button id="drawCropBtn">Draw new crop area</button>
       <button id="clearCropBtn" disabled>Clear crop area</button>
 
-      <!-- zoom buttons -->
+      <!-- Zoom buttons -->
       <button id="zoomInBtn" title="Zoom In">➕</button>
       <button id="zoomOutBtn" title="Zoom Out">➖</button>
 
-      <!-- aspect ratio presets -->
+      <!-- Aspect ratio presets -->
       <select id="aspectRatioSelect" title="Select aspect ratio">
         <option value="free">Free</option>
         <option value="1">1:1 (Square)</option>
@@ -38,15 +38,18 @@
       <div id="cropArea"></div>
     </div>
 
-    <div class="download-row">
+    <div class="controls-row">
+      <button id="cropBtn" disabled>Crop</button>
+
+      <!-- Download options -->
       <select id="downloadFormat">
         <option value="image/png">PNG</option>
         <option value="image/jpeg">JPEG</option>
         <option value="image/webp">WebP</option>
       </select>
-      <button id="cropBtn" disabled>Crop & Download</button>
+      <button id="downloadBtn" disabled>Download</button>
     </div>
-    
+
     <div id="resultContainer">
       <h2>Cropped Result:</h2>
       <canvas id="resultCanvas"></canvas>
