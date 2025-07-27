@@ -68,7 +68,6 @@ body {
 
 /* ✅ Adjusted crop button padding to match others */
 #cropBtn {
-  margin-top: 15px;
   padding: 8px 14px; /* Same as .controls-row buttons */
   font-size: 1rem;
 }
