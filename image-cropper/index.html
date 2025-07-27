@@ -20,8 +20,8 @@
       <button id="clearCropBtn" disabled>Clear crop area</button>
 
       <!-- zoom buttons -->
-      <button id="zoomInBtn" title="Zoom In">🔍➕</button>
-      <button id="zoomOutBtn" title="Zoom Out">🔍➖</button>
+      <button id="zoomInBtn" title="Zoom In">➕</button>
+      <button id="zoomOutBtn" title="Zoom Out">➖</button>
 
       <!-- aspect ratio presets -->
       <select id="aspectRatioSelect" title="Select aspect ratio">
@@ -38,15 +38,13 @@
       <div id="cropArea"></div>
     </div>
 
-    <div class="controls-row">
-      <button id="cropBtn" disabled>Crop</button>
-
-      <!-- New: Download controls -->
-      <select id="downloadFormatSelect">
+    <div class="download-row">
+      <select id="downloadFormat">
         <option value="image/png">PNG</option>
         <option value="image/jpeg">JPEG</option>
+        <option value="image/webp">WebP</option>
       </select>
-      <button id="downloadBtn" disabled>Download</button>
+      <button id="cropBtn" disabled>Crop & Download</button>
     </div>
     
     <div id="resultContainer">
