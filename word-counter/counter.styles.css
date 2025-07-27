@@ -12,13 +12,17 @@ body {
 }
 
 .container {
-  max-width: 640px;
-  width: 100%;
+  width: 95vw;           /* 95% of viewport width */
+  max-width: none;       /* remove max-width limit */
+  margin: auto;          /* center horizontally */
   background: white;
   border-radius: 12px;
-  padding: 2rem 2.5rem;
+  padding: 2rem 1.5rem;  /* keep some padding */
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.1);
   box-sizing: border-box;
+  min-height: 100vh;     /* optional: fill vertical space */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Header */
