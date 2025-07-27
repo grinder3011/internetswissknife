@@ -15,15 +15,15 @@
   <main>
     <input type="file" id="imageInput" accept="image/*" />
 
-    <!-- ✅ Top Controls (Draw / Clear / Zoom) inside a bounding box -->
+    <!-- ✅ Top Controls -->
     <div class="controls-wrapper">
       <div class="controls-row">
-        <button id="drawCropBtn">Draw new crop area</button>
-        <button id="clearCropBtn" disabled>Clear crop area</button>
+        <button id="drawCropBtn">✏️ Draw new crop area</button>
+        <button id="clearCropBtn" disabled>🧹 Clear crop area</button>
       </div>
       <div class="controls-row">
-        <button id="zoomInBtn" title="Zoom In">🔍➕</button>
-        <button id="zoomOutBtn" title="Zoom Out">🔍➖</button>
+        <button id="zoomInBtn" title="Zoom In">🔍➕ Zoom In</button>
+        <button id="zoomOutBtn" title="Zoom Out">🔍➖ Zoom Out</button>
       </div>
     </div>
 
@@ -33,19 +33,19 @@
       <div id="cropArea"></div>
     </div>
 
-    <!-- ✅ Bottom Controls (Crop / Download) inside a bounding box -->
+    <!-- ✅ Bottom Controls -->
     <div class="controls-wrapper">
       <div class="controls-row">
-        <button id="cropBtn" disabled>Crop</button>
+        <button id="cropBtn" disabled>✂️ Crop</button>
         <select id="downloadFormatSelect">
-          <option value="image/png">PNG</option>
-          <option value="image/jpeg">JPEG</option>
+          <option value="image/png">🗂️ PNG</option>
+          <option value="image/jpeg">🗂️ JPEG</option>
         </select>
-        <button id="downloadBtn" disabled>Download</button>
+        <button id="downloadBtn" disabled>⬇️ Download</button>
       </div>
     </div>
 
-    <!-- ✅ Cropped Result -->
+    <!-- ✅ Result -->
     <div id="resultContainer">
       <h2>Cropped Result:</h2>
       <canvas id="resultCanvas"></canvas>
