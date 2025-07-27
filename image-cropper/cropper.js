@@ -93,15 +93,18 @@ container.addEventListener('mousemove', (e) => {
     let width = currentX - startX;
     let height = currentY - startY;
 
-    // ✅ Aspect ratio enforcement
     if (aspectRatio) {
       const [w, h] = aspectRatio.split(':').map(Number);
       const ratio = w / h;
 
+      // Determine width and height signs (drag direction)
+      const widthSign = width >= 0 ? 1 : -1;
+      const heightSign = height >= 0 ? 1 : -1;
+
       if (Math.abs(width) / Math.abs(height) > ratio) {
-        height = Math.sign(height) * Math.abs(width) / ratio;
+        height = heightSign * Math.abs(width) / ratio;
       } else {
-        width = Math.sign(width) * Math.abs(height) * ratio;
+        width = widthSign * Math.abs(height) * ratio;
       }
     }
 
