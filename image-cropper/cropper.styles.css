@@ -66,9 +66,12 @@ body {
   user-select: none;
 }
 
+/* ✅ Fix: Make bottom buttons uniform */
 #cropBtn,
+#clearCropBtn,
+#drawCropBtn,
 #downloadBtn {
-  width: 120px; /* ✅ Make bottom buttons same size */
+  min-width: 140px;
 }
 
 #cropBtn {
