@@ -1,184 +1,139 @@
 const imageInput = document.getElementById('imageInput');
 const image = document.getElementById('image');
 const cropArea = document.getElementById('cropArea');
-const cropBtn = document.getElementById('cropBtn');
-const clearCropBtn = document.getElementById('clearCropBtn');
 const drawCropBtn = document.getElementById('drawCropBtn');
+const clearCropBtn = document.getElementById('clearCropBtn');
+const cropBtn = document.getElementById('cropBtn');
 const zoomInBtn = document.getElementById('zoomInBtn');
 const zoomOutBtn = document.getElementById('zoomOutBtn');
 const aspectRatioSelect = document.getElementById('aspectRatioSelect');
-
 const resultCanvas = document.getElementById('resultCanvas');
-const downloadBtn = document.getElementById('downloadBtn');
-const downloadFormatSelect = document.getElementById('downloadFormatSelect');
+const downloadFormat = document.getElementById('downloadFormat');
 
-let isDrawing = false;
-let isDragging = false;
-let startX = 0;
-let startY = 0;
-let offsetX = 0;
-let offsetY = 0;
-let cropRect = null;
-let scale = 1;
+let startX, startY, isDrawing = false, isMoving = false;
+let cropX = 0, cropY = 0, cropWidth = 0, cropHeight = 0;
+let imageScale = 1;
+let offsetX = 0, offsetY = 0;
 let aspectRatio = null;
 
+// Load image
 imageInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    image.src = reader.result;
-    image.style.display = 'block';
-    resetCrop();
-  };
-  reader.readAsDataURL(file);
-});
-
-drawCropBtn.addEventListener('click', () => {
-  cropArea.style.display = 'none';
-  cropRect = null;
-  cropBtn.disabled = true;
-  clearCropBtn.disabled = true;
-});
-
-clearCropBtn.addEventListener('click', () => {
-  resetCrop();
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      image.src = evt.target.result;
+      image.onload = () => {
+        resetCrop();
+      };
+    };
+    reader.readAsDataURL(file);
+  }
 });
 
 function resetCrop() {
   cropArea.style.display = 'none';
-  cropRect = null;
   cropBtn.disabled = true;
   clearCropBtn.disabled = true;
+  imageScale = 1;
+  image.style.transform = `scale(${imageScale})`;
 }
 
-const container = document.querySelector('.cropper-container');
-
-container.addEventListener('mousedown', (e) => {
-  if (!image.src) return;
-
-  const rect = image.getBoundingClientRect();
-  const clickX = e.clientX - rect.left;
-  const clickY = e.clientY - rect.top;
-
-  // Check if clicking inside crop area for dragging
-  if (cropRect &&
-      clickX >= cropRect.left &&
-      clickX <= cropRect.left + cropRect.width &&
-      clickY >= cropRect.top &&
-      clickY <= cropRect.top + cropRect.height) {
-    isDragging = true;
-    offsetX = clickX - cropRect.left;
-    offsetY = clickY - cropRect.top;
-  } else {
-    isDrawing = true;
-    startX = clickX;
-    startY = clickY;
-
-    cropArea.style.display = 'block';
-    cropArea.style.left = `${startX}px`;
-    cropArea.style.top = `${startY}px`;
-    cropArea.style.width = '0px';
-    cropArea.style.height = '0px';
-  }
+// Draw new crop
+drawCropBtn.addEventListener('click', () => {
+  cropArea.style.display = 'none';
+  cropBtn.disabled = true;
+  clearCropBtn.disabled = true;
 });
 
-container.addEventListener('mousemove', (e) => {
-  const rect = image.getBoundingClientRect();
-  const currentX = e.clientX - rect.left;
-  const currentY = e.clientY - rect.top;
+clearCropBtn.addEventListener('click', resetCrop);
 
-  if (isDrawing) {
-    let width = currentX - startX;
-    let height = currentY - startY;
-
-    if (aspectRatio && aspectRatio !== 'free') {
-      const ratio = eval(aspectRatio);
-      if (Math.abs(width / height) > ratio) {
-        height = width / ratio;
-      } else {
-        width = height * ratio;
-      }
-    }
-
-    cropArea.style.left = `${Math.min(startX, startX + width)}px`;
-    cropArea.style.top = `${Math.min(startY, startY + height)}px`;
-    cropArea.style.width = `${Math.abs(width)}px`;
-    cropArea.style.height = `${Math.abs(height)}px`;
-  } else if (isDragging && cropRect) {
-    const newLeft = currentX - offsetX;
-    const newTop = currentY - offsetY;
-
-    cropArea.style.left = `${newLeft}px`;
-    cropArea.style.top = `${newTop}px`;
-  }
+// Zoom
+zoomInBtn.addEventListener('click', () => {
+  imageScale += 0.1;
+  image.style.transform = `scale(${imageScale})`;
+});
+zoomOutBtn.addEventListener('click', () => {
+  imageScale = Math.max(0.1, imageScale - 0.1);
+  image.style.transform = `scale(${imageScale})`;
 });
 
-container.addEventListener('mouseup', () => {
+// Aspect ratio
+aspectRatioSelect.addEventListener('change', () => {
+  aspectRatio = aspectRatioSelect.value === 'free' ? null : eval(aspectRatioSelect.value);
+});
+
+// Mouse & Touch events for crop area
+function getPointerPos(e) {
+  if (e.touches && e.touches.length > 0) {
+    return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }
+  return { x: e.clientX, y: e.clientY };
+}
+
+image.addEventListener('mousedown', startDraw);
+image.addEventListener('touchstart', startDraw);
+
+function startDraw(e) {
+  const pos = getPointerPos(e);
+  startX = pos.x - image.offsetLeft;
+  startY = pos.y - image.offsetTop;
+  isDrawing = true;
+  cropArea.style.display = 'block';
+  cropArea.style.left = `${startX}px`;
+  cropArea.style.top = `${startY}px`;
+  cropArea.style.width = `0px`;
+  cropArea.style.height = `0px`;
+  e.preventDefault();
+}
+
+document.addEventListener('mousemove', draw);
+document.addEventListener('touchmove', draw);
+
+function draw(e) {
+  if (!isDrawing) return;
+  const pos = getPointerPos(e);
+  let currentX = pos.x - image.offsetLeft;
+  let currentY = pos.y - image.offsetTop;
+  cropWidth = Math.abs(currentX - startX);
+  cropHeight = Math.abs(currentY - startY);
+
+  if (aspectRatio) {
+    cropHeight = cropWidth / aspectRatio;
+  }
+
+  cropX = Math.min(currentX, startX);
+  cropY = Math.min(currentY, startY);
+  cropArea.style.left = `${cropX}px`;
+  cropArea.style.top = `${cropY}px`;
+  cropArea.style.width = `${cropWidth}px`;
+  cropArea.style.height = `${cropHeight}px`;
+}
+
+document.addEventListener('mouseup', endDraw);
+document.addEventListener('touchend', endDraw);
+
+function endDraw() {
   if (isDrawing) {
     isDrawing = false;
-  } else if (isDragging) {
-    isDragging = false;
+    cropBtn.disabled = false;
+    clearCropBtn.disabled = false;
   }
+}
 
-  const rect = cropArea.getBoundingClientRect();
-  cropRect = {
-    left: rect.left - image.getBoundingClientRect().left,
-    top: rect.top - image.getBoundingClientRect().top,
-    width: rect.width,
-    height: rect.height
-  };
-
-  cropBtn.disabled = false;
-  clearCropBtn.disabled = false;
-});
-
-aspectRatioSelect.addEventListener('change', () => {
-  const value = aspectRatioSelect.value;
-  aspectRatio = value === 'free' ? null : value;
-});
-
-zoomInBtn.addEventListener('click', () => {
-  scale += 0.1;
-  image.style.transform = `scale(${scale})`;
-});
-
-zoomOutBtn.addEventListener('click', () => {
-  scale = Math.max(0.1, scale - 0.1);
-  image.style.transform = `scale(${scale})`;
-});
-
+// Crop and download
 cropBtn.addEventListener('click', () => {
-  if (!cropRect) return;
+  const canvas = resultCanvas;
+  const ctx = canvas.getContext('2d');
+  canvas.width = cropWidth;
+  canvas.height = cropHeight;
 
-  const img = new Image();
-  img.src = image.src;
-  img.onload = () => {
-    const scaleX = img.width / image.getBoundingClientRect().width;
-    const scaleY = img.height / image.getBoundingClientRect().height;
+  ctx.drawImage(image, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
-    const sx = cropRect.left * scaleX;
-    const sy = cropRect.top * scaleY;
-    const sw = cropRect.width * scaleX;
-    const sh = cropRect.height * scaleY;
-
-    resultCanvas.width = sw;
-    resultCanvas.height = sh;
-
-    const ctx = resultCanvas.getContext('2d');
-    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
-
-    downloadBtn.disabled = false;
-  };
-});
-
-// ✅ Download button functionality
-downloadBtn.addEventListener('click', () => {
-  const format = downloadFormatSelect.value; // "image/png" or "image/jpeg"
-  const dataURL = resultCanvas.toDataURL(format);
+  // Download
+  const format = downloadFormat.value;
   const link = document.createElement('a');
-  link.href = dataURL;
-  link.download = `cropped.${format === 'image/png' ? 'png' : 'jpg'}`;
+  link.download = `cropped.${format.split('/')[1]}`;
+  link.href = canvas.toDataURL(format);
   link.click();
 });
