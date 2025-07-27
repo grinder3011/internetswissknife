@@ -1,18 +1,62 @@
+/* Base reset and body */
 body {
   font-family: Arial, sans-serif;
-  margin: 20px;
+  margin: 0;
+  padding: 0;
   text-align: center;
+  background: #f9fbff;
+  color: #333;
 }
 
+/* Full-width title bar */
+header {
+  width: 100%;
+  background: #4b6cb7;
+  color: white;
+  padding: 18px 0;
+  font-size: 1.8rem;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* Container for main content */
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+/* Controls wrapper (card-like) */
+.controls-wrapper {
+  width: 100%;
+  max-width: 500px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1.5px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Each row of buttons */
 .controls-row {
-  margin: 15px 0;
   display: flex;
   justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.controls-row button, .controls-row select {
+/* Buttons & select styling */
+.controls-row button,
+.controls-row select {
   padding: 8px 14px;
   font-size: 1rem;
   border-radius: 6px;
@@ -36,15 +80,18 @@ body {
   cursor: not-allowed;
 }
 
+/* Cropper container */
 .cropper-container {
   position: relative;
   display: inline-block;
-  margin-top: 20px;
   max-width: 90vw;
   max-height: 60vh;
   overflow: hidden;
   border: 2px solid #ccc;
+  border-radius: 12px;
   touch-action: none; /* for better touch interaction */
+  background: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
 
 #image {
@@ -66,12 +113,13 @@ body {
   user-select: none;
 }
 
-/* ✅ Adjusted crop button padding to match others */
+/* Crop button */
 #cropBtn {
-  padding: 8px 14px; /* Same as .controls-row buttons */
+  padding: 8px 14px;
   font-size: 1rem;
 }
 
+/* Result section */
 #resultContainer {
   margin-top: 30px;
 }
@@ -79,10 +127,35 @@ body {
 #resultCanvas {
   max-width: 100%;
   border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
 /* Cursor for draw mode */
 .draw-mode-active #cropper-container,
 .draw-mode-active #image {
   cursor: crosshair;
+}
+
+/* ✅ Responsive adjustments for mobile */
+@media (max-width: 600px) {
+  header {
+    font-size: 1.4rem;
+    padding: 12px 0;
+  }
+
+  .controls-wrapper {
+    width: 90%;
+    padding: 10px;
+  }
+
+  .controls-row {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .controls-row button,
+  .controls-row select {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 120px;
+  }
 }
