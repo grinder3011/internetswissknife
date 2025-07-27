@@ -1,21 +1,38 @@
 body {
   font-family: Arial, sans-serif;
-  margin: 20px;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  padding: 1rem;
   text-align: center;
 }
 
-header h1 {
-  margin-bottom: 20px;
+main {
+  padding: 1rem;
 }
 
-.controls-row, .download-row {
-  margin: 10px 0;
+.controls-row {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+button, select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 .cropper-container {
   position: relative;
   display: inline-block;
-  margin: 20px 0;
+  margin-top: 1rem;
   max-width: 100%;
 }
 
@@ -26,22 +43,22 @@ header h1 {
 
 #cropArea {
   position: absolute;
-  border: 2px dashed #00aaff;
-  background-color: rgba(0, 170, 255, 0.1);
+  border: 2px dashed #00f;
+  background: rgba(0, 0, 255, 0.1);
   display: none;
-  cursor: move;
-}
-
-button, select {
-  margin: 5px;
-  padding: 8px 12px;
+  cursor: move; /* Keep ability to drag crop area */
 }
 
 #resultContainer {
-  margin-top: 20px;
+  margin-top: 1rem;
 }
 
 #resultCanvas {
-  max-width: 100%;
   border: 1px solid #ccc;
+  max-width: 100%;
+}
+
+/* ✅ Minimal styles for new download controls */
+#downloadFormatSelect {
+  min-width: 120px;
 }
