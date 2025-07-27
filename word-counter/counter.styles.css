@@ -1,78 +1,144 @@
+/* Base & layout */
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb;
+  color: #222;
+  line-height: 1.5;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
 }
 
 .container {
   max-width: 640px;
-  margin: auto;
-  padding: 1.5rem;
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.1);
+  box-sizing: border-box;
 }
 
+/* Header */
 .header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
 .tool-title {
-  font-size: 2rem;
-  color: #333;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: -0.02em;
 }
 
+/* Textarea */
 textarea#text-input {
   width: 100%;
-  font-size: 1rem;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  min-height: 160px;
+  font-size: 1.125rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
   resize: vertical;
-  margin-bottom: 1rem;
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.06);
+  transition: border-color 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+textarea#text-input:focus {
+  border-color: #2563eb; /* blue-600 */
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.3);
+}
+
+/* Result box */
 .result-box {
-  background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1.5rem;
+  background: #f1f5f9;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.05);
+  margin-bottom: 2rem;
+  font-family: 'Segoe UI Mono', Consolas, monospace;
+  font-size: 1rem;
+  color: #334155;
 }
 
 .result-box p {
-  margin: 0.4rem 0;
-  font-size: 1rem;
+  margin: 0.35rem 0;
+  font-weight: 600;
 }
 
+/* Buttons */
 .btn {
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.5rem;
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
-  margin-top: 0.5rem;
+  transition: background-color 0.25s ease;
+  user-select: none;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgb(37 99 235 / 0.3);
+  color: white;
+  background-color: #2563eb; /* blue-600 */
 }
 
+.btn:hover {
+  background-color: #1e40af; /* blue-800 */
+}
+
+.btn:focus-visible {
+  outline: 3px solid #93c5fd; /* blue-300 */
+  outline-offset: 2px;
+}
+
+/* Secondary button style */
 .toggle-options-btn {
-  background-color: #eee;
-  color: #333;
-  display: flex;
+  background-color: #e2e8f0; /* gray-300 */
+  color: #334155;
+  display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: none;
+  border: none;
+  transition: background-color 0.3s ease;
 }
 
+.toggle-options-btn:hover,
+.toggle-options-btn:focus-visible {
+  background-color: #cbd5e1; /* gray-400 */
+  outline: none;
+}
+
+/* Arrow icon rotation */
 .arrow {
+  display: inline-block;
   transition: transform 0.3s ease;
+  user-select: none;
 }
 
+/* Rotate arrow when active */
+.toggle-options-btn[aria-expanded="true"] .arrow {
+  transform: rotate(90deg);
+}
+
+/* More options panel */
 .more-options {
   margin-top: 1rem;
-  padding: 1rem;
-  background-color: #fff;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 1.25rem 1.5rem;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.05);
 }
 
+/* Form labels */
 .fieldset-options {
   border: none;
   padding: 0;
@@ -80,10 +146,46 @@ textarea#text-input {
 
 .fieldset-options label {
   display: block;
-  margin: 0.5rem 0;
+  margin-bottom: 0.7rem;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
 }
 
+/* Reset button */
 .reset-btn {
-  background-color: #e74c3c;
-  color: #fff;
+  background-color: #ef4444; /* red-500 */
+  color: white;
+  box-shadow: 0 4px 8px rgb(239 68 68 / 0.35);
+}
+
+.reset-btn:hover {
+  background-color: #b91c1c; /* red-700 */
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .container {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .tool-title {
+    font-size: 1.75rem;
+  }
+
+  textarea#text-input {
+    min-height: 140px;
+    font-size: 1rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.125rem;
+  }
+
+  .toggle-options-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
