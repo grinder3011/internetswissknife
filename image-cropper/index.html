@@ -9,20 +9,20 @@
 <body>
 
   <header>
-    <h1 class="title-box">🖼️ Simple Image Cropper</h1>
+    <h1>🖼️ Simple Image Cropper</h1>
   </header>
 
   <main>
     <input type="file" id="imageInput" accept="image/*" />
     
-    <div class="controls-row draw-clear-row boxed-group">
+    <div class="controls-row">
       <button id="drawCropBtn">Draw new crop area</button>
       <button id="clearCropBtn" disabled>Clear crop area</button>
-    </div>
 
-    <div class="controls-row zoom-row boxed-group">
+      <!-- zoom buttons -->
       <button id="zoomInBtn" title="Zoom In">🔍➕</button>
       <button id="zoomOutBtn" title="Zoom Out">🔍➖</button>
+    
     </div>
 
     <div class="cropper-container">
@@ -30,7 +30,7 @@
       <div id="cropArea"></div>
     </div>
 
-    <div class="controls-row boxed-group">
+    <div class="controls-row">
       <button id="cropBtn" disabled>Crop</button>
 
       <!-- New: Download controls -->
