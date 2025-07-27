@@ -14,33 +14,38 @@
 
   <main>
     <input type="file" id="imageInput" accept="image/*" />
-    
-    <div class="controls-row">
-      <button id="drawCropBtn">Draw new crop area</button>
-      <button id="clearCropBtn" disabled>Clear crop area</button>
 
-      <!-- zoom buttons -->
-      <button id="zoomInBtn" title="Zoom In">🔍➕</button>
-      <button id="zoomOutBtn" title="Zoom Out">🔍➖</button>
-    
+    <!-- ✅ Top Controls (Draw / Clear / Zoom) inside a bounding box -->
+    <div class="controls-wrapper">
+      <div class="controls-row">
+        <button id="drawCropBtn">Draw new crop area</button>
+        <button id="clearCropBtn" disabled>Clear crop area</button>
+      </div>
+      <div class="controls-row">
+        <button id="zoomInBtn" title="Zoom In">🔍➕</button>
+        <button id="zoomOutBtn" title="Zoom Out">🔍➖</button>
+      </div>
     </div>
 
+    <!-- ✅ Cropper Container -->
     <div class="cropper-container">
       <img id="image" alt="Upload an image to crop" />
       <div id="cropArea"></div>
     </div>
 
-    <div class="controls-row">
-      <button id="cropBtn" disabled>Crop</button>
-
-      <!-- New: Download controls -->
-      <select id="downloadFormatSelect">
-        <option value="image/png">PNG</option>
-        <option value="image/jpeg">JPEG</option>
-      </select>
-      <button id="downloadBtn" disabled>Download</button>
+    <!-- ✅ Bottom Controls (Crop / Download) inside a bounding box -->
+    <div class="controls-wrapper">
+      <div class="controls-row">
+        <button id="cropBtn" disabled>Crop</button>
+        <select id="downloadFormatSelect">
+          <option value="image/png">PNG</option>
+          <option value="image/jpeg">JPEG</option>
+        </select>
+        <button id="downloadBtn" disabled>Download</button>
+      </div>
     </div>
-    
+
+    <!-- ✅ Cropped Result -->
     <div id="resultContainer">
       <h2>Cropped Result:</h2>
       <canvas id="resultCanvas"></canvas>
