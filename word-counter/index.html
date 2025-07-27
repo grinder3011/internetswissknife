@@ -3,25 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Word & Character Counter</title>
-  <link rel="stylesheet" href="counter.styles.css?v=2" />
+  <title>Word Counter</title>
+  <link rel="stylesheet" href="wordcounter.styles.css?v=2" />
 </head>
 <body>
   <div class="container">
-    <div class="inner-wrapper">
-      <header class="header">
-        <h1 class="tool-title">Word Counter</h1>
-      </header>
-
-      <textarea id="text-input" placeholder="Paste your text here..."></textarea>
-
-      <div class="result-box" id="result-box">
-        <p>Words: <span id="word-count">0</span></p>
-        <p>Characters: <span id="char-count">0</span></p>
-      </div>
-
-      <button class="btn reset-btn" id="reset-btn">Reset</button>
+    <div class="header">
+      <h1 class="tool-title">Word Counter</h1>
     </div>
+
+    <textarea id="text-input" placeholder="Paste your text here..."></textarea>
+
+    <div class="result-box">
+      <p>Words: <span id="word-count">0</span></p>
+      <p>Characters: <span id="char-count">0</span></p>
+    </div>
+
+    <button class="btn reset-btn" id="reset-btn">Reset</button>
   </div>
 
   <script src="wordcounter.js"></script>
