@@ -1,75 +1,148 @@
 body {
   font-family: Arial, sans-serif;
-  padding: 2rem;
+  background: #f9fafb;
+  margin: 0;
+  padding: 2rem 1rem;
   max-width: 800px;
-  margin: auto;
-  background: #f4f4f4;
-}
-
-h1 {
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
+  margin-left: auto;
+  margin-right: auto;
   color: #1f2937;
 }
 
-textarea {
-  width: 100%;
-  height: 120px;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
+h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  background-color: #4b6cb7;
+  color: white;
+  padding: 1rem 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgb(75 108 183 / 0.25);
+  user-select: none;
 }
 
+/* Textareas in full width boxed containers */
+textarea {
+  width: 100%;
+  min-height: 140px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  resize: vertical;
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.05);
+  transition: border-color 0.3s ease;
+  font-family: 'Consolas', monospace;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #4b6cb7;
+  box-shadow: 0 0 6px #4b6cb7aa;
+}
+
+/* Buttons container boxed and separated */
 .button-row {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   display: flex;
-  gap: 1rem;
+  justify-content: center;
+  gap: 12px;
   flex-wrap: wrap;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.08);
+  user-select: none;
 }
 
 button {
-  padding: 0.6rem 1.5rem;
+  padding: 0.65rem 1.8rem;
   font-size: 1rem;
-  background-color: #007acc;
-  color: white;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
+  font-weight: 600;
+  background-color: #4b6cb7;
+  color: white;
+  box-shadow: 0 3px 6px rgb(75 108 183 / 0.4);
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  user-select: none;
 }
 
-button:hover {
-  background-color: #005fa3;
+button:hover:not(:disabled) {
+  background-color: #3a5498;
+  box-shadow: 0 5px 10px rgb(58 84 152 / 0.5);
+}
+
+button:disabled {
+  background-color: #a0a5ad;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 button.secondary {
-  background-color: #e5e7eb;
-  color: #111827;
+  background-color: #e2e8f0;
+  color: #1f2937;
+  box-shadow: none;
+  font-weight: 600;
 }
 
-button.secondary:hover {
-  background-color: #d1d5db;
+button.secondary:hover:not(:disabled) {
+  background-color: #cbd5e1;
 }
 
+/* Diff output area styled nicely */
 .diff-output {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background: #fff;
-  border: 1px solid #ccc;
+  margin-top: 2rem;
+  background: white;
+  border-radius: 10px;
+  border: 1.5px solid #cbd5e1;
+  padding: 1.25rem 1.5rem;
+  font-family: 'Consolas', monospace;
+  font-size: 1rem;
+  color: #374151;
   white-space: pre-wrap;
-  border-radius: 4px;
-  font-family: Consolas, monospace;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.06);
+  user-select: text;
 }
 
 .diff-output ins {
-  background-color: #c6f6d5;
+  background-color: #d1fae5;
   text-decoration: none;
+  font-weight: 600;
+  color: #065f46;
+  border-radius: 4px;
+  padding: 0 2px;
 }
 
 .diff-output del {
-  background-color: #fed7d7;
+  background-color: #fee2e2;
   text-decoration: none;
+  font-weight: 600;
+  color: #991b1b;
+  border-radius: 4px;
+  padding: 0 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  body {
+    padding: 1rem 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    padding: 0.75rem 0;
+  }
+
+  button {
+    flex: 1 1 45%;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .button-row {
+    padding: 0.75rem 1rem;
+  }
 }
