@@ -63,7 +63,7 @@ drawCropBtn.addEventListener('click', () => {
     isDrawing = false;
 });
 
-// ✅ Start drawing crop
+// ✅ Start drawing crop (hope it works)
 image.addEventListener('mousedown', startDraw);
 image.addEventListener('touchstart', startDraw, { passive: false });
 
