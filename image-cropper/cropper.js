@@ -1,139 +1,206 @@
 const imageInput = document.getElementById('imageInput');
 const image = document.getElementById('image');
 const cropArea = document.getElementById('cropArea');
-const drawCropBtn = document.getElementById('drawCropBtn');
-const clearCropBtn = document.getElementById('clearCropBtn');
 const cropBtn = document.getElementById('cropBtn');
+const clearCropBtn = document.getElementById('clearCropBtn');
+const drawCropBtn = document.getElementById('drawCropBtn');
 const zoomInBtn = document.getElementById('zoomInBtn');
 const zoomOutBtn = document.getElementById('zoomOutBtn');
 const aspectRatioSelect = document.getElementById('aspectRatioSelect');
 const resultCanvas = document.getElementById('resultCanvas');
-const downloadFormat = document.getElementById('downloadFormat');
+const resultContainer = document.getElementById('resultContainer');
 
-let startX, startY, isDrawing = false, isMoving = false;
-let cropX = 0, cropY = 0, cropWidth = 0, cropHeight = 0;
-let imageScale = 1;
-let offsetX = 0, offsetY = 0;
-let aspectRatio = null;
+// ✅ Add new elements for download
+const downloadBtn = document.createElement('button');
+downloadBtn.textContent = 'Download';
+downloadBtn.id = 'downloadBtn';
+downloadBtn.disabled = true;
 
-// Load image
+const formatSelect = document.createElement('select');
+formatSelect.id = 'downloadFormatSelect';
+['png', 'jpeg', 'webp'].forEach(fmt => {
+    const opt = document.createElement('option');
+    opt.value = fmt;
+    opt.textContent = fmt.toUpperCase();
+    formatSelect.appendChild(opt);
+});
+
+document.querySelector('main').appendChild(downloadBtn);
+document.querySelector('main').appendChild(formatSelect);
+
+// State variables
+let cropStartX = 0;
+let cropStartY = 0;
+let cropWidth = 0;
+let cropHeight = 0;
+let isDrawing = false;
+let isDragging = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let currentScale = 1;
+
+// ✅ Load image
 imageInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      image.src = evt.target.result;
-      image.onload = () => {
-        resetCrop();
-      };
-    };
-    reader.readAsDataURL(file);
-  }
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            image.src = event.target.result;
+            cropArea.style.display = 'none';
+            cropBtn.disabled = true;
+            clearCropBtn.disabled = true;
+            downloadBtn.disabled = true;
+        };
+        reader.readAsDataURL(file);
+    }
 });
 
-function resetCrop() {
-  cropArea.style.display = 'none';
-  cropBtn.disabled = true;
-  clearCropBtn.disabled = true;
-  imageScale = 1;
-  image.style.transform = `scale(${imageScale})`;
-}
-
-// Draw new crop
+// ✅ Enable drawing crop area
 drawCropBtn.addEventListener('click', () => {
-  cropArea.style.display = 'none';
-  cropBtn.disabled = true;
-  clearCropBtn.disabled = true;
+    cropArea.style.display = 'none';
+    cropBtn.disabled = true;
+    clearCropBtn.disabled = true;
+    isDrawing = false;
 });
 
-clearCropBtn.addEventListener('click', resetCrop);
-
-// Zoom
-zoomInBtn.addEventListener('click', () => {
-  imageScale += 0.1;
-  image.style.transform = `scale(${imageScale})`;
-});
-zoomOutBtn.addEventListener('click', () => {
-  imageScale = Math.max(0.1, imageScale - 0.1);
-  image.style.transform = `scale(${imageScale})`;
-});
-
-// Aspect ratio
-aspectRatioSelect.addEventListener('change', () => {
-  aspectRatio = aspectRatioSelect.value === 'free' ? null : eval(aspectRatioSelect.value);
-});
-
-// Mouse & Touch events for crop area
-function getPointerPos(e) {
-  if (e.touches && e.touches.length > 0) {
-    return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  }
-  return { x: e.clientX, y: e.clientY };
-}
-
+// ✅ Start drawing crop
 image.addEventListener('mousedown', startDraw);
-image.addEventListener('touchstart', startDraw);
+image.addEventListener('touchstart', startDraw, { passive: false });
 
 function startDraw(e) {
-  const pos = getPointerPos(e);
-  startX = pos.x - image.offsetLeft;
-  startY = pos.y - image.offsetTop;
-  isDrawing = true;
-  cropArea.style.display = 'block';
-  cropArea.style.left = `${startX}px`;
-  cropArea.style.top = `${startY}px`;
-  cropArea.style.width = `0px`;
-  cropArea.style.height = `0px`;
-  e.preventDefault();
+    if (e.type === 'touchstart') e.preventDefault();
+    const pos = getMousePosition(e);
+    cropStartX = pos.x;
+    cropStartY = pos.y;
+    isDrawing = true;
+    cropArea.style.display = 'block';
 }
 
-document.addEventListener('mousemove', draw);
-document.addEventListener('touchmove', draw);
+image.addEventListener('mousemove', drawCrop);
+image.addEventListener('touchmove', drawCrop, { passive: false });
 
-function draw(e) {
-  if (!isDrawing) return;
-  const pos = getPointerPos(e);
-  let currentX = pos.x - image.offsetLeft;
-  let currentY = pos.y - image.offsetTop;
-  cropWidth = Math.abs(currentX - startX);
-  cropHeight = Math.abs(currentY - startY);
+function drawCrop(e) {
+    if (!isDrawing) return;
+    if (e.type === 'touchmove') e.preventDefault();
+    const pos = getMousePosition(e);
+    cropWidth = pos.x - cropStartX;
+    cropHeight = pos.y - cropStartY;
 
-  if (aspectRatio) {
-    cropHeight = cropWidth / aspectRatio;
-  }
+    if (cropWidth < 0) {
+        cropArea.style.left = pos.x + 'px';
+        cropArea.style.width = Math.abs(cropWidth) + 'px';
+    } else {
+        cropArea.style.left = cropStartX + 'px';
+        cropArea.style.width = cropWidth + 'px';
+    }
 
-  cropX = Math.min(currentX, startX);
-  cropY = Math.min(currentY, startY);
-  cropArea.style.left = `${cropX}px`;
-  cropArea.style.top = `${cropY}px`;
-  cropArea.style.width = `${cropWidth}px`;
-  cropArea.style.height = `${cropHeight}px`;
+    if (cropHeight < 0) {
+        cropArea.style.top = pos.y + 'px';
+        cropArea.style.height = Math.abs(cropHeight) + 'px';
+    } else {
+        cropArea.style.top = cropStartY + 'px';
+        cropArea.style.height = cropHeight + 'px';
+    }
 }
 
-document.addEventListener('mouseup', endDraw);
-document.addEventListener('touchend', endDraw);
+image.addEventListener('mouseup', endDraw);
+image.addEventListener('touchend', endDraw);
 
 function endDraw() {
-  if (isDrawing) {
-    isDrawing = false;
-    cropBtn.disabled = false;
-    clearCropBtn.disabled = false;
-  }
+    if (isDrawing) {
+        isDrawing = false;
+        cropBtn.disabled = false;
+        clearCropBtn.disabled = false;
+    }
 }
 
-// Crop and download
-cropBtn.addEventListener('click', () => {
-  const canvas = resultCanvas;
-  const ctx = canvas.getContext('2d');
-  canvas.width = cropWidth;
-  canvas.height = cropHeight;
-
-  ctx.drawImage(image, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
-
-  // Download
-  const format = downloadFormat.value;
-  const link = document.createElement('a');
-  link.download = `cropped.${format.split('/')[1]}`;
-  link.href = canvas.toDataURL(format);
-  link.click();
+// ✅ Drag crop area
+cropArea.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    isDragging = true;
+    const pos = getMousePosition(e);
+    dragOffsetX = pos.x - cropArea.offsetLeft;
+    dragOffsetY = pos.y - cropArea.offsetTop;
 });
+
+cropArea.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    isDragging = true;
+    const pos = getMousePosition(e);
+    dragOffsetX = pos.x - cropArea.offsetLeft;
+    dragOffsetY = pos.y - cropArea.offsetTop;
+}, { passive: false });
+
+document.addEventListener('mousemove', dragCropArea);
+document.addEventListener('touchmove', dragCropArea, { passive: false });
+
+function dragCropArea(e) {
+    if (!isDragging) return;
+    if (e.type === 'touchmove') e.preventDefault();
+    const pos = getMousePosition(e);
+    cropArea.style.left = (pos.x - dragOffsetX) + 'px';
+    cropArea.style.top = (pos.y - dragOffsetY) + 'px';
+}
+
+document.addEventListener('mouseup', () => isDragging = false);
+document.addEventListener('touchend', () => isDragging = false);
+
+// ✅ Clear crop
+clearCropBtn.addEventListener('click', () => {
+    cropArea.style.display = 'none';
+    cropBtn.disabled = true;
+    clearCropBtn.disabled = true;
+});
+
+// ✅ Crop image
+cropBtn.addEventListener('click', () => {
+    const rect = cropArea.getBoundingClientRect();
+    const imgRect = image.getBoundingClientRect();
+    const scaleX = image.naturalWidth / imgRect.width;
+    const scaleY = image.naturalHeight / imgRect.height;
+
+    const x = (rect.left - imgRect.left) * scaleX;
+    const y = (rect.top - imgRect.top) * scaleY;
+    const width = rect.width * scaleX;
+    const height = rect.height * scaleY;
+
+    resultCanvas.width = width;
+    resultCanvas.height = height;
+    const ctx = resultCanvas.getContext('2d');
+    ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
+
+    downloadBtn.disabled = false;
+});
+
+// ✅ Download cropped image
+downloadBtn.addEventListener('click', () => {
+    const format = formatSelect.value;
+    const link = document.createElement('a');
+    link.download = `cropped.${format}`;
+    link.href = resultCanvas.toDataURL(`image/${format}`);
+    link.click();
+});
+
+// ✅ Zoom functionality
+zoomInBtn.addEventListener('click', () => {
+    currentScale += 0.1;
+    image.style.transform = `scale(${currentScale})`;
+});
+
+zoomOutBtn.addEventListener('click', () => {
+    if (currentScale > 0.2) {
+        currentScale -= 0.1;
+        image.style.transform = `scale(${currentScale})`;
+    }
+});
+
+// ✅ Helper for mouse/touch position
+function getMousePosition(e) {
+    const rect = image.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+    };
+}
