@@ -66,17 +66,10 @@ body {
   user-select: none;
 }
 
-/* ✅ Fix: Make bottom buttons uniform */
-#cropBtn,
-#clearCropBtn,
-#drawCropBtn,
-#downloadBtn {
-  min-width: 140px;
-}
-
+/* ✅ Adjusted crop button padding to match others */
 #cropBtn {
   margin-top: 15px;
-  padding: 10px 20px;
+  padding: 8px 14px; /* Same as .controls-row buttons */
   font-size: 1rem;
 }
 
