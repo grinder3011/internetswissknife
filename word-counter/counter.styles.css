@@ -1,14 +1,17 @@
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
+  background-color: #fff; /* Use pure white background like cropper page */
+  color: #222;            /* Slightly darker text for better contrast */
 }
 
 .container {
   max-width: 640px;
-  margin: auto;
-  padding: 1.5rem;
+  margin: 2rem auto;      /* More vertical breathing room */
+  padding: 2rem;
+  background: #fafafa;    /* Very subtle off-white panel */
+  border-radius: 12px;    /* Rounded corners like cropper’s controls */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Stronger subtle shadow */
 }
 
 .header {
@@ -17,40 +20,60 @@ body {
 }
 
 .tool-title {
-  font-size: 2rem;
-  color: #333;
+  font-size: 2.4rem;       /* Slightly bigger, stronger */
+  color: #222;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* nicer heading font */
 }
 
 textarea#text-input {
   width: 100%;
-  font-size: 1rem;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  font-size: 1.1rem;
+  padding: 1rem 1.2rem;
+  border: 1.5px solid #ccc;
+  border-radius: 12px;
   resize: vertical;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.3s ease;
+}
+
+textarea#text-input:focus {
+  border-color: #007bff; /* Blue border on focus like cropper buttons */
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
 }
 
 .result-box {
   background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
 }
 
 .result-box p {
-  margin: 0.4rem 0;
-  font-size: 1rem;
+  margin: 0.6rem 0;
+  font-weight: 500;
+  color: #444;
 }
 
 .btn {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border-radius: 6px;
+  padding: 0.7rem 1.4rem;
+  font-size: 1.1rem;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
+  background-color: #007bff; /* Strong blue button */
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+  box-shadow: 0 6px 14px rgba(0, 86, 179, 0.6);
 }
 
 .toggle-options-btn {
@@ -59,6 +82,16 @@ textarea#text-input {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-options-btn:hover {
+  background-color: #ddd;
 }
 
 .arrow {
@@ -66,11 +99,12 @@ textarea#text-input {
 }
 
 .more-options {
-  margin-top: 1rem;
-  padding: 1rem;
+  margin-top: 1.5rem;
+  padding: 1.2rem;
   background-color: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .fieldset-options {
@@ -80,12 +114,25 @@ textarea#text-input {
 
 .fieldset-options label {
   display: block;
-  margin: 0.5rem 0;
+  margin: 0.6rem 0;
+  font-size: 1rem;
+  color: #555;
 }
 
 .reset-btn {
   background-color: #e74c3c;
   color: #fff;
+  border-radius: 12px;
+  padding: 0.7rem 1.4rem;
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 1rem;
 }
 
-
+.reset-btn:hover {
+  background-color: #c0392b;
+  box-shadow: 0 6px 14px rgba(192, 57, 43, 0.6);
+}
