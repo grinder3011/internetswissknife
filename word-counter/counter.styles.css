@@ -26,6 +26,13 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* nicer heading font */
 }
 
+/* Apply box-sizing globally */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 textarea#text-input {
   width: 100%;
   font-size: 1.1rem;
@@ -35,6 +42,13 @@ textarea#text-input {
   resize: vertical;
   margin-bottom: 1.5rem;
   transition: border-color 0.3s ease;
+  overflow-wrap: break-word; /* Helps with long words */
+  /* Optional: min-height and max-height */
+  min-height: 150px;
+  max-height: 400px;
+  /* Remove any unnecessary margins or indentation */
+  margin-left: 0;
+  margin-right: 0;
 }
 
 textarea#text-input:focus {
