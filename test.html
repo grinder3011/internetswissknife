@@ -1,201 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Crop Tool Visual Onboarding Demo</title>
-<style>
-  body {
-    margin: 0;
-    background: #f5f8fa;
-    font-family: 'Inter', sans-serif;
-    display: flex;
-    height: 100vh;
-    align-items: center;
-    justify-content: center;
-  }
-  #cropper-container {
-    position: relative;
-    width: 360px;
-    height: 360px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    overflow: hidden;
-    user-select: none;
-  }
-  .step {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 280px;
-    height: 280px;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-  }
-  .step.active {
-    opacity: 1;
-  }
-
-  /* Step 1: Upload Icon */
-  .upload-icon {
-    width: 120px;
-    margin: 0 auto 24px;
-  }
-  .upload-arrow {
-    margin-top: -12px;
-    width: 64px;
-    animation: bounce 1.8s infinite ease-in-out;
-  }
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(12px); }
-  }
-
-  /* Step 2: Crop box + handles + hand cursor */
-  .crop-box {
-    position: relative;
-    width: 180px;
-    height: 180px;
-    margin: 0 auto;
-    border: 3px dashed #3b82f6;
-    border-radius: 10px;
-    box-sizing: border-box;
-  }
-  .handle {
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    background: #3b82f6;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    box-shadow: 0 2px 8px rgba(59,130,246,0.6);
-  }
-  .handle.tl { top: -9px; left: -9px; }
-  .handle.tr { top: -9px; right: -9px; }
-  .handle.bl { bottom: -9px; left: -9px; }
-  .handle.br { bottom: -9px; right: -9px; }
-
-  .hand-cursor {
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    top: 70%;
-    left: 60%;
-    background: url('data:image/svg+xml;utf8,<svg fill="none" stroke="%233b82f6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 21V6a2 2 0 1 1 4 0v5"></path><path d="M11 14l3-3-2-2"></path><path d="M17 3v7a4 4 0 0 1-4 4h-1"></path></svg>') no-repeat center center;
-    background-size: contain;
-    animation: hand-drag 3s ease-in-out infinite;
-    transform-origin: center center;
-  }
-  @keyframes hand-drag {
-    0%, 100% { transform: translate(0,0) rotate(0deg); }
-    50% { transform: translate(10px, -10px) rotate(15deg); }
-  }
-
-  /* Step 3: Crop Button */
-  .crop-button {
-    display: inline-block;
-    margin-top: 40px;
-    padding: 12px 32px;
-    font-size: 18px;
-    font-weight: 600;
-    color: white;
-    background-color: #3b82f6;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    box-shadow: 0 8px 16px rgba(59,130,246,0.4);
-    position: relative;
-    overflow: hidden;
-  }
-  .crop-button::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0; left: 0;
-    background: rgba(255,255,255,0.3);
-    border-radius: 30px;
-    opacity: 0;
-    pointer-events: none;
-    animation: pulse 2.4s infinite ease-in-out;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 1; }
-  }
-  .clicked-effect {
-    animation: click-glow 0.6s ease forwards;
-  }
-  @keyframes click-glow {
-    0% { box-shadow: 0 8px 16px rgba(59,130,246,0.4); }
-    50% { box-shadow: 0 0 30px 12px rgba(59,130,246,0.8); }
-    100% { box-shadow: 0 8px 16px rgba(59,130,246,0.4); }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Word & Character Counter +</title>
+  <link rel="stylesheet" href="counter.styles.css?v=2" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
 <body>
+  <div class="container">
+    <header class="header">
+      <h1 class="tool-title">Word & Character Counter +</h1>
+    </header>
 
-<div id="cropper-container">
+    <main class="main-content">
+      <label for="text-input" class="sr-only">Enter your text to analyze</label>
+      <textarea id="text-input" placeholder="Start typing or paste your text here..." rows="8" aria-describedby="text-desc"></textarea>
+      <div id="text-desc" class="sr-only">Input your text to count words and characters</div>
 
-  <!-- Step 1 -->
-  <div class="step active" id="step1">
-    <svg class="upload-icon" viewBox="0 0 64 64" fill="none" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="12" y="20" width="40" height="28" rx="4" ry="4"/>
-      <path d="M32 10v22"/>
-      <path d="M20 22l12-12 12 12"/>
-    </svg>
-    <svg class="upload-arrow" viewBox="0 0 64 64" fill="none" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M32 48V16"/>
-      <path d="M16 32l16-16 16 16"/>
-    </svg>
+      <div class="result-box">
+        <p><strong>Words:</strong> <span id="word-count">0</span></p>
+        <p><strong>Characters:</strong> <span id="char-count">0</span></p>
+        <p><strong>Characters (no spaces):</strong> <span id="char-nospace-count">0</span></p>
+        <p><strong>Sentences:</strong> <span id="sentence-count">0</span></p>
+        <p><strong>Unique words:</strong> <span id="unique-word-count">0</span></p>
+      </div>
+
+      <button id="toggle-options-btn" class="btn toggle-options-btn" aria-expanded="false" aria-controls="more-options" type="button">
+        <span class="options-label">More options</span>
+        <i class="fas fa-chevron-down arrow"></i>
+      </button>
+
+      <section id="more-options" class="more-options" hidden>
+        <fieldset class="fieldset-options">
+          <legend>Options</legend>
+          <label>
+            <input type="checkbox" id="include-spaces" checked />
+            Count spaces in total character count
+          </label>
+          <label>
+            <input type="checkbox" id="ignore-punctuation" />
+            Ignore punctuation in word count
+          </label>
+          <label>
+            <input type="checkbox" id="count-sentences" checked />
+            Enable sentence count
+          </label>
+          <label>
+            <input type="checkbox" id="filter-1-letter" />
+            Exclude 1-letter words from unique count
+          </label>
+          <label>
+            <input type="checkbox" id="filter-2-letter" />
+            Exclude 2-letter words from unique count
+          </label>
+        </fieldset>
+
+        <fieldset class="fieldset-options">
+          <legend>Case Conversion</legend>
+          <button id="to-uppercase" class="btn"><i class="fas fa-text-height"></i> UPPERCASE</button>
+          <button id="to-lowercase" class="btn"><i class="fas fa-text-height"></i> lowercase</button>
+          <button id="to-titlecase" class="btn"><i class="fas fa-text-height"></i> Title Case</button>
+        </fieldset>
+
+        <fieldset class="fieldset-options">
+          <legend>Original Text Tools</legend>
+          <button id="copy-original" class="btn"><i class="fas fa-copy"></i> Copy Original</button>
+          <button id="download-original" class="btn"><i class="fas fa-download"></i> Download Original</button>
+        </fieldset>
+
+        <button id="reset-btn" class="btn reset-btn extra-spacing">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+      </section>
+
+      <section class="export-controls">
+        <button id="copy-results" class="btn"><i class="fas fa-copy"></i> Copy Results</button>
+        <button id="download-results" class="btn"><i class="fas fa-download"></i> Download Results</button>
+      </section>
+    </main>
   </div>
 
-  <!-- Step 2 -->
-  <div class="step" id="step2">
-    <div class="crop-box">
-      <div class="handle tl"></div>
-      <div class="handle tr"></div>
-      <div class="handle bl"></div>
-      <div class="handle br"></div>
-      <div class="hand-cursor"></div>
-    </div>
-  </div>
-
-  <!-- Step 3 -->
-  <div class="step" id="step3">
-    <button class="crop-button" id="cropBtn">Crop</button>
-  </div>
-
-</div>
-
-<script>
-  let currentStep = 1;
-  const stepsCount = 3;
-
-  function showStep(n) {
-    for(let i=1; i <= stepsCount; i++) {
-      const step = document.getElementById(`step${i}`);
-      step.classList.toggle('active', i === n);
-    }
-  }
-
-  // Auto cycle steps every 4 seconds
-  setInterval(() => {
-    currentStep++;
-    if(currentStep > stepsCount) currentStep = 1;
-    showStep(currentStep);
-  }, 4000);
-
-  // Animate button click effect on step 3
-  const cropBtn = document.getElementById('cropBtn');
-  cropBtn.addEventListener('click', () => {
-    cropBtn.classList.add('clicked-effect');
-    setTimeout(() => cropBtn.classList.remove('clicked-effect'), 600);
-  });
-</script>
-
+  <script src="counter.js"></script>
 </body>
 </html>
