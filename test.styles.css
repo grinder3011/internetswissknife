@@ -1,0 +1,131 @@
+/* Basic Reset & Typography */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.tool-title {
+  font-size: 1.8rem;
+  color: #2a2a2a;
+}
+
+textarea {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  min-height: 160px;
+}
+
+.result-box {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-left: 4px solid #007acc;
+  border-radius: 6px;
+}
+
+.result-box p {
+  margin: 0.3rem 0;
+  font-size: 1rem;
+}
+
+.btn {
+  background-color: #007acc;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  margin: 0.3rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #005f99;
+}
+
+.toggle-options-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin: 1rem 0;
+  background-color: #e0e7ef;
+  color: #333;
+  border: 1px solid #ccc;
+  font-weight: 600;
+}
+
+.more-options {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #eef4f8;
+  border-radius: 6px;
+  border: 1px solid #c9d6e0;
+}
+
+.fieldset-options {
+  margin-bottom: 1rem;
+  border: none;
+  padding: 0;
+}
+
+.fieldset-options legend {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.fieldset-options label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.extra-spacing {
+  margin-top: 1rem;
+}
+
+.export-controls {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
