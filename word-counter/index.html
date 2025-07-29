@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Word & Character Counter +</title>
+   <link rel="stylesheet" href="../tooltip.styles.css?v=3">
   <link rel="stylesheet" href="counter.styles.css?v=3" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
@@ -18,6 +19,20 @@
       <textarea id="text-input" placeholder="Start typing or paste your text here..." rows="8" aria-describedby="text-desc"></textarea>
       <div id="text-desc" class="sr-only">Input your text to count words and characters</div>
 
+       <!-- Tooltip trigger -->
+      <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
+      
+      <!-- Tooltip content -->
+      <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
+        <p>💡 <strong>How to use this tool:</strong></p>
+        <ul>
+          <li>📋 Paste or upload JSON to format or validate.</li>
+          <li>✨ Click <em>Format JSON</em> to prettify your JSON.</li>
+          <li>🔍 Click <em>Validate JSON</em> to check for errors.</li>
+          <li>⬇️ Download or 📋 Copy your formatted JSON.</li>
+        </ul>
+      </div>
+      
       <section class="result-box">
         <p><i class="fas fa-file-alt"></i> <strong>Words:</strong> <span id="word-count">0</span></p>
         <p><i class="fas fa-keyboard"></i> <strong>Characters:</strong> <span id="char-count">0</span></p>
@@ -70,7 +85,8 @@
       </section>
     </main>
   </div>
-
+  
+   <script src="../tooltip.js" defer></script>
   <script src="counter.js"></script>
 </body>
 </html>
