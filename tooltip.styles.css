@@ -23,6 +23,7 @@
 
 .tooltip-box {
   margin-top: 0.5rem;
+  margin-bottom: 1rem; /* add this line */
   background: #e6f0ff;
   border-left: 5px solid #4b6cb7;
   padding: 0.8rem 1rem;
