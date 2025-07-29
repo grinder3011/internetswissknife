@@ -19,8 +19,24 @@
       <div id="text-desc" class="sr-only">Input your text to count words and characters</div>
 
       <section class="result-box">
-        <p><i class="fas fa-file-alt"></i> <strong>Words:</strong> <span id="word-count">0</span></p>
-        <p><i class="fas fa-keyboard"></i> <strong>Characters:</strong> <span id="char-count">0</span></p>
+        <p><i class="fas fa-file-alt"></i> <strong>Words:</strong> <span id="word-count">0</span>
+          <span class="tooltip-section">
+            <button class="tooltip-btn" aria-describedby="tooltip1-desc" aria-haspopup="true" aria-expanded="false" type="button">?</button>
+            <div class="tooltip" id="tooltip1-desc" role="tooltip" hidden>
+              This shows the total word count based on your input text.
+            </div>
+          </span>
+        </p>
+
+        <p><i class="fas fa-keyboard"></i> <strong>Characters:</strong> <span id="char-count">0</span>
+          <span class="tooltip-section">
+            <button class="tooltip-btn" aria-describedby="tooltip2-desc" aria-haspopup="true" aria-expanded="false" type="button">?</button>
+            <div class="tooltip" id="tooltip2-desc" role="tooltip" hidden>
+              Characters counted include all visible characters, optionally including spaces.
+            </div>
+          </span>
+        </p>
+
         <p><i class="fas fa-ban"></i> <strong>Characters (no spaces):</strong> <span id="char-nospace-count">0</span></p>
         <p><i class="fas fa-quote-left"></i> <strong>Sentences:</strong> <span id="sentence-count">-</span></p>
         <p><i class="fas fa-atom"></i> <strong>Unique words:</strong> <span id="unique-word-count">0</span></p>
@@ -28,22 +44,6 @@
         <div class="result-actions">
           <button id="copy-results" class="btn action-btn" title="Copy Results"><i class="fas fa-copy"></i></button>
           <button id="download-results" class="btn action-btn" title="Download Results"><i class="fas fa-download"></i></button>
-          
-          <!-- Tooltip button inserted here -->
-          <button id="tooltip-btn" class="tooltip-btn" title="How to use this tool?">
-            💡 How to use this tool?
-          </button>
-        </div>
-
-        <!-- Tooltip text container inserted here -->
-        <div id="tooltip-text" class="tooltip-text hidden" aria-live="polite">
-          <p>💡 <strong>How to use this tool:</strong></p>
-          <ul>
-            <li>📝 Paste or type your text into the input area.</li>
-            <li>📊 See real-time counts for words, characters, sentences, and unique words.</li>
-            <li>⚙️ Use options to customize counting behavior.</li>
-            <li>📋 Copy or ⬇️ download results with the buttons above.</li>
-          </ul>
         </div>
       </section>
 
@@ -88,13 +88,5 @@
   </div>
 
   <script src="counter.js"></script>
-
-  <!-- Tooltip toggle script -->
-  <script>
-    document.getElementById('tooltip-btn')?.addEventListener('click', function () {
-      const tooltip = document.getElementById('tooltip-text');
-      tooltip.classList.toggle('hidden');
-    });
-  </script>
 </body>
 </html>
