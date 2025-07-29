@@ -1,0 +1,48 @@
+/* tooltip-module.css */
+.tooltip-toggle-btn {
+  background: transparent;
+  color: #4b6cb7;
+  padding: 0.3rem 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1.5px solid transparent;
+  transition: color 0.3s, border-color 0.3s, text-decoration 0.3s;
+  user-select: none;
+  text-decoration: none;
+}
+
+.tooltip-toggle-btn:hover,
+.tooltip-toggle-btn:focus {
+  background: transparent;
+  color: #4b6cb7;
+  border-color: transparent;
+  outline: none;
+  text-decoration: underline;
+}
+
+.tooltip-box {
+  margin-top: 0.5rem;
+  background: #e6f0ff;
+  border-left: 5px solid #4b6cb7;
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+  color: #1b2a7a;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  max-width: 800px;
+  user-select: text;
+}
+
+.tooltip-box ul {
+  margin: 0.3rem 0 0 1.2rem;
+  padding: 0;
+}
+
+.tooltip-box li {
+  margin-bottom: 0.4rem;
+}
+
+.hidden {
+  display: none;
+}
