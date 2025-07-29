@@ -1,24 +1,18 @@
-/* Base Reset & Layout */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f9fafb;
-  color: #222;
-  margin: 0; padding: 0;
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 1rem;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f7;
+  color: #333;
 }
 
 .container {
-  max-width: 600px;
-  width: 100%;
-  background: #fff;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background-color: #fff;
   border-radius: 8px;
-  padding: 1.5rem 2rem;
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
 }
 
 .header {
@@ -27,234 +21,144 @@ body {
 }
 
 .tool-title {
-  font-weight: 700;
   font-size: 1.8rem;
-  color: #333;
-  user-select: none;
+  color: #2d2d2d;
 }
 
-/* Textarea */
-#text-input {
+.section-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #444;
+}
+
+.input-label,
+.result-label {
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+textarea {
   width: 100%;
+  padding: 0.75rem;
   font-size: 1rem;
-  line-height: 1.4;
-  padding: 0.8rem 1rem;
-  border: 1px solid #ccc;
   border-radius: 6px;
+  border: 1px solid #ccc;
   resize: vertical;
-  box-sizing: border-box;
-  font-family: inherit;
-  margin-bottom: 1.5rem;
-  transition: border-color 0.3s;
-}
-#text-input:focus {
-  outline: none;
-  border-color: #0078d4;
-  box-shadow: 0 0 6px #0078d4aa;
+  background-color: #fdfdfd;
 }
 
-/* Result Box */
 .result-box {
-  background: #f4f7fa;
-  border: 1px solid #d4d9df;
+  background-color: #fafafa;
+  padding: 1rem;
   border-radius: 6px;
-  padding: 1rem 1.5rem;
+  border: 1px solid #ddd;
+  margin-top: 0.5rem;
   margin-bottom: 1rem;
-  user-select: text;
 }
 
 .result-box p {
-  margin: 0.35rem 0;
-  font-size: 1.05rem;
+  margin: 0.4rem 0;
+}
+
+.result-buttons,
+.original-text-buttons,
+.case-conversion-buttons {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
+  margin-top: 0.75rem;
 }
 
-.result-actions {
-  margin-top: 1rem;
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-start;
-}
-
-.action-btn {
-  border: none;
-  background: #0078d4;
+.btn {
+  background-color: #4a90e2;
   color: white;
-  padding: 0.45rem 0.9rem;
-  font-size: 1.2rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.25s;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.action-btn:hover,
-.action-btn:focus {
-  background: #005a9e;
-  outline: none;
-}
-
-/* Toggle Options Button */
-.toggle-options-btn {
-  background: transparent;
   border: none;
-  font-size: 1.05rem;
-  color: #555;
+  border-radius: 4px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
   cursor: pointer;
-  user-select: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn.small {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.6rem;
+}
+
+.btn:hover {
+  background-color: #357bd8;
+}
+
+.toggle-options-btn {
   margin-bottom: 1rem;
+  background-color: #666;
 }
 
-.toggle-options-btn .arrow {
-  transition: transform 0.3s ease;
-}
-
-.toggle-options-btn[aria-expanded="true"] .arrow {
-  transform: rotate(180deg);
-}
-
-/* More Options Panel */
-.more-options {
-  border-top: 1px solid #ccc;
-  padding-top: 1rem;
-  user-select: none;
-}
-
-/* Fieldset Groups */
 .fieldset-options {
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  padding: 1rem 1.2rem;
+  padding: 1rem;
   margin-bottom: 1rem;
-  background: #fafafa;
+  background-color: #f9f9f9;
 }
 
 .fieldset-options legend {
-  font-weight: 600;
-  font-size: 1.1rem;
-  margin-bottom: 0.6rem;
-  color: #444;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  font-weight: bold;
+  padding: 0 0.5rem;
+  font-size: 1rem;
+  color: #222;
 }
 
-/* Labels inside fieldset */
 .fieldset-options label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-top: 0.4rem;
   font-size: 0.95rem;
   cursor: pointer;
 }
 
-/* Checkboxes */
-input[type="checkbox"] {
-  margin-right: 0.6rem;
-  cursor: pointer;
-}
-
-/* Case Conversion Buttons */
-.case-buttons {
-  display: flex;
-  gap: 0.6rem;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-
-.case-btn {
-  flex: 1 1 30%;
-  background: #0078d4;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 0.7rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.3rem;
-  transition: background-color 0.25s;
-}
-
-.case-btn:hover,
-.case-btn:focus {
-  background: #005a9e;
-  outline: none;
-}
-
-/* Original Text Tools Buttons */
-.original-text-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.5rem;
-}
-
-.original-text-actions .btn {
-  flex: 1 1 48%;
-  font-size: 1rem;
-  padding: 0.5rem 0.8rem;
-  background: #28a745;
-  border: none;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  transition: background-color 0.25s;
-}
-
-.original-text-actions .btn:hover,
-.original-text-actions .btn:focus {
-  background: #1e7e34;
-  outline: none;
-}
-
-/* Reset Button */
 .reset-btn {
-  width: 100%;
-  background: #dc3545;
-  color: white;
-  border: none;
-  padding: 0.75rem;
-  font-weight: 700;
-  font-size: 1.05rem;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background-color 0.3s;
+  background-color: #d9534f;
 }
 
-.reset-btn:hover,
-.reset-btn:focus {
-  background: #a71d2a;
-  outline: none;
+.reset-btn:hover {
+  background-color: #c9302c;
 }
 
-/* Extra Spacing Utility */
-.extra-spacing {
-  margin-top: 1.5rem;
+.tool-info-section {
+  border-top: 1px solid #ddd;
+  margin-top: 2rem;
+  padding-top: 1rem;
 }
 
-/* Accessibility hidden */
+.tool-info-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+}
+
+.tool-info-list {
+  padding-left: 1.2rem;
+  list-style: disc;
+}
+
+.tool-info-list li {
+  margin-bottom: 0.6rem;
+  font-size: 0.95rem;
+}
+
+/* Accessibility */
 .sr-only {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  border: 0 !important;
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
