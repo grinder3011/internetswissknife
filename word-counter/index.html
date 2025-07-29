@@ -28,6 +28,22 @@
         <div class="result-actions">
           <button id="copy-results" class="btn action-btn" title="Copy Results"><i class="fas fa-copy"></i></button>
           <button id="download-results" class="btn action-btn" title="Download Results"><i class="fas fa-download"></i></button>
+          
+          <!-- Tooltip button inserted here -->
+          <button id="tooltip-btn" class="tooltip-btn" title="How to use this tool?">
+            💡 How to use this tool?
+          </button>
+        </div>
+
+        <!-- Tooltip text container inserted here -->
+        <div id="tooltip-text" class="tooltip-text hidden" aria-live="polite">
+          <p>💡 <strong>How to use this tool:</strong></p>
+          <ul>
+            <li>📝 Paste or type your text into the input area.</li>
+            <li>📊 See real-time counts for words, characters, sentences, and unique words.</li>
+            <li>⚙️ Use options to customize counting behavior.</li>
+            <li>📋 Copy or ⬇️ download results with the buttons above.</li>
+          </ul>
         </div>
       </section>
 
@@ -72,5 +88,13 @@
   </div>
 
   <script src="counter.js"></script>
+
+  <!-- Tooltip toggle script -->
+  <script>
+    document.getElementById('tooltip-btn')?.addEventListener('click', function () {
+      const tooltip = document.getElementById('tooltip-text');
+      tooltip.classList.toggle('hidden');
+    });
+  </script>
 </body>
 </html>
