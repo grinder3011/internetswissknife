@@ -1,169 +1,202 @@
-// === Word & Character Counter Plus JS ===
+// counter.js
 
-const textarea = document.getElementById("text-input");
-const wordCount = document.getElementById("word-count");
-const charCount = document.getElementById("char-count");
-const charNoSpaceCount = document.getElementById("char-nospace-count");
-const sentenceCount = document.getElementById("sentence-count");
-const uniqueWordCount = document.getElementById("unique-word-count");
+// Elements
+const textarea = document.getElementById('text-input');
 
-const includeSpaces = document.getElementById("include-spaces");
-const ignorePunctuation = document.getElementById("ignore-punctuation");
-const enableSentenceCount = document.getElementById("enable-sentence-count");
-const excludeOneLetterWords = document.getElementById("exclude-1-letter");
-const excludeTwoLetterWords = document.getElementById("exclude-2-letter");
+const wordCountEl = document.getElementById('word-count');
+const charCountEl = document.getElementById('char-count');
+const charNoSpaceCountEl = document.getElementById('char-nospace-count');
+const sentenceCountEl = document.getElementById('sentence-count');
+const uniqueWordCountEl = document.getElementById('unique-word-count');
 
-const uppercaseBtn = document.getElementById("uppercase-btn");
-const lowercaseBtn = document.getElementById("lowercase-btn");
-const titlecaseBtn = document.getElementById("titlecase-btn");
+const includeSpacesCheckbox = document.getElementById('include-spaces');
+const ignorePunctuationCheckbox = document.getElementById('ignore-punctuation');
+const countSentencesCheckbox = document.getElementById('count-sentences');
+const filterOneLetterCheckbox = document.getElementById('filter-1-letter');
+const filterTwoLetterCheckbox = document.getElementById('filter-2-letter');
 
-const copyResultsBtn = document.getElementById("copy-results-btn");
-const downloadResultsBtn = document.getElementById("download-results-btn");
-const copyOriginalBtn = document.getElementById("copy-original-btn");
-const downloadOriginalBtn = document.getElementById("download-original-btn");
+const toggleOptionsBtn = document.getElementById('toggle-options-btn');
+const moreOptionsSection = document.getElementById('more-options');
 
-const resetBtn = document.getElementById("reset-btn");
-const toggleOptionsBtn = document.getElementById("toggle-options-btn");
-const moreOptions = document.getElementById("more-options");
+const copyResultsBtn = document.getElementById('copy-results');
+const downloadResultsBtn = document.getElementById('download-results');
 
-let originalTextBackup = "";
+const copyOriginalBtn = document.getElementById('copy-original');
+const downloadOriginalBtn = document.getElementById('download-original');
 
-function stripHTML(input) {
-  const div = document.createElement("div");
-  div.innerHTML = input;
-  return div.textContent || div.innerText || "";
+const toUppercaseBtn = document.getElementById('to-uppercase');
+const toLowercaseBtn = document.getElementById('to-lowercase');
+const toTitlecaseBtn = document.getElementById('to-titlecase');
+
+const resetBtn = document.getElementById('reset-btn');
+
+let originalTextBackup = '';
+
+// Utility functions
+function cleanText(text, ignorePunctuation) {
+  if (!ignorePunctuation) return text;
+  // Remove common punctuation for word count
+  return text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()\"'’“”]/g, '');
 }
 
+function countWords(text, ignorePunctuation) {
+  const cleaned = cleanText(text.trim(), ignorePunctuation);
+  if (!cleaned) return [];
+  // Split on whitespace
+  return cleaned.split(/\s+/);
+}
+
+function countSentences(text) {
+  // Simple sentence split by punctuation marks .!? plus line breaks
+  const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g);
+  return sentences ? sentences.length : 0;
+}
+
+function uniqueWords(words, excludeOneLetter, excludeTwoLetter) {
+  const lowerWords = words.map(w => w.toLowerCase());
+  const filtered = lowerWords.filter(w => {
+    if (excludeOneLetter && w.length === 1) return false;
+    if (excludeTwoLetter && w.length === 2) return false;
+    return true;
+  });
+  return new Set(filtered);
+}
+
+// Counting & Display function
 function updateCounts() {
-  const rawText = textarea.value;
-  const text = stripHTML(rawText);
-  originalTextBackup = rawText;
+  const text = textarea.value;
+  originalTextBackup = text; // keep original for download/copy original
 
-  let processedText = text;
-  let words = processedText.trim().split(/\s+/);
+  // Character counts
+  const charCount = text.length;
+  const charNoSpacesCount = text.replace(/\s/g, '').length;
 
-  if (ignorePunctuation.checked) {
-    processedText = processedText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()"'<>\[\]|@+]/g, "");
-    words = processedText.trim().split(/\s+/);
+  // Words array (for word count)
+  const wordsArr = countWords(text, ignorePunctuationCheckbox.checked);
+
+  // Word count
+  let wordCount = wordsArr.length;
+
+  // Sentence count (optional)
+  let sentenceCount = '-';
+  if (countSentencesCheckbox.checked) {
+    sentenceCount = countSentences(text);
   }
 
-  if (excludeOneLetterWords.checked) {
-    words = words.filter(word => word.length > 1);
+  // Unique words (optional filters)
+  let uniqueCount = 0;
+  if (wordsArr.length > 0) {
+    const uniq = uniqueWords(wordsArr, filterOneLetterCheckbox.checked, filterTwoLetterCheckbox.checked);
+    uniqueCount = uniq.size;
   }
 
-  if (excludeTwoLetterWords.checked) {
-    words = words.filter(word => word.length > 2);
-  }
-
-  const characterCount = text.length;
-  const characterCountNoSpaces = text.replace(/\s/g, "").length;
-
-  let sentences = 0;
-  if (enableSentenceCount.checked) {
-    sentences = (text.match(/[.!?]+(?=\s|$)/g) || []).length;
-  }
-
-  const wordSet = new Set(words.map(w => w.toLowerCase()));
-
-  wordCount.textContent = words.filter(Boolean).length;
-  charCount.textContent = includeSpaces.checked ? characterCount : characterCountNoSpaces;
-  charNoSpaceCount.textContent = characterCountNoSpaces;
-  sentenceCount.textContent = sentences;
-  uniqueWordCount.textContent = wordSet.size;
+  // Update counts with spaces toggle for characters
+  charCountEl.textContent = includeSpacesCheckbox.checked ? charCount : charNoSpacesCount;
+  charNoSpaceCountEl.textContent = charNoSpacesCount;
+  wordCountEl.textContent = wordCount;
+  sentenceCountEl.textContent = sentenceCount;
+  uniqueWordCountEl.textContent = uniqueCount;
 }
 
-function toTitleCase(str) {
-  return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+// Copy to clipboard helper
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    alert('Copied to clipboard!');
+  } catch (e) {
+    alert('Failed to copy.');
+  }
 }
 
+// Download helper
 function downloadText(filename, text) {
-  const element = document.createElement("a");
-  element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
-  element.setAttribute("download", filename);
-  element.style.display = "none";
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+
+  URL.revokeObjectURL(url);
 }
 
-textarea.addEventListener("input", updateCounts);
+// Case conversions
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, txt =>
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
 
-uppercaseBtn.addEventListener("click", () => {
+// Event Listeners
+textarea.addEventListener('input', updateCounts);
+
+includeSpacesCheckbox.addEventListener('change', updateCounts);
+ignorePunctuationCheckbox.addEventListener('change', updateCounts);
+countSentencesCheckbox.addEventListener('change', updateCounts);
+filterOneLetterCheckbox.addEventListener('change', updateCounts);
+filterTwoLetterCheckbox.addEventListener('change', updateCounts);
+
+toggleOptionsBtn.addEventListener('click', () => {
+  const expanded = toggleOptionsBtn.getAttribute('aria-expanded') === 'true';
+  toggleOptionsBtn.setAttribute('aria-expanded', !expanded);
+  moreOptionsSection.hidden = expanded;
+});
+
+copyResultsBtn.addEventListener('click', () => {
+  const resultsText = 
+    `Words: ${wordCountEl.textContent}\n` +
+    `Characters: ${charCountEl.textContent}\n` +
+    `Characters (no spaces): ${charNoSpaceCountEl.textContent}\n` +
+    `Sentences: ${sentenceCountEl.textContent}\n` +
+    `Unique words: ${uniqueWordCountEl.textContent}`;
+  copyToClipboard(resultsText);
+});
+
+downloadResultsBtn.addEventListener('click', () => {
+  const resultsText = 
+    `Words: ${wordCountEl.textContent}\n` +
+    `Characters: ${charCountEl.textContent}\n` +
+    `Characters (no spaces): ${charNoSpaceCountEl.textContent}\n` +
+    `Sentences: ${sentenceCountEl.textContent}\n` +
+    `Unique words: ${uniqueWordCountEl.textContent}`;
+  downloadText('results.txt', resultsText);
+});
+
+copyOriginalBtn.addEventListener('click', () => {
+  copyToClipboard(originalTextBackup);
+});
+
+downloadOriginalBtn.addEventListener('click', () => {
+  downloadText('original_text.txt', originalTextBackup);
+});
+
+toUppercaseBtn.addEventListener('click', () => {
   textarea.value = textarea.value.toUpperCase();
   updateCounts();
 });
 
-lowercaseBtn.addEventListener("click", () => {
+toLowercaseBtn.addEventListener('click', () => {
   textarea.value = textarea.value.toLowerCase();
   updateCounts();
 });
 
-titlecaseBtn.addEventListener("click", () => {
+toTitlecaseBtn.addEventListener('click', () => {
   textarea.value = toTitleCase(textarea.value);
   updateCounts();
 });
 
-copyResultsBtn.addEventListener("click", () => {
-  const results = `Words: ${wordCount.textContent}\nCharacters: ${charCount.textContent}\nCharacters (no spaces): ${charNoSpaceCount.textContent}\nSentences: ${sentenceCount.textContent}\nUnique Words: ${uniqueWordCount.textContent}`;
-  navigator.clipboard.writeText(results);
-});
-
-downloadResultsBtn.addEventListener("click", () => {
-  const results = `Words: ${wordCount.textContent}\nCharacters: ${charCount.textContent}\nCharacters (no spaces): ${charNoSpaceCount.textContent}\nSentences: ${sentenceCount.textContent}\nUnique Words: ${uniqueWordCount.textContent}`;
-  downloadText("text-analysis-results.txt", results);
-});
-
-copyOriginalBtn.addEventListener("click", () => {
-  navigator.clipboard.writeText(originalTextBackup);
-});
-
-downloadOriginalBtn.addEventListener("click", () => {
-  downloadText("original-text.txt", originalTextBackup);
-});
-
-resetBtn.addEventListener("click", () => {
-  textarea.value = "";
+resetBtn.addEventListener('click', () => {
+  textarea.value = '';
+  includeSpacesCheckbox.checked = true;
+  ignorePunctuationCheckbox.checked = false;
+  countSentencesCheckbox.checked = false;
+  filterOneLetterCheckbox.checked = false;
+  filterTwoLetterCheckbox.checked = false;
+  toggleOptionsBtn.setAttribute('aria-expanded', false);
+  moreOptionsSection.hidden = true;
   updateCounts();
 });
 
-toggleOptionsBtn.addEventListener("click", () => {
-  const expanded = toggleOptionsBtn.getAttribute("aria-expanded") === "true";
-  toggleOptionsBtn.setAttribute("aria-expanded", !expanded);
-  moreOptions.hidden = expanded;
-});
-
-// Prevent drag-and-drop HTML paste
-textarea.addEventListener("drop", e => e.preventDefault());
-textarea.addEventListener("dragover", e => e.preventDefault());
-
+// Initialize counts on page load
 updateCounts();
-
-// Tooltip handling code
-document.addEventListener('DOMContentLoaded', () => {
-  const tooltipButtons = document.querySelectorAll('.tooltip-btn');
-
-  tooltipButtons.forEach(btn => {
-    const tooltip = btn.querySelector('.tooltip-text');
-
-    btn.addEventListener('mouseenter', () => {
-      tooltip.style.opacity = '1';
-      tooltip.style.visibility = 'visible';
-    });
-
-    btn.addEventListener('mouseleave', () => {
-      tooltip.style.opacity = '0';
-      tooltip.style.visibility = 'hidden';
-    });
-
-    // For accessibility, show tooltip on focus and hide on blur
-    btn.addEventListener('focus', () => {
-      tooltip.style.opacity = '1';
-      tooltip.style.visibility = 'visible';
-    });
-
-    btn.addEventListener('blur', () => {
-      tooltip.style.opacity = '0';
-      tooltip.style.visibility = 'hidden';
-    });
-  });
-});
