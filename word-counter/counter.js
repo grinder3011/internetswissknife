@@ -137,3 +137,33 @@ textarea.addEventListener("drop", e => e.preventDefault());
 textarea.addEventListener("dragover", e => e.preventDefault());
 
 updateCounts();
+
+// Tooltip handling code
+document.addEventListener('DOMContentLoaded', () => {
+  const tooltipButtons = document.querySelectorAll('.tooltip-btn');
+
+  tooltipButtons.forEach(btn => {
+    const tooltip = btn.querySelector('.tooltip-text');
+
+    btn.addEventListener('mouseenter', () => {
+      tooltip.style.opacity = '1';
+      tooltip.style.visibility = 'visible';
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      tooltip.style.opacity = '0';
+      tooltip.style.visibility = 'hidden';
+    });
+
+    // For accessibility, show tooltip on focus and hide on blur
+    btn.addEventListener('focus', () => {
+      tooltip.style.opacity = '1';
+      tooltip.style.visibility = 'visible';
+    });
+
+    btn.addEventListener('blur', () => {
+      tooltip.style.opacity = '0';
+      tooltip.style.visibility = 'hidden';
+    });
+  });
+});
