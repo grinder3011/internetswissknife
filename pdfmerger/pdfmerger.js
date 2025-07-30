@@ -94,7 +94,7 @@ function swapFiles(i1, i2) {
 
 // Animate a slight move to show swapping visually
 function animateSwap(i1, i2) {
-  renderPreview(); // Render updated order first
+  renderPreview(); // Re-render the preview list with updated order
 
   const items = previewList.querySelectorAll(".preview-item");
   if (items.length <= Math.max(i1, i2)) return;
@@ -102,19 +102,19 @@ function animateSwap(i1, i2) {
   const item1 = items[i1];
   const item2 = items[i2];
 
-  // Use requestAnimationFrame twice to ensure animation triggers
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      item1.classList.add("swap-animate");
-      item2.classList.add("swap-animate");
+  // Force reflow to restart animation
+  void item1.offsetWidth;
+  void item2.offsetWidth;
 
-      // Remove animation class after animation duration
-      setTimeout(() => {
-        item1.classList.remove("swap-animate");
-        item2.classList.remove("swap-animate");
-      }, 300);
-    });
-  });
+  // Add the animation class
+  item1.classList.add("swap-animate");
+  item2.classList.add("swap-animate");
+
+  // Remove the animation class after animation ends (300ms)
+  setTimeout(() => {
+    item1.classList.remove("swap-animate");
+    item2.classList.remove("swap-animate");
+  }, 300);
 }
 
 // Merge button click handler
