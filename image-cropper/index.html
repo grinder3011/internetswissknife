@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Simple Image Cropper Tool</title>
+  <link rel="stylesheet" href="../tooltip.styles.css?v=3">
   <link rel="stylesheet" href="cropper.styles.css" />
 </head>
 <body>
@@ -27,6 +28,20 @@
       </div>
     </div>
 
+     <!-- Tooltip trigger -->
+<button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
+
+<!-- Tooltip content -->
+<div id="json-tip" class="tooltip-box hidden" aria-live="polite">
+  <p>💡 <strong>How to use this tool:</strong></p>
+  <ul>
+    <li>📋 Paste or upload JSON to format or validate.</li>
+    <li>✨ Click <em>Format JSON</em> to prettify your JSON.</li>
+    <li>🔍 Click <em>Validate JSON</em> to check for errors.</li>
+    <li>⬇️ Download or 📋 Copy your formatted JSON.</li>
+  </ul>
+</div>
+    
     <!-- ✅ Cropper Container -->
     <div class="cropper-container">
       <img id="image" alt="Upload an image to crop" />
@@ -52,6 +67,7 @@
     </div>
   </main>
 
+  <script src="../tooltip.js" defer></script>
   <script src="cropper.js"></script>
 </body>
 </html>
