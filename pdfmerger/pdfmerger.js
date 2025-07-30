@@ -1,144 +1,114 @@
 const fileInput = document.getElementById("file-input");
-const dropZone = document.getElementById("drop-zone");
 const mergeBtn = document.getElementById("merge-btn");
 const resetBtn = document.getElementById("reset-btn");
 const previewList = document.getElementById("preview-list");
 const output = document.getElementById("output");
+const dropZone = document.getElementById("drop-zone");
 
 let selectedFiles = [];
+let selectedIndex = null; // For click-to-swap reorder selection
 
-// Render the file preview list with drag & drop reorder and remove buttons
-function renderPreviewList() {
+// Renders the file previews with remove buttons and click-to-swap
+function renderFiles() {
   previewList.innerHTML = "";
 
   selectedFiles.forEach((file, index) => {
-    const div = document.createElement("div");
-    div.className = "preview-item";
-    div.setAttribute("draggable", "true");
-    div.dataset.index = index;
+    const previewItem = document.createElement("div");
+    previewItem.className = "preview-item";
+    if (index === selectedIndex) {
+      previewItem.classList.add("selected");
+    }
+    previewItem.setAttribute("tabindex", "0");
+    previewItem.setAttribute("role", "button");
+    previewItem.setAttribute("aria-pressed", index === selectedIndex ? "true" : "false");
+    previewItem.dataset.index = index;
 
-    const nameDiv = document.createElement("div");
-    nameDiv.className = "file-name";
-    nameDiv.textContent = `${index + 1}. ${file.name}`;
+    // Container for file name and remove button
+    const fileNameDiv = document.createElement("div");
+    fileNameDiv.className = "file-name";
+    fileNameDiv.textContent = `${index + 1}. ${file.name}`;
 
     const removeBtn = document.createElement("button");
     removeBtn.className = "remove-btn";
-    removeBtn.setAttribute("aria-label", `Remove file ${file.name}`);
-    removeBtn.innerHTML = "&times;";
-    removeBtn.addEventListener("click", () => {
+    removeBtn.setAttribute("aria-label", `Remove ${file.name}`);
+    removeBtn.textContent = "🗑️";
+
+    // Remove button event
+    removeBtn.addEventListener("click", (e) => {
+      e.stopPropagation(); // Prevent triggering previewItem click
       selectedFiles.splice(index, 1);
-      renderPreviewList();
+      // Reset selection if affected
+      if (selectedIndex !== null) {
+        if (selectedIndex === index) {
+          selectedIndex = null;
+        } else if (selectedIndex > index) {
+          selectedIndex--;
+        }
+      }
+      renderFiles();
+      output.innerHTML = "";
     });
 
-    div.appendChild(nameDiv);
-    div.appendChild(removeBtn);
+    // Click-to-swap reorder logic
+    previewItem.addEventListener("click", () => {
+      if (selectedIndex === null) {
+        // Select first file
+        selectedIndex = index;
+        renderFiles();
+      } else if (selectedIndex === index) {
+        // Deselect if clicked again
+        selectedIndex = null;
+        renderFiles();
+      } else {
+        // Swap files
+        [selectedFiles[selectedIndex], selectedFiles[index]] = [selectedFiles[index], selectedFiles[selectedIndex]];
+        selectedIndex = null;
+        renderFiles();
+        output.innerHTML = "";
+      }
+    });
 
-    // Drag and drop handlers
-    div.addEventListener("dragstart", dragStart);
-    div.addEventListener("dragover", dragOver);
-    div.addEventListener("dragleave", dragLeave);
-    div.addEventListener("drop", drop);
-    div.addEventListener("dragend", dragEnd);
-
-    previewList.appendChild(div);
+    previewItem.appendChild(fileNameDiv);
+    previewItem.appendChild(removeBtn);
+    previewList.appendChild(previewItem);
   });
 }
 
-// Drag & Drop reorder variables
-let dragSrcEl = null;
-
-function dragStart(e) {
-  dragSrcEl = this;
-  e.dataTransfer.effectAllowed = "move";
-  e.dataTransfer.setData("text/plain", this.dataset.index);
-  this.classList.add("dragging");
-}
-
-function dragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = "move";
-  if (this !== dragSrcEl) {
-    this.classList.add("dragover");
-  }
-}
-
-function dragLeave() {
-  this.classList.remove("dragover");
-}
-
-function drop(e) {
-  e.preventDefault();
-  this.classList.remove("dragover");
-
-  const srcIndex = parseInt(e.dataTransfer.getData("text/plain"), 10);
-  const targetIndex = parseInt(this.dataset.index, 10);
-
-  if (srcIndex === targetIndex) return;
-
-  // Reorder files array
-  const movedFile = selectedFiles.splice(srcIndex, 1)[0];
-  selectedFiles.splice(targetIndex, 0, movedFile);
-
-  renderPreviewList();
-}
-
-function dragEnd() {
-  this.classList.remove("dragging");
-  // Remove dragover class from all preview items
-  document.querySelectorAll(".preview-item").forEach((item) => {
-    item.classList.remove("dragover");
-  });
-}
-
-// Handle file input change
+// File input change handler
 fileInput.addEventListener("change", (event) => {
-  // Append new files to existing ones, prevent duplicates by name and size
-  const newFiles = Array.from(event.target.files);
-  newFiles.forEach((file) => {
-    if (
-      !selectedFiles.some(
-        (f) => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified
-      )
-    ) {
-      selectedFiles.push(file);
-    }
-  });
-  renderPreviewList();
+  const newFiles = Array.from(event.target.files).filter(f => f.type === "application/pdf");
+  selectedFiles = selectedFiles.concat(newFiles);
+  renderFiles();
+  output.innerHTML = "";
+  fileInput.value = ""; // Reset input so same files can be reselected
 });
 
-// Handle drag & drop files on drop zone
+// Drag & drop upload logic
 dropZone.addEventListener("dragover", (e) => {
   e.preventDefault();
   dropZone.classList.add("dragover");
 });
-
-dropZone.addEventListener("dragleave", () => {
+dropZone.addEventListener("dragenter", (e) => {
+  e.preventDefault();
+  dropZone.classList.add("dragover");
+});
+dropZone.addEventListener("dragleave", (e) => {
+  e.preventDefault();
   dropZone.classList.remove("dragover");
 });
-
 dropZone.addEventListener("drop", (e) => {
   e.preventDefault();
   dropZone.classList.remove("dragover");
-  const dtFiles = Array.from(e.dataTransfer.files);
-  dtFiles.forEach((file) => {
-    if (
-      file.type === "application/pdf" &&
-      !selectedFiles.some(
-        (f) => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified
-      )
-    ) {
-      selectedFiles.push(file);
-    }
-  });
-  renderPreviewList();
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type === "application/pdf");
+  if (files.length) {
+    selectedFiles = selectedFiles.concat(files);
+    renderFiles();
+    output.innerHTML = "";
+    e.dataTransfer.clearData();
+  }
 });
 
-// Click on drop zone triggers file input
-dropZone.addEventListener("click", () => {
-  fileInput.click();
-});
-
-// Merge PDFs
+// Merge PDFs button click
 mergeBtn.addEventListener("click", async () => {
   if (selectedFiles.length < 2) {
     alert("Please select at least 2 PDF files to merge.");
@@ -161,10 +131,11 @@ mergeBtn.addEventListener("click", async () => {
   output.innerHTML = `<a href="${url}" download="merged.pdf">Download Merged PDF</a>`;
 });
 
-// Reset all
+// Reset button click
 resetBtn.addEventListener("click", () => {
   fileInput.value = "";
   selectedFiles = [];
+  selectedIndex = null;
   previewList.innerHTML = "";
   output.innerHTML = "";
 });
