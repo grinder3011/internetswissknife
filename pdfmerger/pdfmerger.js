@@ -83,17 +83,45 @@ function swapFiles(i1, i2) {
   const item1 = items[i1];
   const item2 = items[i2];
 
-  // Add animation class BEFORE swapping the data
-  item1.classList.add("swap-animate");
-  item2.classList.add("swap-animate");
+  // Get positions before the swap
+  const rect1 = item1.getBoundingClientRect();
+  const rect2 = item2.getBoundingClientRect();
 
-  // Wait one frame to allow animation to start
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      [selectedFiles[i1], selectedFiles[i2]] = [selectedFiles[i2], selectedFiles[i1]];
-      renderPreview();
-    }, 300); // Wait for animation duration
+  const deltaX = rect2.left - rect1.left;
+  const deltaY = rect2.top - rect1.top;
+
+  // Clone elements for animation overlay
+  const clone1 = item1.cloneNode(true);
+  const clone2 = item2.cloneNode(true);
+
+  // Set absolute positions for clones
+  [clone1, clone2].forEach((clone, idx) => {
+    const original = idx === 0 ? item1 : item2;
+    const rect = original.getBoundingClientRect();
+    clone.style.position = "absolute";
+    clone.style.top = `${rect.top + window.scrollY}px`;
+    clone.style.left = `${rect.left + window.scrollX}px`;
+    clone.style.width = `${rect.width}px`;
+    clone.style.height = `${rect.height}px`;
+    clone.style.zIndex = "1000";
+    clone.style.pointerEvents = "none";
+    clone.style.transition = "transform 300ms ease";
+    document.body.appendChild(clone);
   });
+
+  // Animate them to each other's position
+  requestAnimationFrame(() => {
+    clone1.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+    clone2.style.transform = `translate(${-deltaX}px, ${-deltaY}px)`;
+  });
+
+  // Wait for animation to finish, then swap data and re-render
+  setTimeout(() => {
+    [selectedFiles[i1], selectedFiles[i2]] = [selectedFiles[i2], selectedFiles[i1]];
+    renderPreview();
+    clone1.remove();
+    clone2.remove();
+  }, 300);
 }
 
 mergeBtn.addEventListener("click", async () => {
