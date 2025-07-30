@@ -84,6 +84,14 @@ h1 {
   border-color: #007bff;
 }
 
+.preview-item {
+  cursor: grab;
+}
+
+.preview-item:active {
+  cursor: grabbing;
+}
+
 .file-name {
   flex-grow: 1;
   margin-right: 0.5rem;
