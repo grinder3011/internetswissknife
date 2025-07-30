@@ -10,88 +10,52 @@
 <body>
   <div class="container">
     <h1>PDF Merger Tool</h1>
-    <input type="file" id="file-input" accept="application/pdf" multiple />
+
+    <div id="drop-area">
+      <input type="file" id="file-input" accept="application/pdf" multiple hidden />
+      <label for="file-input" id="drop-label">Click or drag PDFs here to add</label>
+    </div>
+
     <div id="preview-list" class="preview-list"></div>
+
     <div class="buttons">
-      <button id="merge-btn">Merge PDFs</button>
+      <button id="merge-btn" disabled>Merge PDFs</button>
       <button id="reset-btn">Reset</button>
     </div>
-    <div id="output"></div>
 
-    <!-- Accordion container wraps toggles for vertical stacking -->
+    <div id="output" aria-live="polite"></div>
+
     <div class="accordion-container">
-      <button
-        class="accordion-toggle"
-        id="usage-toggle"
-        aria-expanded="false"
-        aria-controls="usage-content"
-      >
+      <button class="accordion-toggle" id="usage-toggle" aria-expanded="false" aria-controls="usage-content">
         💡 How to use this tool
       </button>
       <div id="usage-content" class="accordion-content" hidden>
-        <p>
-          This basic PDF merger tool combines multiple PDFs by copying their pages into a
-          new document. It may remove some advanced PDF features, resulting in a smaller
-          file size. Use it when you want a quick, simple merge without preserving
-          complex features.
-        </p>
+        <p>This tool merges PDFs entirely in your browser. Great for quick, simple PDF merges. Complex elements like forms/annotations are removed.</p>
       </div>
 
-      <button
-        class="accordion-toggle"
-        id="disclaimer-toggle"
-        aria-expanded="false"
-        aria-controls="disclaimer-content"
-      >
+      <button class="accordion-toggle" id="disclaimer-toggle" aria-expanded="false" aria-controls="disclaimer-content">
         ❓ What does Basic PDF Merger mean?
       </button>
       <div id="disclaimer-content" class="accordion-content" hidden>
-        <p>
-          This tool does not preserve all original PDF properties such as annotations,
-          forms, or encryption. It creates a clean, simplified merged PDF ideal for basic
-          use but not for advanced PDF workflows.
-        </p>
+        <p>Basic means no encryption, forms, or comments are retained. It’s a clean merged output.</p>
       </div>
     </div>
   </div>
 
-  <!-- Modals for mobile -->
-  <div
-    id="usage-modal"
-    class="modal"
-    hidden
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="usage-toggle"
-  >
+  <!-- Modals (unchanged) -->
+  <div id="usage-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="usage-toggle">
     <div class="modal-content">
       <button class="modal-close" aria-label="Close">&times;</button>
       <h2>How to use this tool</h2>
-      <p>
-        This basic PDF merger tool combines multiple PDFs by copying their pages into a
-        new document. It may remove some advanced PDF features, resulting in a smaller
-        file size. Use it when you want a quick, simple merge without preserving complex
-        features.
-      </p>
+      <p>This tool merges PDFs entirely in your browser. Complex PDF features may be stripped.</p>
     </div>
   </div>
 
-  <div
-    id="disclaimer-modal"
-    class="modal"
-    hidden
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="disclaimer-toggle"
-  >
+  <div id="disclaimer-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="disclaimer-toggle">
     <div class="modal-content">
       <button class="modal-close" aria-label="Close">&times;</button>
       <h2>What does Basic PDF Merger mean?</h2>
-      <p>
-        This tool does not preserve all original PDF properties such as annotations,
-        forms, or encryption. It creates a clean, simplified merged PDF ideal for basic
-        use but not for advanced PDF workflows.
-      </p>
+      <p>Some features like forms, annotations, and encryption are not supported in the merged file.</p>
     </div>
   </div>
 
