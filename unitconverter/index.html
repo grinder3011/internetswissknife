@@ -5,24 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Unit Converter</title>
   <link rel="stylesheet" href="unitconverter.styles.css" />
-  <style>
-    /* Minimal inline styles for toggles/buttons layout */
-    .mode-toggle {
-      margin: 10px 0;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    #batchInput {
-      display: none;
-      width: 100%;
-      height: 120px;
-      resize: vertical;
-    }
-    #downloadFormatSelect {
-      margin-left: 10px;
-    }
-  </style>
 </head>
 <body>
   <div class="converter-container">
@@ -43,27 +25,22 @@
       <label for="to-unit">To</label>
       <select id="to-unit"></select>
 
-      <!-- Single number input -->
-      <label for="value" id="valueLabel">Value</label>
-      <input type="text" id="value" placeholder="Enter a number" />
+      <label for="value" id="value-label">Value</label>
+      <input type="number" id="value" placeholder="Enter a number" />
 
-      <!-- Batch mode textarea -->
-      <textarea id="batchInput" placeholder="Enter one number per line"></textarea>
+      <!-- New Decimal Separator Select -->
+      <label for="decimal-separator">Decimal Separator</label>
+      <select id="decimal-separator" title="Choose decimal separator for input numbers">
+        <option value="period">.</option>
+        <option value="comma">,</option>
+      </select>
 
-      <div class="mode-toggle">
-        <button id="toggleModeBtn">Switch to Batch Mode</button>
-        <button id="copyBtn" disabled>📋 Copy Results</button>
-        <button id="downloadBtn" style="display:none;">⬇️ Download</button>
-        <select id="downloadFormatSelect" style="display:none;">
-          <option value="txt">Text (.txt)</option>
-          <option value="csv">CSV (.csv)</option>
-          <option value="json">JSON (.json)</option>
-        </select>
-      </div>
+      <!-- Batch mode toggle button (optional for later) -->
 
       <div class="buttons">
         <button id="convert-btn">Convert</button>
         <button id="reset-btn">Reset</button>
+        <button id="copy-btn">Copy Result</button>
       </div>
 
       <div id="result" class="result"></div>
