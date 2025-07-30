@@ -20,60 +20,99 @@ h1 {
   color: #007bff;
 }
 
-input[type="file"] {
-  width: 100%;
+/* === Drag & Drop Upload Area === */
+#drop-zone {
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  color: #007bff;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
   margin-bottom: 1rem;
 }
 
-/* Preview list container */
+#drop-zone:focus {
+  outline: 3px solid #0056b3;
+  outline-offset: 3px;
+}
+
+#drop-zone.dragover {
+  background-color: #e0f0ff;
+  border-color: #0056b3;
+}
+
+.drop-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.drop-text {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* === Preview list === */
 .preview-list {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
-  max-width: 100%;
-  overflow-x: auto; /* allow horizontal scroll if overflow */
-  padding-bottom: 0.5rem; /* space below */
 }
 
-/* Each preview item */
 .preview-item {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  flex: 1 1 200px; /* base width 200px, but can grow/shrink */
-  max-width: 100%;
+  align-items: center;
+  flex: 1 1 120px;
   border: 1px solid #ccc;
   background: #f1f1f1;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   font-size: 0.9rem;
-  white-space: nowrap; /* prevent breaking words into multiple lines */
-  overflow: hidden; /* cut off overflow text */
-  text-overflow: ellipsis; /* add "..." for overflow */
+  word-break: break-word;
+  cursor: grab;
+  user-select: none;
+  min-width: 150px;
 }
 
-/* The file name container */
+.preview-item.dragging {
+  opacity: 0.6;
+}
+
+.preview-item.dragover {
+  border-color: #007bff;
+  background-color: #d0e8ff;
+}
+
 .file-name {
-  flex: 1 1 auto;
+  flex-grow: 1;
+  margin-right: 0.5rem;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap; /* keep file name in single line */
-  padding-right: 0.5rem; /* space between name and button */
 }
 
-/* Remove button styling */
+/* Remove file button */
 .remove-btn {
   background: none;
   border: none;
-  color: #dc3545; /* red */
+  color: #dc3545;
   font-weight: 700;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  padding: 0 0.3rem;
+  padding: 0;
   line-height: 1;
-  flex-shrink: 0;
   transition: color 0.3s ease;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  text-align: center;
 }
 
 .remove-btn:hover,
@@ -82,6 +121,7 @@ input[type="file"] {
   outline: none;
 }
 
+/* Buttons container */
 .buttons {
   display: flex;
   justify-content: space-between;
@@ -96,6 +136,7 @@ button {
   color: white;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -111,7 +152,7 @@ button:hover {
 .accordion-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* space between toggles */
+  gap: 1.5rem; /* increased gap between toggles */
   margin-top: 2rem;
 }
 
@@ -203,24 +244,18 @@ body.modal-open {
     width: 100%;
   }
 
-  .preview-list {
-    gap: 0.75rem;
+  /* Accordion toggle spacing improved */
+  .accordion-container {
+    gap: 2.5rem;
   }
 
+  /* Preview item min width for small screens */
   .preview-item {
-    flex: 1 1 100%;
-    font-size: 0.95rem;
+    min-width: 100%;
   }
 
-  .preview-item .remove-btn {
-    width: auto;
-    min-width: 24px; /* give it some clickable size */
-  }
-  
-  /* Allow file names to wrap nicely on mobile */
-  .file-name {
-    white-space: normal;
-    word-break: break-word;
-    padding-right: 0.5rem;
+  /* Drag & Drop area padding smaller */
+  #drop-zone {
+    padding: 1.25rem;
   }
 }
