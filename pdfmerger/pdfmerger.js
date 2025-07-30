@@ -10,32 +10,36 @@ let selectedFiles = [];
 function renderPreviewList() {
   previewList.innerHTML = "";
   selectedFiles.forEach((file, index) => {
-    const div = document.createElement("div");
-    div.className = "preview-item";
-    div.textContent = `${index + 1}. ${file.name}`;
+    const wrapper = document.createElement("div");
+    wrapper.className = "preview-item";
+
+    const fileInfo = document.createElement("div");
+    fileInfo.className = "file-name";
+    fileInfo.textContent = `${index + 1}. ${file.name}`;
 
     const removeBtn = document.createElement("button");
     removeBtn.textContent = "🗑️";
     removeBtn.title = "Remove file";
+    removeBtn.className = "remove-btn";
     removeBtn.onclick = () => {
       selectedFiles.splice(index, 1);
       renderPreviewList();
       mergeBtn.disabled = selectedFiles.length < 2;
     };
 
-    div.appendChild(removeBtn);
-    previewList.appendChild(div);
+    wrapper.appendChild(fileInfo);
+    wrapper.appendChild(removeBtn);
+    previewList.appendChild(wrapper);
   });
+
   mergeBtn.disabled = selectedFiles.length < 2;
 }
 
-// File selection
 fileInput.addEventListener("change", (event) => {
   selectedFiles = Array.from(event.target.files).filter(f => f.type === "application/pdf");
   renderPreviewList();
 });
 
-// Drag-and-drop behavior
 ["dragenter", "dragover"].forEach(event => {
   dropArea.addEventListener(event, e => {
     e.preventDefault();
@@ -54,7 +58,6 @@ dropArea.addEventListener("drop", (e) => {
   renderPreviewList();
 });
 
-// Merge button
 mergeBtn.addEventListener("click", async () => {
   if (selectedFiles.length < 2) return;
 
@@ -72,14 +75,12 @@ mergeBtn.addEventListener("click", async () => {
   const bytes = await mergedPdf.save();
   const blob = new Blob([bytes], { type: "application/pdf" });
   const url = URL.createObjectURL(blob);
-
   const sizeKB = (blob.size / 1024).toFixed(1);
-  output.innerHTML = `<a href="${url}" download="merged.pdf">Download merged PDF (${sizeKB} KB)</a>`;
 
+  output.innerHTML = `<a href="${url}" download="merged.pdf">Download merged PDF (${sizeKB} KB)</a>`;
   mergeBtn.disabled = false;
 });
 
-// Reset
 resetBtn.addEventListener("click", () => {
   fileInput.value = "";
   selectedFiles = [];
@@ -88,7 +89,7 @@ resetBtn.addEventListener("click", () => {
   mergeBtn.disabled = true;
 });
 
-/* Modal & accordion toggle (same as before) */
+// Accordion and modal toggle
 const usageToggle = document.getElementById("usage-toggle");
 const usageContent = document.getElementById("usage-content");
 const disclaimerToggle = document.getElementById("disclaimer-toggle");
