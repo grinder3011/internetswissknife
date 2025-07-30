@@ -102,15 +102,19 @@ function animateSwap(i1, i2) {
   const item1 = items[i1];
   const item2 = items[i2];
 
-  // Add animation class
-  item1.classList.add("swap-animate");
-  item2.classList.add("swap-animate");
+  // Use requestAnimationFrame twice to ensure animation triggers
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      item1.classList.add("swap-animate");
+      item2.classList.add("swap-animate");
 
-  // Remove animation class after animation duration
-  setTimeout(() => {
-    item1.classList.remove("swap-animate");
-    item2.classList.remove("swap-animate");
-  }, 300);
+      // Remove animation class after animation duration
+      setTimeout(() => {
+        item1.classList.remove("swap-animate");
+        item2.classList.remove("swap-animate");
+      }, 300);
+    });
+  });
 }
 
 // Merge button click handler
