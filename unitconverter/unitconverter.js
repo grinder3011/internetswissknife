@@ -26,34 +26,6 @@ const unitMappings = {
     minute: 1 / 60,
     hour: 1 / 3600,
     day: 1 / 86400,
-  },
-  temperature: {
-    celsius: 'celsius',
-    fahrenheit: 'fahrenheit',
-    kelvin: 'kelvin',
-  },
-  area: {
-    "square meter": 1,
-    "square kilometer": 0.000001,
-    acre: 0.000247105,
-    hectare: 0.0001,
-  },
-  speed: {
-    "m/s": 1,
-    "km/h": 3.6,
-    "mph": 2.23694,
-  },
-  digital: {
-    byte: 1,
-    kilobyte: 1 / 1024,
-    megabyte: 1 / (1024 * 1024),
-    gigabyte: 1 / (1024 * 1024 * 1024),
-  },
-  energy: {
-    joule: 1,
-    calorie: 0.239006,
-    kilojoule: 0.001,
-    kWh: 2.7778e-7,
   }
 };
 
@@ -64,6 +36,14 @@ const convertBtn = document.getElementById("convert-btn");
 const resetBtn = document.getElementById("reset-btn");
 const resultDisplay = document.getElementById("result");
 const valueInput = document.getElementById("value");
+const batchInput = document.getElementById("batchInput");
+const toggleModeBtn = document.getElementById("toggleModeBtn");
+const copyBtn = document.getElementById("copyBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const downloadFormatSelect = document.getElementById("downloadFormatSelect");
+const valueLabel = document.getElementById("valueLabel");
+
+let isBatchMode = false;
 
 function populateUnits(category) {
   const units = Object.keys(unitMappings[category]);
@@ -85,64 +65,175 @@ function populateUnits(category) {
   toUnitSelect.selectedIndex = 1;
 }
 
-function convertTemperature(value, from, to) {
-  if (from === to) return value;
-
-  let celsius;
-  switch (from) {
-    case 'celsius':
-      celsius = value;
-      break;
-    case 'fahrenheit':
-      celsius = (value - 32) * (5 / 9);
-      break;
-    case 'kelvin':
-      celsius = value - 273.15;
-      break;
-  }
-
-  switch (to) {
-    case 'celsius':
-      return celsius;
-    case 'fahrenheit':
-      return (celsius * 9 / 5) + 32;
-    case 'kelvin':
-      return celsius + 273.15;
-  }
+function isValidNumber(str) {
+  // Check if str is a valid number (accept decimals, optional minus)
+  // Reject if multiple dots or commas
+  if (!str) return false;
+  // Remove whitespace
+  str = str.trim();
+  if (str === '') return false;
+  // Reject if more than one dot
+  if ((str.match(/\./g) || []).length > 1) return false;
+  // Reject if any commas (comma not allowed in this design)
+  if (str.includes(',')) return false;
+  // Check if valid number
+  return !isNaN(Number(str));
 }
 
+function convertSingle(value, category, fromUnit, toUnit) {
+  const fromFactor = unitMappings[category][fromUnit];
+  const toFactor = unitMappings[category][toUnit];
+  return (value / fromFactor) * toFactor;
+}
+
+function convertBatch(lines, category, fromUnit, toUnit) {
+  return lines.map(line => {
+    if (!isValidNumber(line)) return "Invalid number";
+    const num = parseFloat(line);
+    const converted = convertSingle(num, category, fromUnit, toUnit);
+    return `${num} ${fromUnit} = ${converted.toFixed(4)} ${toUnit}`;
+  });
+}
+
+function renderResults(results) {
+  if (Array.isArray(results)) {
+    // batch mode
+    resultDisplay.innerHTML = results.map(r => `<div>${r}</div>`).join('');
+  } else {
+    // single mode
+    resultDisplay.textContent = results;
+  }
+  copyBtn.disabled = false;
+}
+
+function clearResults() {
+  resultDisplay.textContent = "";
+  copyBtn.disabled = true;
+}
+
+// Event handlers
 categorySelect.addEventListener("change", () => {
   populateUnits(categorySelect.value);
-  resultDisplay.textContent = "";
-  valueInput.value = "";
+  clearResults();
+  if (isBatchMode) batchInput.value = "";
+  else valueInput.value = "";
 });
 
 convertBtn.addEventListener("click", () => {
   const category = categorySelect.value;
   const fromUnit = fromUnitSelect.value;
   const toUnit = toUnitSelect.value;
-  const inputValue = parseFloat(valueInput.value);
 
-  if (isNaN(inputValue)) {
-    resultDisplay.textContent = "Please enter a valid number.";
-    return;
-  }
-
-  let result;
-  if (category === 'temperature') {
-    result = convertTemperature(inputValue, fromUnit, toUnit);
+  if (!isBatchMode) {
+    const inputValue = valueInput.value.trim();
+    if (!isValidNumber(inputValue)) {
+      resultDisplay.textContent = "Please enter a valid number.";
+      copyBtn.disabled = true;
+      return;
+    }
+    const num = parseFloat(inputValue);
+    const result = convertSingle(num, category, fromUnit, toUnit);
+    renderResults(`${num} ${fromUnit} = ${result.toFixed(4)} ${toUnit}`);
   } else {
-    const fromFactor = unitMappings[category][fromUnit];
-    const toFactor = unitMappings[category][toUnit];
-    result = (inputValue / fromFactor) * toFactor;
+    const lines = batchInput.value.split(/\r?\n/).map(line => line.trim()).filter(line => line !== '');
+    if (lines.length === 0) {
+      resultDisplay.textContent = "Please enter one or more numbers, one per line.";
+      copyBtn.disabled = true;
+      return;
+    }
+    const results = convertBatch(lines, category, fromUnit, toUnit);
+    renderResults(results);
   }
-
-  resultDisplay.textContent = `${inputValue} ${fromUnit} = ${result.toFixed(4)} ${toUnit}`;
 });
 
 resetBtn.addEventListener("click", () => {
   valueInput.value = "";
-  resultDisplay.textContent = "";
+  batchInput.value = "";
+  clearResults();
 });
 
+toggleModeBtn.addEventListener("click", () => {
+  isBatchMode = !isBatchMode;
+  if (isBatchMode) {
+    // Show batch textarea, hide single input
+    batchInput.style.display = "block";
+    valueInput.style.display = "none";
+    valueLabel.textContent = "Values (one per line)";
+    toggleModeBtn.textContent = "Switch to Single Mode";
+    downloadBtn.style.display = "inline-block";
+    downloadFormatSelect.style.display = "inline-block";
+  } else {
+    // Show single input, hide batch textarea
+    batchInput.style.display = "none";
+    valueInput.style.display = "inline-block";
+    valueLabel.textContent = "Value";
+    toggleModeBtn.textContent = "Switch to Batch Mode";
+    downloadBtn.style.display = "none";
+    downloadFormatSelect.style.display = "none";
+  }
+  clearResults();
+  valueInput.value = "";
+  batchInput.value = "";
+});
+
+// Copy results to clipboard
+copyBtn.addEventListener("click", () => {
+  let textToCopy = "";
+  if (isBatchMode) {
+    textToCopy = Array.from(resultDisplay.children).map(div => div.textContent).join('\n');
+  } else {
+    textToCopy = resultDisplay.textContent;
+  }
+  if (!textToCopy) return;
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    alert("Results copied to clipboard!");
+  }, () => {
+    alert("Failed to copy results.");
+  });
+});
+
+// Download results as txt/csv/json
+downloadBtn.addEventListener("click", () => {
+  if (!isBatchMode) return; // Only batch mode
+
+  const results = Array.from(resultDisplay.children).map(div => div.textContent);
+  if (results.length === 0) {
+    alert("No results to download.");
+    return;
+  }
+
+  const format = downloadFormatSelect.value;
+  let content = "";
+  let filename = `conversion_results.${format}`;
+
+  if (format === "txt") {
+    content = results.join('\n');
+  } else if (format === "csv") {
+    // CSV with 2 columns: input, output
+    // Parsing strings like "x unit = y unit"
+    // We'll split by "=" sign to get input and output
+    const rows = results.map(line => {
+      const parts = line.split(" = ");
+      return parts.length === 2 ? `"${parts[0]}","${parts[1]}"` : `"${line}"`;
+    });
+    content = "Input,Output\n" + rows.join("\n");
+  } else if (format === "json") {
+    // JSON array of objects {input: "...", output: "..."}
+    const jsonArray = results.map(line => {
+      const parts = line.split(" = ");
+      return parts.length === 2 ? { input: parts[0], output: parts[1] } : { raw: line };
+    });
+    content = JSON.stringify(jsonArray, null, 2);
+  }
+
+  const blob = new Blob([content], { type: "text/" + format });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Initialize units dropdown
 populateUnits(categorySelect.value);
