@@ -85,7 +85,7 @@ function handleSwapSelection(index) {
   renderPreview();
 }
 
-// Swap two files in selectedFiles array and update UI
+// Swap two files in selectedFiles array and update UI with animation
 function swapFiles(i1, i2) {
   if (i1 === i2) return;
   [selectedFiles[i1], selectedFiles[i2]] = [selectedFiles[i2], selectedFiles[i1]];
@@ -94,19 +94,22 @@ function swapFiles(i1, i2) {
 
 // Animate a slight move to show swapping visually
 function animateSwap(i1, i2) {
+  renderPreview(); // Render updated order first
+
   const items = previewList.querySelectorAll(".preview-item");
   if (items.length <= Math.max(i1, i2)) return;
 
   const item1 = items[i1];
   const item2 = items[i2];
 
+  // Add animation class
   item1.classList.add("swap-animate");
   item2.classList.add("swap-animate");
 
+  // Remove animation class after animation duration
   setTimeout(() => {
     item1.classList.remove("swap-animate");
     item2.classList.remove("swap-animate");
-    renderPreview(); // Re-render to update numbers and order
   }, 300);
 }
 
