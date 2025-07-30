@@ -1,14 +1,29 @@
 const fileInput = document.getElementById("file-input");
-const dropZone = document.getElementById("drop-zone");
-const mergeBtn = document.getElementById("merge-btn");
-const resetBtn = document.getElementById("reset-btn");
 const previewList = document.getElementById("preview-list");
 const output = document.getElementById("output");
+const mergeBtn = document.getElementById("merge-btn");
+const resetBtn = document.getElementById("reset-btn");
 
 let selectedFiles = [];
 let selectedIndicesForSwap = [];
 
-// Render the list of selected files
+// Handle file input change event
+fileInput.addEventListener("change", (event) => {
+  const newFiles = Array.from(event.target.files);
+  newFiles.forEach((file) => {
+    // Avoid duplicate files by checking name, size, lastModified
+    if (!selectedFiles.some(f => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified)) {
+      selectedFiles.push(file);
+    }
+  });
+
+  renderPreview();
+
+  // Reset input so selecting same files again fires event
+  fileInput.value = "";
+});
+
+// Render the preview list with files
 function renderPreview() {
   previewList.innerHTML = "";
 
@@ -16,167 +31,126 @@ function renderPreview() {
     const div = document.createElement("div");
     div.className = "preview-item";
     div.setAttribute("data-index", index);
-    div.setAttribute("tabindex", "0");
-    div.setAttribute("role", "button");
-    div.setAttribute("aria-pressed", "false");
+    div.setAttribute("tabindex", 0); // accessibility
 
+    // Add swap selection styling if selected
+    if (selectedIndicesForSwap.includes(index)) {
+      div.classList.add("selected");
+    }
+
+    // File name container
     const fileNameDiv = document.createElement("div");
     fileNameDiv.className = "file-name";
     fileNameDiv.textContent = `${index + 1}. ${file.name}`;
 
+    // Remove button
     const removeBtn = document.createElement("button");
     removeBtn.className = "remove-btn";
     removeBtn.setAttribute("aria-label", `Remove file ${file.name}`);
-    removeBtn.innerHTML = "×";
-
+    removeBtn.textContent = "×";
     removeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       selectedFiles.splice(index, 1);
-      selectedIndicesForSwap = [];
+      // Also clear swap selection if affected
+      selectedIndicesForSwap = selectedIndicesForSwap.filter(i => i !== index).map(i => (i > index ? i - 1 : i));
       renderPreview();
     });
 
     div.appendChild(fileNameDiv);
     div.appendChild(removeBtn);
 
-    // Swap selection logic
+    // Add click event for swapping selection on mobile and desktop
     div.addEventListener("click", () => {
-      toggleSelectForSwap(index, div);
+      handleSwapSelection(index);
     });
 
     previewList.appendChild(div);
   });
 }
 
-// Toggle selecting files for swapping
-function toggleSelectForSwap(index, element) {
-  const idxInSelected = selectedIndicesForSwap.indexOf(index);
-
-  if (idxInSelected > -1) {
-    // Deselect
-    selectedIndicesForSwap.splice(idxInSelected, 1);
-    element.classList.remove("selected");
-    element.setAttribute("aria-pressed", "false");
+// Handle swapping logic: select two files to swap positions
+function handleSwapSelection(index) {
+  if (selectedIndicesForSwap.includes(index)) {
+    // Deselect if already selected
+    selectedIndicesForSwap = selectedIndicesForSwap.filter(i => i !== index);
   } else {
-    // Select
     if (selectedIndicesForSwap.length < 2) {
       selectedIndicesForSwap.push(index);
-      element.classList.add("selected");
-      element.setAttribute("aria-pressed", "true");
+    }
+    if (selectedIndicesForSwap.length === 2) {
+      swapFiles(selectedIndicesForSwap[0], selectedIndicesForSwap[1]);
+      selectedIndicesForSwap = [];
     }
   }
-
-  if (selectedIndicesForSwap.length === 2) {
-    swapFiles(selectedIndicesForSwap[0], selectedIndicesForSwap[1]);
-    selectedIndicesForSwap = [];
-    clearSelectionAria();
-  }
+  renderPreview();
 }
 
-function clearSelectionAria() {
+// Swap two files in selectedFiles array and update UI
+function swapFiles(i1, i2) {
+  if (i1 === i2) return;
+  [selectedFiles[i1], selectedFiles[i2]] = [selectedFiles[i2], selectedFiles[i1]];
+  animateSwap(i1, i2);
+}
+
+// Animate a slight move to show swapping visually
+function animateSwap(i1, i2) {
   const items = previewList.querySelectorAll(".preview-item");
-  items.forEach((el) => {
-    el.classList.remove("selected");
-    el.setAttribute("aria-pressed", "false");
-  });
-}
+  if (items.length <= Math.max(i1, i2)) return;
 
-// Animate swap to give visual feedback
-function animateSwap(el1, el2, callback) {
-  const rect1 = el1.getBoundingClientRect();
-  const rect2 = el2.getBoundingClientRect();
+  const item1 = items[i1];
+  const item2 = items[i2];
 
-  const deltaX = rect2.left - rect1.left;
-  const deltaY = rect2.top - rect1.top;
+  item1.classList.add("swap-animate");
+  item2.classList.add("swap-animate");
 
-  el1.style.transition = "transform 0.3s ease";
-  el2.style.transition = "transform 0.3s ease";
-
-  el1.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-  el2.style.transform = `translate(${-deltaX}px, ${-deltaY}px)`;
-
-  // After animation ends
   setTimeout(() => {
-    el1.style.transition = "";
-    el2.style.transition = "";
-    el1.style.transform = "";
-    el2.style.transform = "";
-    callback();
+    item1.classList.remove("swap-animate");
+    item2.classList.remove("swap-animate");
+    renderPreview(); // Re-render to update numbers and order
   }, 300);
 }
 
-function swapFiles(index1, index2) {
-  if (index1 === index2) return;
-
-  const el1 = previewList.querySelector(`.preview-item[data-index="${index1}"]`);
-  const el2 = previewList.querySelector(`.preview-item[data-index="${index2}"]`);
-
-  animateSwap(el1, el2, () => {
-    // Swap data in array
-    [selectedFiles[index1], selectedFiles[index2]] = [selectedFiles[index2], selectedFiles[index1]];
-    renderPreview();
-  });
-}
-
-// File input change handler
-fileInput.addEventListener("change", (event) => {
-  selectedFiles = selectedFiles.concat(Array.from(event.target.files));
-  renderPreview();
-});
-
-// Drop zone drag & drop
-dropZone.addEventListener("dragover", (e) => {
-  e.preventDefault();
-  dropZone.classList.add("dragover");
-});
-
-dropZone.addEventListener("dragleave", () => {
-  dropZone.classList.remove("dragover");
-});
-
-dropZone.addEventListener("drop", (e) => {
-  e.preventDefault();
-  dropZone.classList.remove("dragover");
-  const files = Array.from(e.dataTransfer.files).filter(f => f.type === "application/pdf");
-  selectedFiles = selectedFiles.concat(files);
-  renderPreview();
-});
-
-dropZone.addEventListener("click", () => {
-  fileInput.click();
-});
-
-// Merge button
+// Merge button click handler
 mergeBtn.addEventListener("click", async () => {
   if (selectedFiles.length < 2) {
     alert("Please select at least 2 PDF files to merge.");
     return;
   }
 
-  const mergedPdf = await PDFLib.PDFDocument.create();
+  output.innerHTML = "Merging...";
 
-  for (const file of selectedFiles) {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
-    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-    copiedPages.forEach((page) => mergedPdf.addPage(page));
+  try {
+    const mergedPdf = await PDFLib.PDFDocument.create();
+
+    for (const file of selectedFiles) {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      copiedPages.forEach((page) => mergedPdf.addPage(page));
+    }
+
+    const mergedPdfBytes = await mergedPdf.save();
+    const blob = new Blob([mergedPdfBytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+
+    output.innerHTML = `<a href="${url}" download="merged.pdf">Download Merged PDF</a>`;
+  } catch (error) {
+    output.textContent = "Error merging PDFs.";
+    console.error(error);
   }
-
-  const mergedPdfBytes = await mergedPdf.save();
-  const blob = new Blob([mergedPdfBytes], { type: "application/pdf" });
-  const url = URL.createObjectURL(blob);
-
-  output.innerHTML = `<a href="${url}" download="merged.pdf">Download Merged PDF</a>`;
 });
 
-// Reset button
+// Reset button clears everything
 resetBtn.addEventListener("click", () => {
-  fileInput.value = "";
   selectedFiles = [];
   selectedIndicesForSwap = [];
   previewList.innerHTML = "";
   output.innerHTML = "";
+  fileInput.value = "";
 });
+
+// Initial render (empty)
+renderPreview();
 
 /* === Usage & Disclaimer toggles and modals === */
 
@@ -239,7 +213,7 @@ modalCloses.forEach((btn) => {
   });
 });
 
-// Close modals on click outside content
+// Also close modals on click outside content
 [usageModal, disclaimerModal].forEach((modal) => {
   modal.addEventListener("click", (e) => {
     if (e.target === modal) {
