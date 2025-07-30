@@ -11,51 +11,95 @@
   <div class="container">
     <h1>PDF Merger Tool</h1>
 
-    <div id="drop-area">
+    <!-- Drag & Drop Upload Area -->
+    <label id="drop-zone" for="file-input" tabindex="0" role="button" aria-label="Upload PDF files by drag and drop or click">
       <input type="file" id="file-input" accept="application/pdf" multiple hidden />
-      <label for="file-input" id="drop-label">Click or drag PDFs here to add</label>
-    </div>
+      <div class="drop-icon">📁⬆️</div>
+      <div class="drop-text">Drag & Drop PDFs here or Click to Upload</div>
+    </label>
 
     <div id="preview-list" class="preview-list"></div>
 
     <div class="buttons">
-      <button id="merge-btn" disabled>Merge PDFs</button>
+      <button id="merge-btn">Merge PDFs</button>
       <button id="reset-btn">Reset</button>
     </div>
+    <div id="output"></div>
 
-    <div id="output" aria-live="polite"></div>
-
+    <!-- Accordion container wraps toggles for vertical stacking -->
     <div class="accordion-container">
-      <button class="accordion-toggle" id="usage-toggle" aria-expanded="false" aria-controls="usage-content">
+      <button
+        class="accordion-toggle"
+        id="usage-toggle"
+        aria-expanded="false"
+        aria-controls="usage-content"
+      >
         💡 How to use this tool
       </button>
       <div id="usage-content" class="accordion-content" hidden>
-        <p>This tool merges PDFs entirely in your browser. Great for quick, simple PDF merges. Complex elements like forms/annotations are removed.</p>
+        <p>
+          This basic PDF merger tool combines multiple PDFs by copying their pages into a
+          new document. It may remove some advanced PDF features, resulting in a smaller
+          file size. Use it when you want a quick, simple merge without preserving
+          complex features.
+        </p>
       </div>
 
-      <button class="accordion-toggle" id="disclaimer-toggle" aria-expanded="false" aria-controls="disclaimer-content">
+      <button
+        class="accordion-toggle"
+        id="disclaimer-toggle"
+        aria-expanded="false"
+        aria-controls="disclaimer-content"
+      >
         ❓ What does Basic PDF Merger mean?
       </button>
       <div id="disclaimer-content" class="accordion-content" hidden>
-        <p>Basic means no encryption, forms, or comments are retained. It’s a clean merged output.</p>
+        <p>
+          This tool does not preserve all original PDF properties such as annotations,
+          forms, or encryption. It creates a clean, simplified merged PDF ideal for basic
+          use but not for advanced PDF workflows.
+        </p>
       </div>
     </div>
   </div>
 
-  <!-- Modals (unchanged) -->
-  <div id="usage-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="usage-toggle">
+  <!-- Modals for mobile -->
+  <div
+    id="usage-modal"
+    class="modal"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="usage-toggle"
+  >
     <div class="modal-content">
       <button class="modal-close" aria-label="Close">&times;</button>
       <h2>How to use this tool</h2>
-      <p>This tool merges PDFs entirely in your browser. Complex PDF features may be stripped.</p>
+      <p>
+        This basic PDF merger tool combines multiple PDFs by copying their pages into a
+        new document. It may remove some advanced PDF features, resulting in a smaller
+        file size. Use it when you want a quick, simple merge without preserving complex
+        features.
+      </p>
     </div>
   </div>
 
-  <div id="disclaimer-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="disclaimer-toggle">
+  <div
+    id="disclaimer-modal"
+    class="modal"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="disclaimer-toggle"
+  >
     <div class="modal-content">
       <button class="modal-close" aria-label="Close">&times;</button>
       <h2>What does Basic PDF Merger mean?</h2>
-      <p>Some features like forms, annotations, and encryption are not supported in the merged file.</p>
+      <p>
+        This tool does not preserve all original PDF properties such as annotations,
+        forms, or encryption. It creates a clean, simplified merged PDF ideal for basic
+        use but not for advanced PDF workflows.
+      </p>
     </div>
   </div>
 
