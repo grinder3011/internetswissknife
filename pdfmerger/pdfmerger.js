@@ -1,5 +1,4 @@
 const fileInput = document.getElementById("file-input");
-const dropArea = document.getElementById("drop-area");
 const mergeBtn = document.getElementById("merge-btn");
 const resetBtn = document.getElementById("reset-btn");
 const previewList = document.getElementById("preview-list");
@@ -7,78 +6,61 @@ const output = document.getElementById("output");
 
 let selectedFiles = [];
 
-function renderPreviewList() {
+// Update preview list UI
+function updatePreviewList() {
   previewList.innerHTML = "";
   selectedFiles.forEach((file, index) => {
-    const wrapper = document.createElement("div");
-    wrapper.className = "preview-item";
+    const div = document.createElement("div");
+    div.className = "preview-item";
 
-    const fileInfo = document.createElement("div");
-    fileInfo.className = "file-name";
-    fileInfo.textContent = `${index + 1}. ${file.name}`;
+    // File name container
+    const nameDiv = document.createElement("div");
+    nameDiv.className = "file-name";
+    nameDiv.textContent = `${index + 1}. ${file.name}`;
 
+    // Remove button
     const removeBtn = document.createElement("button");
-    removeBtn.textContent = "🗑️";
-    removeBtn.title = "Remove file";
     removeBtn.className = "remove-btn";
-    removeBtn.onclick = () => {
+    removeBtn.setAttribute("aria-label", `Remove ${file.name}`);
+    removeBtn.innerHTML = "&times;";
+
+    removeBtn.addEventListener("click", () => {
       selectedFiles.splice(index, 1);
-      renderPreviewList();
-      mergeBtn.disabled = selectedFiles.length < 2;
-    };
+      updatePreviewList();
+    });
 
-    wrapper.appendChild(fileInfo);
-    wrapper.appendChild(removeBtn);
-    previewList.appendChild(wrapper);
+    div.appendChild(nameDiv);
+    div.appendChild(removeBtn);
+    previewList.appendChild(div);
   });
-
-  mergeBtn.disabled = selectedFiles.length < 2;
 }
 
 fileInput.addEventListener("change", (event) => {
-  selectedFiles = Array.from(event.target.files).filter(f => f.type === "application/pdf");
-  renderPreviewList();
-});
-
-["dragenter", "dragover"].forEach(event => {
-  dropArea.addEventListener(event, e => {
-    e.preventDefault();
-    dropArea.classList.add("dragover");
-  });
-});
-["dragleave", "drop"].forEach(event => {
-  dropArea.addEventListener(event, e => {
-    e.preventDefault();
-    dropArea.classList.remove("dragover");
-  });
-});
-dropArea.addEventListener("drop", (e) => {
-  const droppedFiles = Array.from(e.dataTransfer.files).filter(f => f.type === "application/pdf");
-  selectedFiles.push(...droppedFiles);
-  renderPreviewList();
+  // Append newly selected files (avoid overwriting)
+  selectedFiles = selectedFiles.concat(Array.from(event.target.files));
+  updatePreviewList();
 });
 
 mergeBtn.addEventListener("click", async () => {
-  if (selectedFiles.length < 2) return;
-
-  output.innerHTML = "Merging PDFs...";
-  mergeBtn.disabled = true;
-
-  const mergedPdf = await PDFLib.PDFDocument.create();
-  for (const file of selectedFiles) {
-    const buffer = await file.arrayBuffer();
-    const pdf = await PDFLib.PDFDocument.load(buffer);
-    const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-    pages.forEach((page) => mergedPdf.addPage(page));
+  if (selectedFiles.length < 2) {
+    alert("Please select at least 2 PDF files to merge.");
+    return;
   }
 
-  const bytes = await mergedPdf.save();
-  const blob = new Blob([bytes], { type: "application/pdf" });
-  const url = URL.createObjectURL(blob);
-  const sizeKB = (blob.size / 1024).toFixed(1);
+  const mergedPdf = await PDFLib.PDFDocument.create();
 
-  output.innerHTML = `<a href="${url}" download="merged.pdf">Download merged PDF (${sizeKB} KB)</a>`;
-  mergeBtn.disabled = false;
+  for (const file of selectedFiles) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+    copiedPages.forEach((page) => mergedPdf.addPage(page));
+  }
+
+  const mergedPdfBytes = await mergedPdf.save();
+  const blob = new Blob([mergedPdfBytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+
+  output.innerHTML = `<a href="${url}" download="merged.pdf">Download Merged PDF</a>`;
 });
 
 resetBtn.addEventListener("click", () => {
@@ -86,10 +68,10 @@ resetBtn.addEventListener("click", () => {
   selectedFiles = [];
   previewList.innerHTML = "";
   output.innerHTML = "";
-  mergeBtn.disabled = true;
 });
 
-// Accordion and modal toggle
+/* === Usage & Disclaimer toggles and modals === */
+
 const usageToggle = document.getElementById("usage-toggle");
 const usageContent = document.getElementById("usage-content");
 const disclaimerToggle = document.getElementById("disclaimer-toggle");
@@ -101,39 +83,59 @@ const disclaimerModal = document.getElementById("disclaimer-modal");
 const modalCloses = document.querySelectorAll(".modal-close");
 
 function toggleAccordion(button, content) {
-  const expanded = button.getAttribute("aria-expanded") === "true";
-  button.setAttribute("aria-expanded", !expanded);
-  content.hidden = expanded;
+  const isExpanded = button.getAttribute("aria-expanded") === "true";
+  if (isExpanded) {
+    button.setAttribute("aria-expanded", "false");
+    content.setAttribute("hidden", "");
+  } else {
+    button.setAttribute("aria-expanded", "true");
+    content.removeAttribute("hidden");
+  }
 }
 
 function openModal(modal) {
-  modal.hidden = false;
+  modal.removeAttribute("hidden");
   document.body.classList.add("modal-open");
 }
 
 function closeModal(modal) {
-  modal.hidden = true;
+  modal.setAttribute("hidden", "");
   document.body.classList.remove("modal-open");
 }
 
+// Detect screen size once on load
 const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
+// Usage toggle behavior
 usageToggle.addEventListener("click", () => {
-  isMobile ? openModal(usageModal) : toggleAccordion(usageToggle, usageContent);
+  if (isMobile) {
+    openModal(usageModal);
+  } else {
+    toggleAccordion(usageToggle, usageContent);
+  }
 });
 
+// Disclaimer toggle behavior
 disclaimerToggle.addEventListener("click", () => {
-  isMobile ? openModal(disclaimerModal) : toggleAccordion(disclaimerToggle, disclaimerContent);
+  if (isMobile) {
+    openModal(disclaimerModal);
+  } else {
+    toggleAccordion(disclaimerToggle, disclaimerContent);
+  }
 });
 
+// Close modal buttons
 modalCloses.forEach((btn) => {
   btn.addEventListener("click", () => {
     closeModal(btn.closest(".modal"));
   });
 });
 
+// Also close modals on click outside content
 [usageModal, disclaimerModal].forEach((modal) => {
   modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal(modal);
+    if (e.target === modal) {
+      closeModal(modal);
+    }
   });
 });
