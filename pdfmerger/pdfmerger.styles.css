@@ -65,29 +65,9 @@ h1 {
   margin-bottom: 1rem;
 }
 
-.preview-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1 1 120px;
-  border: 1px solid #ccc;
-  background: #f1f1f1;
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  word-break: break-word;
-  cursor: grab;
-  user-select: none;
-  min-width: 150px;
-}
-
-.preview-item.dragging {
-  opacity: 0.6;
-}
-
-.preview-item.dragover {
+.preview-item.selected {
+  background-color: #cce5ff;
   border-color: #007bff;
-  background-color: #d0e8ff;
 }
 
 .file-name {
