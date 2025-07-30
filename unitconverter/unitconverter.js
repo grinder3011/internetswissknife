@@ -26,6 +26,34 @@ const unitMappings = {
     minute: 1 / 60,
     hour: 1 / 3600,
     day: 1 / 86400,
+  },
+  temperature: {
+    celsius: 'celsius',
+    fahrenheit: 'fahrenheit',
+    kelvin: 'kelvin',
+  },
+  area: {
+    "square meter": 1,
+    "square kilometer": 0.000001,
+    acre: 0.000247105,
+    hectare: 0.0001,
+  },
+  speed: {
+    "m/s": 1,
+    "km/h": 3.6,
+    "mph": 2.23694,
+  },
+  digital: {
+    byte: 1,
+    kilobyte: 1 / 1024,
+    megabyte: 1 / (1024 * 1024),
+    gigabyte: 1 / (1024 * 1024 * 1024),
+  },
+  energy: {
+    joule: 1,
+    calorie: 0.239006,
+    kilojoule: 0.001,
+    kWh: 2.7778e-7,
   }
 };
 
@@ -57,6 +85,32 @@ function populateUnits(category) {
   toUnitSelect.selectedIndex = 1;
 }
 
+function convertTemperature(value, from, to) {
+  if (from === to) return value;
+
+  let celsius;
+  switch (from) {
+    case 'celsius':
+      celsius = value;
+      break;
+    case 'fahrenheit':
+      celsius = (value - 32) * (5 / 9);
+      break;
+    case 'kelvin':
+      celsius = value - 273.15;
+      break;
+  }
+
+  switch (to) {
+    case 'celsius':
+      return celsius;
+    case 'fahrenheit':
+      return (celsius * 9 / 5) + 32;
+    case 'kelvin':
+      return celsius + 273.15;
+  }
+}
+
 categorySelect.addEventListener("change", () => {
   populateUnits(categorySelect.value);
   resultDisplay.textContent = "";
@@ -74,9 +128,14 @@ convertBtn.addEventListener("click", () => {
     return;
   }
 
-  const fromFactor = unitMappings[category][fromUnit];
-  const toFactor = unitMappings[category][toUnit];
-  const result = (inputValue / fromFactor) * toFactor;
+  let result;
+  if (category === 'temperature') {
+    result = convertTemperature(inputValue, fromUnit, toUnit);
+  } else {
+    const fromFactor = unitMappings[category][fromUnit];
+    const toFactor = unitMappings[category][toUnit];
+    result = (inputValue / fromFactor) * toFactor;
+  }
 
   resultDisplay.textContent = `${inputValue} ${fromUnit} = ${result.toFixed(4)} ${toUnit}`;
 });
