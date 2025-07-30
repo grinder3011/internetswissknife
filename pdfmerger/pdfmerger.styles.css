@@ -76,7 +76,20 @@ h1 {
   border-radius: 4px;
   font-size: 0.9rem;
   word-break: break-word;
+  cursor: grab;
+  user-select: none;
   min-width: 150px;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.preview-item.dragging {
+  opacity: 0.6;
+  cursor: grabbing;
+}
+
+.preview-item.dragover {
+  border-color: #007bff;
+  background-color: #d0e8ff;
 }
 
 .preview-item.selected {
@@ -84,12 +97,9 @@ h1 {
   border-color: #007bff;
 }
 
-.preview-item {
+/* Cursor to indicate draggable/swappable */
+.preview-item:hover {
   cursor: grab;
-}
-
-.preview-item:active {
-  cursor: grabbing;
 }
 
 .file-name {
@@ -154,7 +164,7 @@ button:hover {
 .accordion-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* increased gap between toggles */
+  gap: 1.5rem;
   margin-top: 2rem;
 }
 
@@ -174,8 +184,8 @@ button:hover {
 
 .accordion-toggle:hover,
 .accordion-toggle:focus {
-  background: none; /* no bg on hover/focus */
-  color: #0056b3; /* darker blue text */
+  background: none;
+  color: #0056b3;
   text-decoration: underline;
   outline: none;
 }
@@ -235,6 +245,23 @@ body.modal-open {
   overflow: hidden;
 }
 
+/* Swap animation */
+.swap-animation {
+  animation: swapPulse 0.3s ease forwards;
+}
+
+@keyframes swapPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* Responsive tweaks */
 @media (max-width: 767px) {
   .buttons {
@@ -246,17 +273,14 @@ body.modal-open {
     width: 100%;
   }
 
-  /* Accordion toggle spacing improved */
   .accordion-container {
     gap: 2.5rem;
   }
 
-  /* Preview item min width for small screens */
   .preview-item {
     min-width: 100%;
   }
 
-  /* Drag & Drop area padding smaller */
   #drop-zone {
     padding: 1.25rem;
   }
