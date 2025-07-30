@@ -90,24 +90,50 @@ function swapFiles(i1, i2) {
   const deltaX = rect2.left - rect1.left;
   const deltaY = rect2.top - rect1.top;
 
-  // Clone elements for animation overlay
-  const clone1 = item1.cloneNode(true);
-  const clone2 = item2.cloneNode(true);
+  // Helper to clone with computed styles
+  const createClone = (original) => {
+    const clone = original.cloneNode(true);
+    const style = window.getComputedStyle(original);
 
-  // Set absolute positions for clones
-  [clone1, clone2].forEach((clone, idx) => {
-    const original = idx === 0 ? item1 : item2;
-    const rect = original.getBoundingClientRect();
+    // Apply computed styles
     clone.style.position = "absolute";
-    clone.style.top = `${rect.top + window.scrollY}px`;
-    clone.style.left = `${rect.left + window.scrollX}px`;
-    clone.style.width = `${rect.width}px`;
-    clone.style.height = `${rect.height}px`;
+    clone.style.top = `${original.offsetTop + previewList.offsetTop}px`;
+    clone.style.left = `${original.offsetLeft + previewList.offsetLeft}px`;
+    clone.style.width = `${style.width}`;
+    clone.style.height = `${style.height}`;
+    clone.style.margin = "0";
+    clone.style.padding = style.padding;
+    clone.style.boxSizing = style.boxSizing;
+    clone.style.fontSize = style.fontSize;
+    clone.style.lineHeight = style.lineHeight;
     clone.style.zIndex = "1000";
     clone.style.pointerEvents = "none";
     clone.style.transition = "transform 300ms ease";
-    document.body.appendChild(clone);
+    clone.style.background = style.background;
+    clone.style.border = style.border;
+
+    return clone;
+  };
+
+  const clone1 = createClone(item1);
+  const clone2 = createClone(item2);
+
+  document.body.appendChild(clone1);
+  document.body.appendChild(clone2);
+
+  // Animate
+  requestAnimationFrame(() => {
+    clone1.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+    clone2.style.transform = `translate(${-deltaX}px, ${-deltaY}px)`;
   });
+
+  setTimeout(() => {
+    [selectedFiles[i1], selectedFiles[i2]] = [selectedFiles[i2], selectedFiles[i1]];
+    renderPreview();
+    clone1.remove();
+    clone2.remove();
+  }, 300);
+}
 
   // Animate them to each other's position
   requestAnimationFrame(() => {
