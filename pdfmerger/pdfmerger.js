@@ -7,6 +7,7 @@ const resetBtn = document.getElementById("reset-btn");
 let selectedFiles = [];
 let selectedIndicesForSwap = [];
 
+// Handle file input change event
 fileInput.addEventListener("change", (event) => {
   const newFiles = Array.from(event.target.files);
   newFiles.forEach((file) => {
@@ -43,9 +44,7 @@ function renderPreview() {
     removeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       selectedFiles.splice(index, 1);
-      selectedIndicesForSwap = selectedIndicesForSwap
-        .filter(i => i !== index)
-        .map(i => (i > index ? i - 1 : i));
+      selectedIndicesForSwap = selectedIndicesForSwap.filter(i => i !== index).map(i => (i > index ? i - 1 : i));
       renderPreview();
     });
 
@@ -84,21 +83,24 @@ function swapFiles(i1, i2) {
   const item1 = items[i1];
   const item2 = items[i2];
 
+  // Get positions before the swap
   const rect1 = item1.getBoundingClientRect();
   const rect2 = item2.getBoundingClientRect();
 
   const deltaX = rect2.left - rect1.left;
   const deltaY = rect2.top - rect1.top;
 
+  // Helper to clone with computed styles
   const createClone = (original) => {
     const clone = original.cloneNode(true);
     const style = window.getComputedStyle(original);
 
+    // Apply computed styles
     clone.style.position = "absolute";
     clone.style.top = `${original.offsetTop + previewList.offsetTop}px`;
     clone.style.left = `${original.offsetLeft + previewList.offsetLeft}px`;
-    clone.style.width = style.width;
-    clone.style.height = style.height;
+    clone.style.width = `${style.width}`;
+    clone.style.height = `${style.height}`;
     clone.style.margin = "0";
     clone.style.padding = style.padding;
     clone.style.boxSizing = style.boxSizing;
@@ -107,7 +109,7 @@ function swapFiles(i1, i2) {
     clone.style.zIndex = "1000";
     clone.style.pointerEvents = "none";
     clone.style.transition = "transform 300ms ease";
-    clone.style.background = style.backgroundColor;
+    clone.style.background = style.background;
     clone.style.border = style.border;
 
     return clone;
@@ -119,11 +121,27 @@ function swapFiles(i1, i2) {
   document.body.appendChild(clone1);
   document.body.appendChild(clone2);
 
+  // Animate
   requestAnimationFrame(() => {
     clone1.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
     clone2.style.transform = `translate(${-deltaX}px, ${-deltaY}px)`;
   });
 
+  setTimeout(() => {
+    [selectedFiles[i1], selectedFiles[i2]] = [selectedFiles[i2], selectedFiles[i1]];
+    renderPreview();
+    clone1.remove();
+    clone2.remove();
+  }, 300);
+}
+
+  // Animate them to each other's position
+  requestAnimationFrame(() => {
+    clone1.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+    clone2.style.transform = `translate(${-deltaX}px, ${-deltaY}px)`;
+  });
+
+  // Wait for animation to finish, then swap data and re-render
   setTimeout(() => {
     [selectedFiles[i1], selectedFiles[i2]] = [selectedFiles[i2], selectedFiles[i1]];
     renderPreview();
