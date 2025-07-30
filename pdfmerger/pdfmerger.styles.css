@@ -212,6 +212,11 @@ body.modal-open {
     font-size: 0.95rem;
   }
 
+  .preview-item .remove-btn {
+    width: auto;
+    min-width: 24px; /* give it some clickable size */
+  }
+  
   /* Allow file names to wrap nicely on mobile */
   .file-name {
     white-space: normal;
