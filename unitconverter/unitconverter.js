@@ -26,7 +26,7 @@ const unitMappings = {
     minute: 1 / 60,
     hour: 1 / 3600,
     day: 1 / 86400,
-  }
+  },
 };
 
 const categorySelect = document.getElementById("category");
@@ -34,16 +34,24 @@ const fromUnitSelect = document.getElementById("from-unit");
 const toUnitSelect = document.getElementById("to-unit");
 const convertBtn = document.getElementById("convert-btn");
 const resetBtn = document.getElementById("reset-btn");
-const copyBtn = document.getElementById("copy-btn");
 const resultDisplay = document.getElementById("result");
 const valueInput = document.getElementById("value");
+const batchToggle = document.getElementById("batch-toggle");
+const batchValueInput = document.getElementById("batch-value");
+const batchLabel = document.querySelector(".batch-input-label");
+const singleLabel = document.querySelector(".single-input-label");
 const decimalSeparatorSelect = document.getElementById("decimal-separator");
+const batchOptions = document.getElementById("batch-options");
+const downloadBtn = document.getElementById("download-btn");
+const downloadFormatSelect = document.getElementById("downloadFormatSelect");
+const copyBtn = document.getElementById("copy-btn");
 
+// Populate units dropdowns
 function populateUnits(category) {
   const units = Object.keys(unitMappings[category]);
   fromUnitSelect.innerHTML = "";
   toUnitSelect.innerHTML = "";
-  units.forEach(unit => {
+  units.forEach((unit) => {
     const option1 = document.createElement("option");
     option1.value = unit;
     option1.textContent = unit;
@@ -59,77 +67,199 @@ function populateUnits(category) {
   toUnitSelect.selectedIndex = 1;
 }
 
-// Validate and parse number based on decimal separator choice
-function parseNumber(input, decimalSeparator) {
-  // Clean whitespace
-  input = input.trim();
+// Validate a single number string according to decimal separator, return parsed float or null
+function parseNumber(inputStr, decimalSeparator) {
+  let normalized = inputStr.trim();
 
-  // Reject empty strings
-  if (!input) return NaN;
+  if (!normalized) return null;
 
-  // Check that the input contains only digits, one decimal separator, and optional leading - or +
-  // Build regex dynamically based on separator
-  const sep = decimalSeparator === "comma" ? "," : ".";
-  const otherSep = decimalSeparator === "comma" ? "." : ",";
+  // Allow only digits, optional leading -, and decimal separator
+  // Check for multiple decimal separators
+  const sepRegex = new RegExp(`\\${decimalSeparator}`, "g");
+  const matches = normalized.match(sepRegex);
+  if (matches && matches.length > 1) {
+    return null;
+  }
 
-  // Reject if contains other decimal separator
-  if (input.includes(otherSep)) return NaN;
+  // Replace decimal separator with dot for parseFloat
+  if (decimalSeparator === ",") {
+    normalized = normalized.replace(",", ".");
+  }
 
-  // Check valid format: optional sign, digits, optional one decimal separator, digits
-  // Regex explanation:
-  // ^[+-]? matches optional + or -
-  // \d* matches zero or more digits
-  // (sep\d+)? matches optional separator followed by one or more digits
-  // $ end of string
-  const regex = new RegExp(`^[+-]?\\d*(\\${sep}\\d+)?$`);
-  if (!regex.test(input)) return NaN;
+  // Check if normalized string is a valid number
+  if (!/^[-+]?\d*\.?\d+$/.test(normalized)) {
+    return null;
+  }
 
-  // Replace decimal separator with '.' for Number conversion
-  const normalized = decimalSeparator === "comma" ? input.replace(",", ".") : input;
+  const parsed = parseFloat(normalized);
+  if (isNaN(parsed)) return null;
 
-  const number = Number(normalized);
-  return isNaN(number) ? NaN : number;
+  return parsed;
 }
 
-convertBtn.addEventListener("click", () => {
+// Convert a single number and return formatted string or error message
+function convertSingle(valueStr) {
+  const decimalSeparator = decimalSeparatorSelect.value;
+  const inputValue = parseNumber(valueStr, decimalSeparator);
+  if (inputValue === null) {
+    return "Invalid number";
+  }
   const category = categorySelect.value;
   const fromUnit = fromUnitSelect.value;
   const toUnit = toUnitSelect.value;
-  const decimalSeparator = decimalSeparatorSelect.value;
-
-  const rawInput = valueInput.value;
-
-  // For now only single value mode, so parse one number
-  const parsedNumber = parseNumber(rawInput, decimalSeparator);
-
-  if (isNaN(parsedNumber)) {
-    resultDisplay.textContent = "Please enter a valid number.";
-    return;
-  }
-
   const fromFactor = unitMappings[category][fromUnit];
   const toFactor = unitMappings[category][toUnit];
-  const result = (parsedNumber / fromFactor) * toFactor;
+  const result = (inputValue / fromFactor) * toFactor;
 
-  resultDisplay.textContent = `${parsedNumber} ${fromUnit} = ${result.toFixed(4)} ${toUnit}`;
-});
+  return `${valueStr} ${fromUnit} = ${result.toFixed(4)} ${toUnit}`;
+}
 
-resetBtn.addEventListener("click", () => {
-  valueInput.value = "";
-  resultDisplay.textContent = "";
-});
-
-copyBtn.addEventListener("click", () => {
-  if (!resultDisplay.textContent) return;
-  navigator.clipboard.writeText(resultDisplay.textContent).then(() => {
-    alert("Result copied to clipboard!");
+// Convert batch input (multiple lines)
+function convertBatch(batchText) {
+  const lines = batchText.split(/\r?\n/);
+  const results = lines.map((line) => {
+    if (!line.trim()) return ""; // skip empty lines
+    return convertSingle(line);
   });
-});
+  return results.join("\n");
+}
+
+function updateUIForMode() {
+  if (batchToggle.checked) {
+    valueInput.classList.add("hidden");
+    singleLabel.classList.add("hidden");
+    batchValueInput.classList.remove("hidden");
+    batchLabel.classList.remove("hidden");
+    batchOptions.classList.remove("hidden");
+    downloadBtn.disabled = true;
+  } else {
+    valueInput.classList.remove("hidden");
+    singleLabel.classList.remove("hidden");
+    batchValueInput.classList.add("hidden");
+    batchLabel.classList.add("hidden");
+    batchOptions.classList.add("hidden");
+  }
+  resultDisplay.textContent = "";
+  copyBtn.disabled = true;
+}
+
+function performConversion() {
+  if (batchToggle.checked) {
+    const inputText = batchValueInput.value;
+    if (!inputText.trim()) {
+      resultDisplay.textContent = "Please enter numbers (one per line).";
+      copyBtn.disabled = true;
+      downloadBtn.disabled = true;
+      return;
+    }
+    const output = convertBatch(inputText);
+    resultDisplay.textContent = output;
+    copyBtn.disabled = false;
+    downloadBtn.disabled = false;
+  } else {
+    const val = valueInput.value.trim();
+    if (!val) {
+      resultDisplay.textContent = "Please enter a number.";
+      copyBtn.disabled = true;
+      return;
+    }
+    const output = convertSingle(val);
+    resultDisplay.textContent = output;
+    copyBtn.disabled = output === "Invalid number";
+  }
+}
+
+function resetAll() {
+  valueInput.value = "";
+  batchValueInput.value = "";
+  resultDisplay.textContent = "";
+  copyBtn.disabled = true;
+  downloadBtn.disabled = true;
+  batchToggle.checked = false;
+  decimalSeparatorSelect.value = ".";
+  categorySelect.selectedIndex = 0;
+  populateUnits(categorySelect.value);
+  updateUIForMode();
+}
+
+// Download logic
+function downloadResults() {
+  if (!resultDisplay.textContent.trim()) return;
+
+  const format = downloadFormatSelect.value;
+  const lines = resultDisplay.textContent.split(/\r?\n/).filter((line) => line.trim() !== "");
+  let dataStr = "";
+  let mimeType = "";
+  let filename = `conversion_results.${format}`;
+
+  switch (format) {
+    case "text":
+      dataStr = lines.join("\n");
+      mimeType = "text/plain";
+      break;
+    case "csv":
+      // Escape commas if any, just wrap in quotes to be safe
+      dataStr = lines.map(line => `"${line.replace(/"/g, '""')}"`).join("\n");
+      mimeType = "text/csv";
+      break;
+    case "json":
+      dataStr = JSON.stringify(lines, null, 2);
+      mimeType = "application/json";
+      break;
+    default:
+      return;
+  }
+
+  const blob = new Blob([dataStr], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// Copy to clipboard
+function copyResults() {
+  if (!resultDisplay.textContent.trim()) return;
+  navigator.clipboard.writeText(resultDisplay.textContent).then(() => {
+    alert("Results copied to clipboard!");
+  }).catch(() => {
+    alert("Failed to copy. Please copy manually.");
+  });
+}
 
 categorySelect.addEventListener("change", () => {
   populateUnits(categorySelect.value);
   resultDisplay.textContent = "";
-  valueInput.value = "";
+  copyBtn.disabled = true;
+  downloadBtn.disabled = true;
 });
 
-populateUnits(categorySelect.value);
+batchToggle.addEventListener("change", () => {
+  updateUIForMode();
+});
+
+convertBtn.addEventListener("click", performConversion);
+resetBtn.addEventListener("click", resetAll);
+downloadBtn.addEventListener("click", downloadResults);
+copyBtn.addEventListener("click", copyResults);
+
+decimalSeparatorSelect.addEventListener("change", () => {
+  // Clear result and inputs on decimal separator change for safety
+  valueInput.value = "";
+  batchValueInput.value = "";
+  resultDisplay.textContent = "";
+  copyBtn.disabled = true;
+  downloadBtn.disabled = true;
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  populateUnits(categorySelect.value);
+  updateUIForMode();
+  copyBtn.disabled = true;
+  downloadBtn.disabled = true;
+});
