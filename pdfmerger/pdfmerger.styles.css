@@ -245,20 +245,28 @@ body.modal-open {
   overflow: hidden;
 }
 
-/* Swap animation */
-.swap-animation {
+/* Swap animation: renamed to .swap-animate to match JS */
+.swap-animate {
   animation: swapPulse 0.3s ease forwards;
+  background-color: #cce5ff;
+  border-color: #007bff;
 }
 
 @keyframes swapPulse {
   0% {
     transform: scale(1);
+    background-color: #cce5ff;
+    border-color: #007bff;
   }
   50% {
     transform: scale(1.05);
+    background-color: #99ccff;
+    border-color: #0056b3;
   }
   100% {
     transform: scale(1);
+    background-color: #cce5ff;
+    border-color: #007bff;
   }
 }
 
