@@ -20,29 +20,25 @@
         <option value="time">⏰ Time</option>
       </select>
 
-      <label>
-        <input type="checkbox" id="batch-toggle" />
-        Batch Mode (Multiple numbers)
-      </label>
-
-      <!-- Single input -->
-      <label for="value" class="single-input-label">Value</label>
-      <input type="text" id="value" placeholder="Enter a number" />
-
-      <!-- Batch input -->
-      <label for="batch-value" class="batch-input-label hidden">Values (one per line)</label>
-      <textarea id="batch-value" class="batch-input hidden" placeholder="Enter one number per line"></textarea>
-      
       <label for="decimal-separator" title="Choose decimal separator used in numbers">Decimal Separator</label>
       <select id="decimal-separator" title="Choose decimal separator used in numbers">
         <option value=".">Period (.)</option>
         <option value=",">Comma (,)</option>
       </select>
-      
-      <!-- Tooltip trigger -->
+
+      <div class="batch-toggle-wrapper">
+        <input type="checkbox" id="batch-toggle" />
+        <label for="batch-toggle" class="batch-toggle-label">Batch Mode (Multiple numbers)</label>
+      </div>
+
+      <label for="value" class="single-input-label">Value</label>
+      <input type="text" id="value" placeholder="Enter a number" />
+
+      <label for="batch-value" class="batch-input-label hidden">Values (one per line)</label>
+      <textarea id="batch-value" class="batch-input hidden" placeholder="Enter one number per line"></textarea>
+
       <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
-      
-      <!-- Tooltip content -->
+
       <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
         <p>💡 <strong>How to use this tool:</strong></p>
         <ul>
@@ -55,7 +51,7 @@
           <li>🔄 Use the <strong>Reset</strong> button to clear inputs and results to start fresh.</li>
         </ul>
       </div>
-      
+
       <div class="buttons">
         <button id="convert-btn">Convert</button>
         <button id="reset-btn">Reset</button>
