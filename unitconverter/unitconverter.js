@@ -70,40 +70,28 @@ function populateUnits(category) {
 // Validate a single number string according to decimal separator, return parsed float or null
 function parseNumber(inputStr, decimalSeparator) {
   let normalized = inputStr.trim();
-
   if (!normalized) return null;
 
-  // Allow only digits, optional leading -, and decimal separator
-  // Check for multiple decimal separators
   const sepRegex = new RegExp(`\\${decimalSeparator}`, "g");
   const matches = normalized.match(sepRegex);
-  if (matches && matches.length > 1) {
-    return null;
-  }
+  if (matches && matches.length > 1) return null;
 
-  // Replace decimal separator with dot for parseFloat
   if (decimalSeparator === ",") {
     normalized = normalized.replace(",", ".");
   }
 
-  // Check if normalized string is a valid number
-  if (!/^[-+]?\d*\.?\d+$/.test(normalized)) {
-    return null;
-  }
+  if (!/^[-+]?\d*\.?\d+$/.test(normalized)) return null;
 
   const parsed = parseFloat(normalized);
-  if (isNaN(parsed)) return null;
-
-  return parsed;
+  return isNaN(parsed) ? null : parsed;
 }
 
 // Convert a single number and return formatted string or error message
 function convertSingle(valueStr) {
   const decimalSeparator = decimalSeparatorSelect.value;
   const inputValue = parseNumber(valueStr, decimalSeparator);
-  if (inputValue === null) {
-    return "Invalid number";
-  }
+  if (inputValue === null) return "Invalid number";
+
   const category = categorySelect.value;
   const fromUnit = fromUnitSelect.value;
   const toUnit = toUnitSelect.value;
@@ -118,27 +106,20 @@ function convertSingle(valueStr) {
 function convertBatch(batchText) {
   const lines = batchText.split(/\r?\n/);
   const results = lines.map((line) => {
-    if (!line.trim()) return ""; // skip empty lines
+    if (!line.trim()) return "";
     return convertSingle(line);
   });
   return results.join("\n");
 }
 
 function updateUIForMode() {
-  if (batchToggle.checked) {
-    valueInput.classList.add("hidden");
-    singleLabel.classList.add("hidden");
-    batchValueInput.classList.remove("hidden");
-    batchLabel.classList.remove("hidden");
-    batchOptions.classList.remove("hidden");
-    downloadBtn.disabled = true;
-  } else {
-    valueInput.classList.remove("hidden");
-    singleLabel.classList.remove("hidden");
-    batchValueInput.classList.add("hidden");
-    batchLabel.classList.add("hidden");
-    batchOptions.classList.add("hidden");
-  }
+  const isBatch = batchToggle.checked;
+  valueInput.classList.toggle("hidden", isBatch);
+  singleLabel.classList.toggle("hidden", isBatch);
+  batchValueInput.classList.toggle("hidden", !isBatch);
+  batchLabel.classList.toggle("hidden", !isBatch);
+  batchOptions.classList.toggle("hidden", !isBatch);
+
   resultDisplay.textContent = "";
   copyBtn.disabled = true;
 }
@@ -198,7 +179,6 @@ function downloadResults() {
       mimeType = "text/plain";
       break;
     case "csv":
-      // Escape commas if any, just wrap in quotes to be safe
       dataStr = lines.map(line => `"${line.replace(/"/g, '""')}"`).join("\n");
       mimeType = "text/csv";
       break;
@@ -232,6 +212,7 @@ function copyResults() {
   });
 }
 
+// Event Listeners
 categorySelect.addEventListener("change", () => {
   populateUnits(categorySelect.value);
   resultDisplay.textContent = "";
@@ -239,17 +220,13 @@ categorySelect.addEventListener("change", () => {
   downloadBtn.disabled = true;
 });
 
-batchToggle.addEventListener("change", () => {
-  updateUIForMode();
-});
-
+batchToggle.addEventListener("change", updateUIForMode);
 convertBtn.addEventListener("click", performConversion);
 resetBtn.addEventListener("click", resetAll);
 downloadBtn.addEventListener("click", downloadResults);
 copyBtn.addEventListener("click", copyResults);
 
 decimalSeparatorSelect.addEventListener("change", () => {
-  // Clear result and inputs on decimal separator change for safety
   valueInput.value = "";
   batchValueInput.value = "";
   resultDisplay.textContent = "";
@@ -257,6 +234,7 @@ decimalSeparatorSelect.addEventListener("change", () => {
   downloadBtn.disabled = true;
 });
 
+// Init
 window.addEventListener("DOMContentLoaded", () => {
   populateUnits(categorySelect.value);
   updateUIForMode();
