@@ -36,6 +36,7 @@ function handleFiles(fileListInput) {
   files = Array.from(fileListInput);
   updateFileOrder();
   displayFileList();
+  updatePreview();
 }
 
 function updateFileOrder() {
@@ -76,6 +77,7 @@ function displayFileList() {
 sortOrderSelect.addEventListener('change', () => {
   updateFileOrder();
   displayFileList();
+  updatePreview();
 });
 
 renameBtn.addEventListener('click', async () => {
@@ -112,14 +114,19 @@ function updatePreview() {
 
   if (!/^\d+$/.test(startNum)) {
     previewBox.textContent = "Enter a valid starting number.";
+    previewBox.classList.add('error-text');
     return;
   }
+
+  previewBox.classList.remove('error-text');
 
   const padded = startNum;
   const exampleExt = ".jpg";
   const separator = useUnderscore ? "_" : "";
   const exampleName = `${prefix}${separator}${padded}${exampleExt}`;
-  previewBox.textContent = `Example: ${exampleName}`;
+
+  // Wrap example filename in a styled span for better UX
+  previewBox.innerHTML = `<span class="example-label">Example:</span> <span class="example-filename">${exampleName}</span>`;
 }
 
 prefixInput.addEventListener('input', updatePreview);
