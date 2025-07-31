@@ -195,6 +195,29 @@ button:disabled {
   margin-top: 1rem;
 }
 
+/* === Download link styled as button === */
+#output a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #28a745;
+  color: white;
+  font-size: 1rem;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+#output a:hover,
+#output a:focus {
+  background-color: #218838;
+  outline: none;
+}
+
+#output a::before {
+  content: "⬇️ ";
+}
+
 /* Accordion container for vertical stacking */
 .accordion-container {
   display: flex;
