@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Unit Converter</title>
+   <link rel="stylesheet" href="../tooltip.styles.css" />
   <link rel="stylesheet" href="unitconverter.styles.css" />
 </head>
 <body>
@@ -38,6 +39,20 @@
       <label for="batch-value" class="batch-input-label hidden">Values (one per line)</label>
       <textarea id="batch-value" class="batch-input hidden" placeholder="Enter one number per line"></textarea>
 
+       <!-- Tooltip trigger -->
+      <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
+      
+      <!-- Tooltip content -->
+      <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
+        <p>💡 <strong>How to use this tool:</strong></p>
+        <ul>
+          <li>📋 Paste or upload JSON to format or validate.</li>
+          <li>✨ Click <em>Format JSON</em> to prettify your JSON.</li>
+          <li>🔍 Click <em>Validate JSON</em> to check for errors.</li>
+          <li>⬇️ Download or 📋 Copy your formatted JSON.</li>
+        </ul>
+      </div>
+      
       <div class="buttons">
         <button id="convert-btn">Convert</button>
         <button id="reset-btn">Reset</button>
@@ -59,6 +74,7 @@
     </div>
   </div>
 
+  <script src="../tooltip.js"></script>
   <script src="unitconverter.js"></script>
 </body>
 </html>
