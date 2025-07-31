@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Simple PDF Merger</title>
-   <link rel="stylesheet" href="../tooltip.styles.css?v=3">
+  <link rel="stylesheet" href="../tooltip.styles.css?v=3">
   <link rel="stylesheet" href="pdfmerger.styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>Simple PDF Merger </h1>
+    <h1>Simple PDF Merger</h1>
 
     <!-- Drag & Drop Upload Area -->
     <label id="drop-zone" for="file-input" tabindex="0" role="button" aria-label="Upload PDF files">
@@ -22,51 +22,30 @@
     <div id="preview-list" class="preview-list"></div>
 
     <div class="buttons">
-      <button id="merge-btn">Merge PDFs</button>
-      <button id="reset-btn">Reset</button>
+      <button id="merge-btn">🔗 Merge PDFs</button>
+      <button id="reset-btn">🔄 Reset</button>
+      <button id="download-btn" style="display: none">⬇️ Download</button>
     </div>
     <div id="output"></div>
 
-    <!-- Accordion container wraps toggles for vertical stacking -->
+    <!-- Accordion container -->
     <div class="accordion-container">
-      <button
-        class="accordion-toggle"
-        id="usage-toggle"
-        aria-expanded="false"
-        aria-controls="usage-content"
-      >
-        💡 How to use this tool
-      </button>
-
-       <!-- Tooltip trigger -->
+      <!-- Modular Tooltip Trigger -->
       <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
-      
-      <!-- Tooltip content -->
+
+      <!-- Modular Tooltip Content -->
       <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
         <p>💡 <strong>How to use this tool:</strong></p>
         <ul>
-          <li>📋 Paste or upload JSON to format or validate.</li>
-          <li>✨ Click <em>Format JSON</em> to prettify your JSON.</li>
-          <li>🔍 Click <em>Validate JSON</em> to check for errors.</li>
-          <li>⬇️ Download or 📋 Copy your formatted JSON.</li>
+          <li>📁 Drag & drop or select multiple PDF files to upload them.</li>
+          <li>🔗 Click <em>Merge PDFs</em> to combine them into one file.</li>
+          <li>⬇️ Once merged, click <em>Download</em> to save your PDF.</li>
+          <li>🔄 Use <em>Reset</em> to start over.</li>
         </ul>
       </div>
-      
-      <div id="usage-content" class="accordion-content" hidden>
-        <p>
-          This basic PDF merger tool combines multiple PDFs by copying their pages into a
-          new document. It may remove some advanced PDF features, resulting in a smaller
-          file size. Use it when you want a quick, simple merge without preserving
-          complex features.
-        </p>
-      </div>
 
-      <button
-        class="accordion-toggle"
-        id="disclaimer-toggle"
-        aria-expanded="false"
-        aria-controls="disclaimer-content"
-      >
+      <!-- Disclosure Accordion for Disclaimer -->
+      <button class="accordion-toggle" id="disclaimer-toggle" aria-expanded="false" aria-controls="disclaimer-content">
         ❓ What does Basic PDF Merger mean?
       </button>
       <div id="disclaimer-content" class="accordion-content" hidden>
@@ -80,34 +59,19 @@
   </div>
 
   <!-- Modals for mobile -->
-  <div
-    id="usage-modal"
-    class="modal"
-    hidden
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="usage-toggle"
-  >
+  <div id="usage-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="usage-toggle">
     <div class="modal-content">
       <button class="modal-close" aria-label="Close">&times;</button>
       <h2>How to use this tool</h2>
       <p>
-        This basic PDF merger tool combines multiple PDFs by copying their pages into a
-        new document. It may remove some advanced PDF features, resulting in a smaller
-        file size. Use it when you want a quick, simple merge without preserving complex
-        features.
+        Drag and drop your PDFs into the upload area, or click to select files.
+        Then, click <strong>Merge PDFs</strong>. When the merge is done, you can download the result.
+        Use <strong>Reset</strong> to clear everything.
       </p>
     </div>
   </div>
 
-  <div
-    id="disclaimer-modal"
-    class="modal"
-    hidden
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="disclaimer-toggle"
-  >
+  <div id="disclaimer-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="disclaimer-toggle">
     <div class="modal-content">
       <button class="modal-close" aria-label="Close">&times;</button>
       <h2>What does Basic PDF Merger mean?</h2>
