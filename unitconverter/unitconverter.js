@@ -227,8 +227,6 @@ downloadBtn.addEventListener("click", downloadResults);
 copyBtn.addEventListener("click", copyResults);
 
 decimalSeparatorSelect.addEventListener("change", () => {
-  valueInput.value = "";
-  batchValueInput.value = "";
   resultDisplay.textContent = "";
   copyBtn.disabled = true;
   downloadBtn.disabled = true;
