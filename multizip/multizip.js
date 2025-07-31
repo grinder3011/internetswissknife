@@ -4,24 +4,57 @@ const createZipBtn = document.getElementById('createZipBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 const resetBtn = document.getElementById('resetBtn');
 
-const helpPanel = document.getElementById('helpPanel');
-const openHelp = document.getElementById('open-help');
-const closeHelp = document.getElementById('close-help');
-
 let zip = new JSZip();
 let zipBlob = null;
 
-fileInput.addEventListener('change', (e) => {
-  zip = new JSZip(); // reset zip
-  zipBlob = null; // reset blob
+// Helper: Render file list UI with remove buttons
+function renderFileList() {
   fileList.innerHTML = '';
-
-  Array.from(e.target.files).forEach(file => {
-    zip.file(file.name, file);
+  Object.keys(zip.files).forEach(filename => {
     const listItem = document.createElement('div');
-    listItem.textContent = `📄 ${file.name}`;
+    listItem.style.display = 'flex';
+    listItem.style.justifyContent = 'space-between';
+    listItem.style.alignItems = 'center';
+    listItem.style.marginBottom = '6px';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = `📄 ${filename}`;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = '❌';
+    removeBtn.style.cursor = 'pointer';
+    removeBtn.style.background = 'transparent';
+    removeBtn.style.border = 'none';
+    removeBtn.style.color = '#d33';
+    removeBtn.style.fontSize = '1.1em';
+
+    removeBtn.addEventListener('click', () => {
+      zip.remove(filename);
+      renderFileList();
+    });
+
+    listItem.appendChild(nameSpan);
+    listItem.appendChild(removeBtn);
     fileList.appendChild(listItem);
   });
+}
+
+// Add or replace files in zip and update UI
+fileInput.addEventListener('change', (e) => {
+  zipBlob = null; // reset blob since new files added
+
+  Array.from(e.target.files).forEach(file => {
+    // Replace file if exists
+    if (zip.files[file.name]) {
+      zip.remove(file.name);
+    }
+    zip.file(file.name, file);
+  });
+
+  renderFileList();
+
+  // Reset input to allow re-upload of same files
+  fileInput.value = '';
 });
 
 createZipBtn.addEventListener('click', async () => {
@@ -52,14 +85,4 @@ resetBtn.addEventListener('click', () => {
   zipBlob = null;
   fileInput.value = '';
   fileList.innerHTML = '';
-});
-
-openHelp.addEventListener('click', () => {
-  helpPanel.classList.remove('hidden');
-  helpPanel.classList.add('visible');
-});
-
-closeHelp.addEventListener('click', () => {
-  helpPanel.classList.remove('visible');
-  helpPanel.classList.add('hidden');
 });
