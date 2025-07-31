@@ -27,6 +27,22 @@ const unitMappings = {
     hour: 1 / 3600,
     day: 1 / 86400,
   },
+  speed: {
+    'm/s': 1,
+    'km/h': 3.6,
+    'mph': 2.23694,
+    'knot': 1.94384,
+  },
+  power: {
+    watt: 1,
+    kilowatt: 0.001,
+    horsepower: 0.00134102,
+  },
+  temperature: {
+    celsius: "C",
+    fahrenheit: "F",
+    kelvin: "K",
+  },
 };
 
 const categorySelect = document.getElementById("category");
@@ -86,6 +102,27 @@ function parseNumber(inputStr, decimalSeparator) {
   return isNaN(parsed) ? null : parsed;
 }
 
+function convertTemperature(value, from, to) {
+  if (from === to) return value;
+
+  // Convert to Celsius
+  let celsius;
+  switch (from) {
+    case "celsius": celsius = value; break;
+    case "fahrenheit": celsius = (value - 32) * (5 / 9); break;
+    case "kelvin": celsius = value - 273.15; break;
+    default: return null;
+  }
+
+  // Convert from Celsius to target
+  switch (to) {
+    case "celsius": return celsius;
+    case "fahrenheit": return celsius * 9 / 5 + 32;
+    case "kelvin": return celsius + 273.15;
+    default: return null;
+  }
+}
+
 // Convert a single number and return formatted string or error message
 function convertSingle(valueStr) {
   const decimalSeparator = decimalSeparatorSelect.value;
@@ -95,6 +132,14 @@ function convertSingle(valueStr) {
   const category = categorySelect.value;
   const fromUnit = fromUnitSelect.value;
   const toUnit = toUnitSelect.value;
+
+  if (category === "temperature") {
+    const result = convertTemperature(inputValue, fromUnit, toUnit);
+    return result === null
+      ? "Invalid conversion"
+      : `${valueStr} ${fromUnit} = ${result.toFixed(2)} ${toUnit}`;
+  }
+
   const fromFactor = unitMappings[category][fromUnit];
   const toFactor = unitMappings[category][toUnit];
   const result = (inputValue / fromFactor) * toFactor;
