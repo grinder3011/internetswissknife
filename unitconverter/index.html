@@ -26,11 +26,6 @@
       <label for="to-unit">To Unit</label>
       <select id="to-unit"></select>
 
-      <div class="batch-toggle-wrapper">
-        <input type="checkbox" id="batch-toggle" />
-        <label for="batch-toggle" class="batch-toggle-label">Batch Mode (Multiple numbers)</label>
-      </div>
-
       <label for="value" class="single-input-label">Value</label>
       <input type="text" id="value" placeholder="Enter a number" />
 
@@ -43,6 +38,11 @@
         <option value=",">Comma (,)</option>
       </select>
 
+      <div class="batch-toggle-wrapper">
+        <input type="checkbox" id="batch-toggle" />
+        <label for="batch-toggle" class="batch-toggle-label">Batch Mode (Multiple numbers)</label>
+      </div>
+      
       <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
 
       <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
