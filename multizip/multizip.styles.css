@@ -32,13 +32,15 @@ input[type="file"] {
 
 .actions {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 1em;
+  justify-content: center;   /* Center buttons horizontally */
+  align-items: center;
+  flex-wrap: wrap;           /* Allow wrapping on smaller screens */
+  gap: 12px;
+  margin-top: 1.5em;
 }
 
 .actions button {
-  padding: 10px;
+  padding: 10px 20px;
   font-size: 1em;
   border: none;
   background: #0078d4;
@@ -46,6 +48,10 @@ input[type="file"] {
   border-radius: 5px;
   cursor: pointer;
   transition: 0.2s ease;
+  width: auto;        /* Don't stretch */
+  flex: none;         /* Prevent growing */
+  min-width: 140px;   /* Optional: make sizes consistent */
+  text-align: center;
 }
 
 .actions button:hover {
