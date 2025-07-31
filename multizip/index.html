@@ -12,15 +12,24 @@
   <div class="container">
     <h1>📦 MultiZip Tool</h1>
 
-    <div class="help-toggle">
-      <button id="open-help" title="Instructions">
-        💡 <span class="help-label">How to use this tool</span>
-      </button>
     </div>
 
     <input type="file" id="fileInput" multiple />
     <div id="fileList"></div>
 
+     <!-- Tooltip trigger -->
+    <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
+    
+    <!-- Tooltip content -->
+    <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
+      <p>💡 <strong>How to use this tool:</strong></p>
+      <ul>
+        <li>📁 Use the file picker to select one or more files.</li>
+        <li>📦 Click <strong>Create Archive</strong> to prepare the zip file.</li>
+        <li>⬇️ Use <strong>Download Archive</strong> to save the zip to your device.</li>
+        <li>🔄 Click <strong>Remove All Files</strong> to start a new archive.</li>      </ul>
+    </div>
+    
     <div class="actions">
       <button id="createZipBtn">
         📦 Create Archive
@@ -31,20 +40,6 @@
       <button id="resetBtn">
         🔄 Remove All Files
       </button>
-    </div>
-  </div>
-
-  <!-- Help Panel -->
-  <div id="helpPanel" class="help-panel hidden">
-    <div class="help-content">
-      <h2>💡 How to Use MultiZip</h2>
-      <ul>
-        <li>📁 Use the file picker to select one or more files.</li>
-        <li>📦 Click <strong>Create Archive</strong> to prepare the zip file.</li>
-        <li>⬇️ Use <strong>Download Archive</strong> to save the zip to your device.</li>
-        <li>🔄 Click <strong>Remove All Files</strong> to start a new archive.</li>
-      </ul>
-      <button id="close-help">Close</button>
     </div>
   </div>
   
