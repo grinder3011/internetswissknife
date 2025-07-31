@@ -97,7 +97,6 @@ h1 {
   border-color: #007bff;
 }
 
-/* Cursor to indicate draggable/swappable */
 .preview-item:hover {
   cursor: grab;
 }
@@ -138,9 +137,15 @@ h1 {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
+/* === Button Styling === */
 button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.6rem 1.2rem;
   font-size: 1rem;
   background-color: #007bff;
@@ -149,10 +154,40 @@ button {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-family: inherit;
 }
 
 button:hover {
   background-color: #0056b3;
+}
+
+#reset-btn {
+  background-color: #6c757d;
+}
+
+#reset-btn:hover {
+  background-color: #545b62;
+}
+
+#merge-btn {
+  background-color: #007bff;
+}
+
+#merge-btn:hover {
+  background-color: #0056b3;
+}
+
+#download-btn {
+  background-color: #28a745;
+}
+
+#download-btn:hover {
+  background-color: #218838;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 #output {
