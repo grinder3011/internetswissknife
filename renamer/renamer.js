@@ -1,146 +1,139 @@
-const dropZone = document.getElementById('drop-zone');
-const fileInput = document.getElementById('file-input');
-const fileListContainer = document.getElementById('file-list');
-const renameBtn = document.getElementById('rename-btn');
-const prefixInput = document.getElementById('prefix');
-const startNumberInput = document.getElementById('start-number');
-const sortOrderSelect = document.getElementById('sort-order');
-const previewBox = document.getElementById('example-preview');  // <=== FIXED here
-const underscoreCheckbox = document.getElementById('use-underscore');
+document.addEventListener('DOMContentLoaded', () => {
+  const dropZone = document.getElementById('drop-zone');
+  const fileList = document.getElementById('file-list');
+  const filePreview = document.getElementById('file-preview');
+  const howToToggle = document.getElementById('how-to-toggle');
+  const howToText = document.getElementById('how-to-text');
+  const exampleFilenameContainer = document.getElementById('example-filename-container');
+  const exampleFilename = document.getElementById('example-filename');
+  const submitBtn = document.getElementById('submit-btn');
 
-let files = [];
-let customOrder = [];
+  let files = [];
 
-dropZone.addEventListener('click', () => fileInput.click());
-
-dropZone.addEventListener('dragover', e => {
-  e.preventDefault();
-  dropZone.classList.add('drag-over');
-});
-
-dropZone.addEventListener('dragleave', () => {
-  dropZone.classList.remove('drag-over');
-});
-
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  handleFiles(e.dataTransfer.files);
-});
-
-fileInput.addEventListener('change', e => {
-  handleFiles(e.target.files);
-});
-
-function handleFiles(fileListInput) {
-  files = Array.from(fileListInput);
-  updateFileOrder();
-  displayFileList();
-  updatePreview();
-}
-
-function updateFileOrder() {
-  const order = sortOrderSelect.value;
-
-  if (order === 'name-asc') {
-    files.sort((a, b) => a.name.localeCompare(b.name));
-  } else if (order === 'name-desc') {
-    files.sort((a, b) => b.name.localeCompare(a.name));
-  } else if (order === 'date-asc') {
-    files.sort((a, b) => a.lastModified - b.lastModified);
-  } else if (order === 'date-desc') {
-    files.sort((a, b) => b.lastModified - a.lastModified);
-  } else if (order === 'id-asc') {
-    files.sort((a, b) => extractNumericPrefix(a.name) - extractNumericPrefix(b.name));
-  } else if (order === 'id-desc') {
-    files.sort((a, b) => extractNumericPrefix(b.name) - extractNumericPrefix(a.name));
+  // Utility: clear file list and preview
+  function clearFilesDisplay() {
+    fileList.innerHTML = '';
+    filePreview.innerHTML = '';
   }
 
-  customOrder = [...files]; // fallback for manual drag (not yet implemented)
-}
+  // Display files in the file list
+  function renderFileList() {
+    fileList.innerHTML = '';
+    files.forEach((file, index) => {
+      const fileDiv = document.createElement('div');
+      fileDiv.textContent = file.name;
 
-function extractNumericPrefix(filename) {
-  const match = filename.match(/^(\d+)/);
-  return match ? parseInt(match[0]) : Infinity;
-}
+      // Add a "preview" button for text files
+      if (file.type.startsWith('text/') || file.name.match(/\.(txt|json|csv|md)$/i)) {
+        const previewBtn = document.createElement('button');
+        previewBtn.textContent = 'Preview';
+        previewBtn.style.marginLeft = '1rem';
+        previewBtn.addEventListener('click', () => {
+          showPreview(file);
+        });
+        fileDiv.appendChild(previewBtn);
+      }
 
-function displayFileList() {
-  fileListContainer.innerHTML = '';
-  files.forEach((file, i) => {
-    const row = document.createElement('div');
-    row.className = 'file-row';
-    row.textContent = `${i + 1}. ${file.name}`;
-    fileListContainer.appendChild(row);
+      // Add a remove button
+      const removeBtn = document.createElement('button');
+      removeBtn.textContent = 'Remove';
+      removeBtn.style.marginLeft = '1rem';
+      removeBtn.addEventListener('click', () => {
+        files.splice(index, 1);
+        renderFileList();
+        clearPreviewIfNecessary(file);
+        updateExampleFilename();
+      });
+      fileDiv.appendChild(removeBtn);
+
+      fileList.appendChild(fileDiv);
+    });
+  }
+
+  // Show file preview (only text files supported)
+  function showPreview(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      filePreview.innerHTML = `<pre class="preview">${e.target.result}</pre>`;
+    };
+    reader.readAsText(file);
+  }
+
+  // Clear preview if the file was removed
+  function clearPreviewIfNecessary(file) {
+    if (filePreview.innerHTML.includes(file.name)) {
+      filePreview.innerHTML = '';
+    }
+  }
+
+  // Update example filename container
+  function updateExampleFilename() {
+    if (files.length > 0) {
+      exampleFilenameContainer.style.display = 'flex';
+      exampleFilename.textContent = files[0].name;
+    } else {
+      exampleFilenameContainer.style.display = 'none';
+      exampleFilename.textContent = '';
+    }
+  }
+
+  // Handle files added (from input or drop)
+  function addFiles(newFiles) {
+    for (const file of newFiles) {
+      // Avoid duplicates by name + size (simple check)
+      if (!files.some(f => f.name === file.name && f.size === file.size)) {
+        files.push(file);
+      }
+    }
+    renderFileList();
+    updateExampleFilename();
+  }
+
+  // Drag & drop handlers
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.style.background = '#e1eaff';
   });
-}
 
-sortOrderSelect.addEventListener('change', () => {
-  updateFileOrder();
-  displayFileList();
-  updatePreview();
-});
-
-renameBtn.addEventListener('click', async () => {
-  if (files.length === 0) return;
-
-  const prefix = prefixInput.value.trim() || 'file';
-  const startNumber = parseInt(startNumberInput.value) || 1;
-  const underscore = underscoreCheckbox.checked ? "_" : "";
-
-  const zip = new JSZip();
-
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const ext = file.name.includes('.') ? '.' + file.name.split('.').pop() : '';
-    const num = (startNumber + i).toString().padStart(startNumberInput.value.length, '0');
-    const newName = `${prefix}${underscore}${num}${ext}`;
-    const content = await file.arrayBuffer();
-    zip.file(newName, content);
-  }
-
-  const blob = await zip.generateAsync({ type: 'blob' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'renamed_files.zip';
-  a.click();
-  URL.revokeObjectURL(url);
-});
-
-function updatePreview() {
-  const prefix = prefixInput.value.trim() || "file";
-  const startNum = startNumberInput.value.trim();
-  const useUnderscore = underscoreCheckbox.checked;
-
-  if (!/^\d+$/.test(startNum)) {
-    previewBox.textContent = "Enter a valid starting number.";
-    previewBox.classList.add('error-text');
-    return;
-  }
-
-  previewBox.classList.remove('error-text');
-
-  const padded = startNum;
-  const exampleExt = ".jpg";
-  const separator = useUnderscore ? "_" : "";
-  const exampleName = `${prefix}${separator}${padded}${exampleExt}`;
-
-  // Wrap example filename in a styled span for better UX
-  previewBox.innerHTML = `<span class="example-label">Example:</span> <span class="example-filename">${exampleName}</span>`;
-}
-
-prefixInput.addEventListener('input', updatePreview);
-startNumberInput.addEventListener('input', updatePreview);
-underscoreCheckbox.addEventListener('change', updatePreview);
-
-updatePreview();
-
-// 💡 Toggle "How to use this tool"
-const howToToggle = document.getElementById("how-to-toggle");
-const howToText = document.getElementById("how-to-text");
-
-if (howToToggle && howToText) {
-  howToToggle.addEventListener("click", () => {
-    howToText.hidden = !howToText.hidden;
+  dropZone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropZone.style.background = '';
   });
-}
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.style.background = '';
+    const dtFiles = e.dataTransfer.files;
+    if (dtFiles.length > 0) {
+      addFiles(dtFiles);
+    }
+  });
+
+  // Click to open file selector
+  dropZone.addEventListener('click', () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.multiple = true;
+    fileInput.accept = ''; // Accept all by default, adjust if needed
+    fileInput.addEventListener('change', (e) => {
+      addFiles(fileInput.files);
+    });
+    fileInput.click();
+  });
+
+  // How-to toggle button
+  howToToggle.addEventListener('click', () => {
+    if (howToText.style.display === 'none' || howToText.style.display === '') {
+      howToText.style.display = 'block';
+      howToToggle.textContent = 'Hide How-To';
+    } else {
+      howToText.style.display = 'none';
+      howToToggle.textContent = 'Show How-To';
+    }
+  });
+
+  // Submit button event (for demonstration)
+  submitBtn.addEventListener('click', () => {
+    alert(`Submitting ${files.length} file(s) with text input: "${document.getElementById('input-text').value}"`);
+  });
+});
