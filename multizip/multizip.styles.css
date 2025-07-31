@@ -26,8 +26,10 @@ input[type="file"] {
 }
 
 #fileList {
-  margin: 1em 0;
+  margin: 1em auto;
   font-size: 0.95em;
+  text-align: center;
+  max-width: 90%;
 }
 
 .actions {
@@ -56,4 +58,22 @@ input[type="file"] {
 
 .actions button:hover {
   background: #005fa3;
+}
+
+.tooltip-toggle-btn {
+  display: block;
+  margin: 1em auto;
+  text-align: center;
+}
+
+#json-tip {
+  margin: 1em auto;
+  max-width: 500px;
+  text-align: left;
+}
+
+.tooltip-box {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
