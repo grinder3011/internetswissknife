@@ -77,3 +77,35 @@ input[type="file"] {
   margin-left: auto;
   margin-right: auto;
 }
+
+#fileList div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  padding: 6px 10px;
+  background: #f0f4f8;
+  border-radius: 6px;
+  font-size: 0.95em;
+}
+
+#fileList div span {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#fileList div button {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: #d33;
+  font-size: 1.2em;
+  padding: 0 6px;
+  transition: color 0.2s ease;
+}
+
+#fileList div button:hover {
+  color: #a00;
+}
