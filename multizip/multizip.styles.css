@@ -20,64 +20,32 @@ h1 {
   margin-bottom: 1.5em;
 }
 
+/* New wrapper for main tool elements */
+.tool-wrapper {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1em 0;
+  box-sizing: border-box;
+}
+
+.tool-wrapper > * {
+  margin-bottom: 1em;
+}
+
+/* File input centered */
 input[type="file"] {
   display: block;
-  margin: 1em auto;
+  margin: 0 auto;
 }
 
+/* File list styles */
 #fileList {
-  margin: 1em auto;
   font-size: 0.95em;
-  text-align: center;
-  max-width: 90%;
+  /* Removed text-align: center to allow flex styling */
+  max-width: 100%;
 }
 
-.actions {
-  display: flex;
-  justify-content: center;   /* Center buttons horizontally */
-  align-items: center;
-  flex-wrap: wrap;           /* Allow wrapping on smaller screens */
-  gap: 12px;
-  margin-top: 1.5em;
-}
-
-.actions button {
-  padding: 10px 20px;
-  font-size: 1em;
-  border: none;
-  background: #0078d4;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.2s ease;
-  width: auto;        /* Don't stretch */
-  flex: none;         /* Prevent growing */
-  min-width: 140px;   /* Optional: make sizes consistent */
-  text-align: center;
-}
-
-.actions button:hover {
-  background: #005fa3;
-}
-
-.tooltip-toggle-btn {
-  display: block;
-  margin: 1em auto;
-  text-align: center;
-}
-
-#json-tip {
-  margin: 1em auto;
-  max-width: 500px;
-  text-align: left;
-}
-
-.tooltip-box {
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-}
-
+/* File list items */
 #fileList div {
   display: flex;
   justify-content: space-between;
@@ -108,4 +76,53 @@ input[type="file"] {
 
 #fileList div button:hover {
   color: #a00;
+}
+
+/* Tooltip toggle button centered */
+.tooltip-toggle-btn {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Tooltip box styles */
+#json-tip {
+  margin: 1em auto;
+  max-width: 500px;
+  text-align: left;
+}
+
+.tooltip-box {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Actions container: center buttons with wrapping and consistent size */
+.actions {
+  display: flex;
+  justify-content: center;   /* Center buttons horizontally */
+  align-items: center;
+  flex-wrap: wrap;           /* Wrap on smaller screens */
+  gap: 12px;
+  margin-top: 1.5em;
+}
+
+.actions button {
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  background: #0078d4;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  width: auto;        /* Prevent stretch */
+  flex: none;         /* Prevent grow/shrink */
+  min-width: 140px;   /* Consistent button size */
+  text-align: center;
+}
+
+.actions button:hover {
+  background: #005fa3;
 }
