@@ -20,12 +20,6 @@
         <option value="time">⏰ Time</option>
       </select>
 
-      <label for="decimal-separator" title="Choose decimal separator used in numbers">Decimal Separator</label>
-      <select id="decimal-separator" title="Choose decimal separator used in numbers">
-        <option value=".">Period (.)</option>
-        <option value=",">Comma (,)</option>
-      </select>
-
       <div class="batch-toggle-wrapper">
         <input type="checkbox" id="batch-toggle" />
         <label for="batch-toggle" class="batch-toggle-label">Batch Mode (Multiple numbers)</label>
@@ -36,6 +30,12 @@
 
       <label for="batch-value" class="batch-input-label hidden">Values (one per line)</label>
       <textarea id="batch-value" class="batch-input hidden" placeholder="Enter one number per line"></textarea>
+
+      <label for="decimal-separator" title="Choose decimal separator used in numbers">Decimal Separator</label>
+      <select id="decimal-separator" title="Choose decimal separator used in numbers">
+        <option value=".">Period (.)</option>
+        <option value=",">Comma (,)</option>
+      </select>
 
       <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
 
