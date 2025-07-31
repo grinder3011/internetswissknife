@@ -232,6 +232,106 @@ decimalSeparatorSelect.addEventListener("change", () => {
   downloadBtn.disabled = true;
 });
 
+// --- Start of added validation code ---
+
+// Keep track of last valid input for reverting
+let lastValidSingle = "";
+let lastValidBatch = "";
+
+// Helper: filter input by allowing only digits and selected separator
+function filterInput(inputStr, separator) {
+  // Remove anything not digit or separator
+  let filtered = inputStr.replace(new RegExp(`[^0-9${separator}]`, "g"), "");
+
+  // Allow only one separator
+  const parts = filtered.split(separator);
+  if (parts.length > 1) {
+    filtered = parts[0] + separator + parts.slice(1).join("").replace(new RegExp(separator, "g"), "");
+  }
+  return filtered;
+}
+
+function handleValidation(inputElem, lastValidRef) {
+  const sep = decimalSeparatorSelect.value;
+  const val = inputElem.value;
+  const filtered = filterInput(val, sep);
+
+  if (filtered !== val) {
+    if (confirm(`Unsupported characters detected. Use only numbers and the selected separator coma or full stop.\nDo you want to proceed and strip the other characters?`)) {
+      inputElem.value = filtered;
+      lastValidRef.value = filtered;
+    } else {
+      inputElem.value = lastValidRef.value;
+    }
+  } else {
+    lastValidRef.value = val;
+  }
+}
+
+// Single input validation on input and paste
+valueInput.addEventListener("input", () => {
+  handleValidation(valueInput, { value: lastValidSingle });
+  lastValidSingle = valueInput.value; // update after handling
+});
+
+valueInput.addEventListener("paste", (e) => {
+  const sep = decimalSeparatorSelect.value;
+  const paste = (e.clipboardData || window.clipboardData).getData("text");
+  const filtered = filterInput(paste, sep);
+
+  if (filtered !== paste) {
+    e.preventDefault();
+    if (confirm(`Unsupported characters detected. Use only numbers and the selected separator coma or full stop.\nDo you want to proceed and strip the other characters?`)) {
+      document.execCommand("insertText", false, filtered);
+    }
+  }
+});
+
+// Batch input validation on input and paste
+batchValueInput.addEventListener("input", () => {
+  const sep = decimalSeparatorSelect.value;
+  // Split by lines and validate each line separately
+  const lines = batchValueInput.value.split(/\r?\n/);
+  let changed = false;
+  for (let i = 0; i < lines.length; i++) {
+    const filteredLine = filterInput(lines[i], sep);
+    if (filteredLine !== lines[i]) {
+      changed = true;
+      if (confirm(`Unsupported characters detected on line ${i + 1}. Use only numbers and the selected separator coma or full stop.\nDo you want to proceed and strip the other characters?`)) {
+        lines[i] = filteredLine;
+      } else {
+        // Revert entire batch input to last valid
+        batchValueInput.value = lastValidBatch;
+        return;
+      }
+    }
+  }
+  if (changed) {
+    batchValueInput.value = lines.join("\n");
+  }
+  lastValidBatch = batchValueInput.value;
+});
+
+batchValueInput.addEventListener("paste", (e) => {
+  const sep = decimalSeparatorSelect.value;
+  const paste = (e.clipboardData || window.clipboardData).getData("text");
+  // Check if paste contains only allowed chars per line
+  const lines = paste.split(/\r?\n/);
+  for (let i = 0; i < lines.length; i++) {
+    const filteredLine = filterInput(lines[i], sep);
+    if (filteredLine !== lines[i]) {
+      e.preventDefault();
+      if (confirm(`Unsupported characters detected on pasted content at line ${i + 1}. Use only numbers and the selected separator coma or full stop.\nDo you want to proceed and strip the other characters?`)) {
+        const newPaste = lines.map(line => filterInput(line, sep)).join("\n");
+        document.execCommand("insertText", false, newPaste);
+      }
+      return;
+    }
+  }
+});
+
+// --- End of added validation code ---
+
 // Init
 window.addEventListener("DOMContentLoaded", () => {
   populateUnits(categorySelect.value);
