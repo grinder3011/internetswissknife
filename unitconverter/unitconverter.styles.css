@@ -125,7 +125,8 @@ button:disabled {
 #batch-options {
   margin-top: 1em;
   display: flex;
-  align-items: center;
+  flex-direction: column;        /* 🟢 NEW: stack items vertically */
+  align-items: stretch;          /* 🟢 NEW: full width */
   gap: 0.8em;
 }
 
@@ -134,9 +135,10 @@ button:disabled {
   flex-shrink: 0;
 }
 
-#batch-options select {
-  width: auto;
-  min-width: 120px;
+#batch-options select,
+#batch-options button {
+  width: 100%;                   /* 🟢 NEW: prevent overflow */
+  box-sizing: border-box;
 }
 
 /* Copy button outside .buttons for better layout */
@@ -207,6 +209,3 @@ button:disabled {
 .batch-input-label {
   font-weight: 600;
 }
-
-/* You can add any other specific styling or animations you want */
-
