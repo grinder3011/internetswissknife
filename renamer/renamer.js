@@ -5,7 +5,7 @@ const renameBtn = document.getElementById('rename-btn');
 const prefixInput = document.getElementById('prefix');
 const startNumberInput = document.getElementById('start-number');
 const sortOrderSelect = document.getElementById('sort-order');
-const previewBox = document.getElementById('preview-box');
+const previewBox = document.getElementById('example-preview');  // <=== FIXED here
 const underscoreCheckbox = document.getElementById('use-underscore');
 
 let files = [];
