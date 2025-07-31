@@ -8,19 +8,22 @@ let selectedFiles = [];
 let selectedIndicesForSwap = [];
 
 // Handle file input change event
-fileInput.addEventListener("change", (event) => {
-  const newFiles = Array.from(event.target.files);
-  newFiles.forEach((file) => {
-    if (!selectedFiles.some(f => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified)) {
-      selectedFiles.push(file);
-    }
-  });
+if (fileInput) {
+  fileInput.addEventListener("change", (event) => {
+    const newFiles = Array.from(event.target.files);
+    newFiles.forEach((file) => {
+      if (!selectedFiles.some(f => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified)) {
+        selectedFiles.push(file);
+      }
+    });
 
-  renderPreview();
-  fileInput.value = "";
-});
+    renderPreview();
+    fileInput.value = "";
+  });
+}
 
 function renderPreview() {
+  if (!previewList) return;
   previewList.innerHTML = "";
 
   selectedFiles.forEach((file, index) => {
@@ -75,7 +78,7 @@ function handleSwapSelection(index) {
 }
 
 function swapFiles(i1, i2) {
-  if (i1 === i2) return;
+  if (!previewList || i1 === i2) return;
 
   const items = previewList.querySelectorAll(".preview-item");
   if (items.length <= Math.max(i1, i2)) return;
@@ -83,18 +86,15 @@ function swapFiles(i1, i2) {
   const item1 = items[i1];
   const item2 = items[i2];
 
-  // Get positions before the swap
   const rect1 = item1.getBoundingClientRect();
   const rect2 = item2.getBoundingClientRect();
 
   const deltaX = rect2.left - rect1.left;
   const deltaY = rect2.top - rect1.top;
 
-  // Clone elements for animation overlay
   const clone1 = item1.cloneNode(true);
   const clone2 = item2.cloneNode(true);
 
-  // Set absolute positions for clones
   [clone1, clone2].forEach((clone, idx) => {
     const original = idx === 0 ? item1 : item2;
     const rect = original.getBoundingClientRect();
@@ -109,13 +109,11 @@ function swapFiles(i1, i2) {
     document.body.appendChild(clone);
   });
 
-  // Animate them to each other's position
   requestAnimationFrame(() => {
     clone1.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
     clone2.style.transform = `translate(${-deltaX}px, ${-deltaY}px)`;
   });
 
-  // Wait for animation to finish, then swap data and re-render
   setTimeout(() => {
     [selectedFiles[i1], selectedFiles[i2]] = [selectedFiles[i2], selectedFiles[i1]];
     renderPreview();
@@ -124,42 +122,47 @@ function swapFiles(i1, i2) {
   }, 300);
 }
 
-mergeBtn.addEventListener("click", async () => {
-  if (selectedFiles.length < 2) {
-    alert("Please select at least 2 PDF files to merge.");
-    return;
-  }
-
-  output.innerHTML = "Merging...";
-
-  try {
-    const mergedPdf = await PDFLib.PDFDocument.create();
-
-    for (const file of selectedFiles) {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      copiedPages.forEach((page) => mergedPdf.addPage(page));
+if (mergeBtn) {
+  mergeBtn.addEventListener("click", async () => {
+    if (selectedFiles.length < 2) {
+      alert("Please select at least 2 PDF files to merge.");
+      return;
     }
 
-    const mergedPdfBytes = await mergedPdf.save();
-    const blob = new Blob([mergedPdfBytes], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
+    if (!output) return;
+    output.innerHTML = "Merging...";
 
-    output.innerHTML = `<a href="${url}" download="merged.pdf">Download Merged PDF</a>`;
-  } catch (error) {
-    output.textContent = "Error merging PDFs.";
-    console.error(error);
-  }
-});
+    try {
+      const mergedPdf = await PDFLib.PDFDocument.create();
 
-resetBtn.addEventListener("click", () => {
-  selectedFiles = [];
-  selectedIndicesForSwap = [];
-  previewList.innerHTML = "";
-  output.innerHTML = "";
-  fileInput.value = "";
-});
+      for (const file of selectedFiles) {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        copiedPages.forEach((page) => mergedPdf.addPage(page));
+      }
+
+      const mergedPdfBytes = await mergedPdf.save();
+      const blob = new Blob([mergedPdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+
+      output.innerHTML = `<a href="${url}" download="merged.pdf">Download Merged PDF</a>`;
+    } catch (error) {
+      output.textContent = "Error merging PDFs.";
+      console.error(error);
+    }
+  });
+}
+
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+    selectedFiles = [];
+    selectedIndicesForSwap = [];
+    if (previewList) previewList.innerHTML = "";
+    if (output) output.innerHTML = "";
+    if (fileInput) fileInput.value = "";
+  });
+}
 
 renderPreview();
 
@@ -197,32 +200,41 @@ function closeModal(modal) {
 
 const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
-usageToggle.addEventListener("click", () => {
-  if (isMobile) {
-    openModal(usageModal);
-  } else {
-    toggleAccordion(usageToggle, usageContent);
-  }
-});
-
-disclaimerToggle.addEventListener("click", () => {
-  if (isMobile) {
-    openModal(disclaimerModal);
-  } else {
-    toggleAccordion(disclaimerToggle, disclaimerContent);
-  }
-});
-
-modalCloses.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    closeModal(btn.closest(".modal"));
-  });
-});
-
-[usageModal, disclaimerModal].forEach((modal) => {
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      closeModal(modal);
+if (usageToggle && usageContent && usageModal) {
+  usageToggle.addEventListener("click", () => {
+    if (isMobile) {
+      openModal(usageModal);
+    } else {
+      toggleAccordion(usageToggle, usageContent);
     }
   });
+}
+
+if (disclaimerToggle && disclaimerContent && disclaimerModal) {
+  disclaimerToggle.addEventListener("click", () => {
+    if (isMobile) {
+      openModal(disclaimerModal);
+    } else {
+      toggleAccordion(disclaimerToggle, disclaimerContent);
+    }
+  });
+}
+
+if (modalCloses.length) {
+  modalCloses.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const modal = btn.closest(".modal");
+      if (modal) closeModal(modal);
+    });
+  });
+}
+
+[usageModal, disclaimerModal].forEach((modal) => {
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeModal(modal);
+      }
+    });
+  }
 });
