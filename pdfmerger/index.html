@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PDF Merger</title>
+  <title>Simple PDF Merger</title>
+   <link rel="stylesheet" href="../tooltip.styles.css?v=3">
   <link rel="stylesheet" href="pdfmerger.styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>PDF Merger Tool</h1>
+    <h1>Simple PDF Merger </h1>
 
     <!-- Drag & Drop Upload Area -->
     <label id="drop-zone" for="file-input" tabindex="0" role="button" aria-label="Upload PDF files">
@@ -36,6 +37,21 @@
       >
         💡 How to use this tool
       </button>
+
+       <!-- Tooltip trigger -->
+      <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
+      
+      <!-- Tooltip content -->
+      <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
+        <p>💡 <strong>How to use this tool:</strong></p>
+        <ul>
+          <li>📋 Paste or upload JSON to format or validate.</li>
+          <li>✨ Click <em>Format JSON</em> to prettify your JSON.</li>
+          <li>🔍 Click <em>Validate JSON</em> to check for errors.</li>
+          <li>⬇️ Download or 📋 Copy your formatted JSON.</li>
+        </ul>
+      </div>
+      
       <div id="usage-content" class="accordion-content" hidden>
         <p>
           This basic PDF merger tool combines multiple PDFs by copying their pages into a
@@ -103,6 +119,7 @@
     </div>
   </div>
 
+  <script src="../tooltip.js" defer></script>
   <script src="pdfmerger.js"></script>
 </body>
 </html>
