@@ -32,7 +32,7 @@ function createQRCode() {
   const text = qrInput.value.trim();
   if (!text) {
     qrCodeContainer.innerHTML =
-      "<p style='color:#999'>Enter text or URL to generate QR code</p>";
+      "<p style='color:#999'>Your QR code will be generated here</p>";
     qrCode = null;
     return;
   }
