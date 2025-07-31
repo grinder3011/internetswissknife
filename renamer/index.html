@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Easy File Renamer</title>
+  <link rel="stylesheet" href="../tooltip.styles.css?v=3">
   <link rel="stylesheet" href="renamer.styles.css">
 </head>
 <body>
@@ -55,6 +56,22 @@
       </div>
     </div>
 
+     <!-- Tooltip trigger -->
+    <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
+    
+    <!-- Tooltip content -->
+    <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
+      <p>💡 <strong>How to use the Easy File Renamer:</strong></p>
+      <ul>
+        <li>📂 Drag & drop files or click to select multiple files or folders.</li>
+        <li>🔀 Choose how you want to sort the files (manual drag reorder, filename, date, or leading number).</li>
+        <li>✏️ Enter a filename prefix, like <code>vacation</code> or <code>invoice</code>.</li>
+        <li>🔢 Set the starting number for your files. Use leading zeros for padding (e.g., <code>0050</code>).</li>
+        <li>➕ Optionally add an underscore before the number for clarity.</li>
+        <li>💾 Click <em>Rename & Download ZIP</em> to rename your files in batch and download them as a ZIP archive.</li>
+      </ul>
+    </div>
+    
     <div id="how-to-text" class="how-to-text" hidden>
       <p>This tool lets you batch rename files with a consistent naming pattern. Choose a prefix, starting number (e.g. 001), and decide whether to include an underscore. Files can be sorted by filename, date, or number prefix. Once set, download your renamed files as a ZIP.</p>
     </div>
@@ -66,6 +83,7 @@
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="../tooltip.js" defer></script>
   <script src="renamer.js"></script>
 </body>
 </html>
