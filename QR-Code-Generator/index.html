@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>QR Code Generator</title>
   <link rel="stylesheet" href="qr.styles.css" />
+  <link rel="stylesheet" href="tooltip-module.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
 <body>
@@ -28,23 +29,30 @@
 
       <div id="qrcode" class="qr-code-container" aria-live="polite"></div>
 
-      <button id="tooltip-toggle" class="tooltip-button" aria-label="How to use" title="How to use">
-        <i class="fas fa-lightbulb tooltip-icon"></i>
-        <span class="tooltip-label">How to use this tool</span>
+      <!-- Modular Tooltip Start -->
+      <button class="tooltip-toggle-btn" data-tooltip-target="qr-tip">
+        <i class="fas fa-lightbulb" style="margin-right: 6px;"></i>
+        How to use this tool?
       </button>
+
+      <div id="qr-tip" class="tooltip-box hidden" aria-live="polite">
+        <p>💡 <strong>How to use this tool:</strong></p>
+        <ul>
+          <li>✏️ Enter the text, URL, or data you want to encode.</li>
+          <li>🎨 Optionally adjust the size, color, or margin of the QR code.</li>
+          <li>
+            <img src="qr-koda.png" alt="Generate Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 6px;">
+            Click <em>Generate</em> to create your QR code.
+          </li>
+          <li>⬇️ Use the <em>Download</em> button to save the QR image.</li>
+        </ul>
+      </div>
+      <!-- Modular Tooltip End -->
 
       <button id="toggle-options-btn" class="btn toggle-options-btn" aria-expanded="false" aria-controls="more-options" type="button">
         <span class="options-label">More options</span>
         <i class="fas fa-chevron-down arrow"></i>
       </button>
-
-      <div id="tooltip-panel" class="tooltip-panel" hidden>
-        <button id="tooltip-close" class="tooltip-close" aria-label="Close tooltip">&times;</button>
-        <h2>How to Use This Tool</h2>
-        <p>Enter your text or URL in the input box below, then press <strong>Generate</strong> to create your QR code.</p>
-        <p>Customize the style, colors, format, or add a logo image. When ready, click <strong>Download</strong> to save your QR code.</p>
-        <p>Use the <i class="fas fa-chevron-down"></i> <em>More Options</em> button to toggle advanced settings.</p>
-      </div>
 
       <section id="more-options" class="more-options" hidden>
         <fieldset class="fieldset-style">
@@ -96,5 +104,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
   <script src="qr.js"></script>
+  <script src="tooltip-module.js" defer></script>
 </body>
 </html>
