@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Word & Character Counter +</title>
-   <link rel="stylesheet" href="../tooltip.styles.css?v=3">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../tooltip.styles.css?v=3">
   <link rel="stylesheet" href="counter.styles.css?v=3" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
@@ -18,26 +19,27 @@
       <label for="text-input" class="sr-only">Enter your text to analyze</label>
       <textarea id="text-input" placeholder="Start typing or paste your text here..." rows="8" aria-describedby="text-desc"></textarea>
       <div id="text-desc" class="sr-only">Input your text to count words and characters</div>
-
-       <!-- Tooltip trigger -->
-      <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
+  
+      <!-- Tooltip trigger -->
+      <button class="tooltip-toggle-btn" data-tooltip-target="json-tip" aria-expanded="false" aria-controls="json-tip">
+         <i class="fas fa-lightbulb tooltip-icon"></i> How to use this tool?
+      </button>
       
-     <!-- Tooltip content -->
-  <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
-    <p>💡 <strong>How to use Word & Character Counter +:</strong></p>
-    <ul>
-      <li>✍️ Type or paste your text in the box above to start analysis.</li>
-      <li>📊 The tool counts <i class="fas fa-file-alt"></i> words, <i class="fas fa-keyboard"></i> characters (with and without spaces), and <i class="fas fa-quote-left"></i> sentences.</li>
-      <li>🧪 It also tracks <i class="fas fa-atom"></i> unique words with options to filter short words.</li>
-      <li>Use <i class="fas fa-cogs"></i> <strong>More options</strong> to customize counting behavior, like ignoring punctuation or counting sentences.</li>
-      <li>🔠 Easily convert your text case with <i class="fas fa-file-word"></i> buttons: UPPERCASE, lowercase, or Title Case.</li>
-      <li>📋 Use the <i class="fas fa-copy"></i> buttons to copy results or original text quickly.</li>
-      <li>⬇️ Download your analysis or original text files using the <i class="fas fa-download"></i> buttons.</li>
-      <li>↩️ Hit the <i class="fas fa-undo"></i> Reset button to clear everything and start fresh.</li>
-    </ul>
-  </div>
-
-      
+      <!-- Tooltip content -->
+      <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
+        <p>💡 <strong>How to use Word & Character Counter +:</strong></p>
+        <ul>
+          <li>✍️ Type or paste your text in the box above to start analysis.</li>
+          <li>📊 The tool counts <i class="fas fa-file-alt"></i> words, <i class="fas fa-keyboard"></i> characters (with and without spaces), and <i class="fas fa-quote-left"></i> sentences.</li>
+          <li>🧪 It also tracks <i class="fas fa-atom"></i> unique words with options to filter short words.</li>
+          <li>Use <i class="fas fa-cogs"></i> <strong>More options</strong> to customize counting behavior, like ignoring punctuation or counting sentences.</li>
+          <li>🔠 Easily convert your text case with <i class="fas fa-file-word"></i> buttons: UPPERCASE, lowercase, or Title Case.</li>
+          <li>📋 Use the <i class="fas fa-copy"></i> buttons to copy results or original text quickly.</li>
+          <li>⬇️ Download your analysis or original text files using the <i class="fas fa-download"></i> buttons.</li>
+          <li>↩️ Hit the <i class="fas fa-undo"></i> Reset button to clear everything and start fresh.</li>
+        </ul>
+      </div>
+    
       <section class="result-box">
         <p><i class="fas fa-file-alt"></i> <strong>Words:</strong> <span id="word-count">0</span></p>
         <p><i class="fas fa-keyboard"></i> <strong>Characters:</strong> <span id="char-count">0</span></p>
