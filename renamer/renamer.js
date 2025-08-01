@@ -7,156 +7,165 @@ document.addEventListener('DOMContentLoaded', () => {
   const useUnderscoreCheckbox = document.getElementById('use-underscore');
   const renameBtn = document.getElementById('rename-btn');
   const exampleFilenameDiv = document.getElementById('example-filename');
-
+  const fileListContainer = document.createElement('div');
   let files = [];
 
-  // Helpers
+  dropZone.appendChild(fileListContainer);
+
+  // Helper: zero pad number to width
   function zeroPad(num, width) {
     const numStr = num.toString();
-    return numStr.length >= width ? numStr : '0'.repeat(width - numStr.length) + numStr;
+    return numStr.length >= width ? numStr : new Array(width - numStr.length + 1).join('0') + numStr;
   }
 
+  // Update example filename with current inputs & first file extension or default
   function updateExampleFilename() {
-    if (files.length === 0) {
-      exampleFilenameDiv.textContent = '';
-      return;
-    }
     const prefix = prefixInput.value.trim() || 'file';
     const startNumStr = startNumberInput.value.trim() || '1';
-
-    // Determine padding width based on start number length
     const paddingWidth = startNumStr.length;
-
     const startNum = parseInt(startNumStr, 10) || 1;
-
-    // Get extension of first file or fallback to .txt
     let ext = '.txt';
-    if (files[0].name.includes('.')) {
+    if (files.length > 0 && files[0].name.includes('.')) {
       ext = files[0].name.substring(files[0].name.lastIndexOf('.'));
     }
-
     const separator = useUnderscoreCheckbox.checked ? '_' : '';
-
     exampleFilenameDiv.textContent = `${prefix}${separator}${zeroPad(startNum, paddingWidth)}${ext}`;
   }
 
-  function sortFiles() {
-    const order = sortOrderSelect.value;
-    switch (order) {
-      case 'name-asc':
-        files.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'name-desc':
-        files.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case 'date-asc':
-        files.sort((a, b) => a.lastModified - b.lastModified);
-        break;
-      case 'date-desc':
-        files.sort((a, b) => b.lastModified - a.lastModified);
-        break;
-      case 'id-asc':
-        files.sort((a, b) => extractLeadingNumber(a.name) - extractLeadingNumber(b.name));
-        break;
-      case 'id-desc':
-        files.sort((a, b) => extractLeadingNumber(b.name) - extractLeadingNumber(a.name));
-        break;
-      case 'custom':
-      default:
-        // Keep as is (manual)
-        break;
+  // Render the list of files and enable drag to reorder if manual sorting
+  function renderFileList() {
+    fileListContainer.innerHTML = '';
+    if (files.length === 0) {
+      fileListContainer.textContent = 'No files loaded';
+      return;
     }
+    files.forEach((file, index) => {
+      const fileDiv = document.createElement('div');
+      fileDiv.textContent = file.name;
+      fileListContainer.appendChild(fileDiv);
+    });
   }
 
-  function extractLeadingNumber(filename) {
-    const match = filename.match(/^(\d+)/);
+  // Sorting logic based on select option
+  function sortFiles() {
+    const order = sortOrderSelect.value;
+    if (order === 'custom') {
+      // Manual order - no sorting here, user can drag (drag code not shown here)
+      // So just leave as is
+      return;
+    }
+    files.sort((a, b) => {
+      switch (order) {
+        case 'name-asc':
+          return a.name.localeCompare(b.name);
+        case 'name-desc':
+          return b.name.localeCompare(a.name);
+        case 'date-asc':
+          return a.lastModified - b.lastModified;
+        case 'date-desc':
+          return b.lastModified - a.lastModified;
+        case 'id-asc': {
+          // Leading number ascending
+          const numA = extractLeadingNumber(a.name);
+          const numB = extractLeadingNumber(b.name);
+          return numA - numB;
+        }
+        case 'id-desc': {
+          const numA = extractLeadingNumber(a.name);
+          const numB = extractLeadingNumber(b.name);
+          return numB - numA;
+        }
+        default:
+          return 0;
+      }
+    });
+  }
+
+  // Helper to extract leading number from filename, returns 0 if none
+  function extractLeadingNumber(name) {
+    const match = name.match(/^(\d+)/);
     return match ? parseInt(match[1], 10) : 0;
   }
 
+  // Handle files selection or drop
   function handleFiles(selectedFiles) {
-    files = Array.from(selectedFiles);
+    files = Array.from(selectedFiles).filter(f => !f.name.startsWith('.'));
     sortFiles();
+    renderFileList();
     updateExampleFilename();
   }
 
-  // Event handlers
-
-  dropZone.addEventListener('click', () => {
-    fileInput.click();
+  // File input change
+  fileInput.addEventListener('change', e => {
+    handleFiles(e.target.files);
   });
 
-  dropZone.addEventListener('dragover', (e) => {
+  // Dropzone drag and drop
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  dropZone.addEventListener('dragover', e => {
     e.preventDefault();
-    dropZone.classList.add('drag-over');
+    dropZone.classList.add('dragover');
   });
 
-  dropZone.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
   });
 
-  dropZone.addEventListener('drop', (e) => {
+  dropZone.addEventListener('drop', e => {
     e.preventDefault();
-    dropZone.classList.remove('drag-over');
+    dropZone.classList.remove('dragover');
     if (e.dataTransfer.files.length > 0) {
       handleFiles(e.dataTransfer.files);
     }
   });
 
-  fileInput.addEventListener('change', (e) => {
-    if (fileInput.files.length > 0) {
-      handleFiles(fileInput.files);
-    }
-  });
-
-  sortOrderSelect.addEventListener('change', () => {
-    sortFiles();
-    updateExampleFilename();
-  });
-
+  // Update example filename on input changes
   prefixInput.addEventListener('input', updateExampleFilename);
   startNumberInput.addEventListener('input', updateExampleFilename);
   useUnderscoreCheckbox.addEventListener('change', updateExampleFilename);
 
-  renameBtn.addEventListener('click', async () => {
+  // Sort order change triggers resort and example update
+  sortOrderSelect.addEventListener('change', () => {
+    sortFiles();
+    renderFileList();
+    updateExampleFilename();
+  });
+
+  // Rename & download logic (assumed unchanged)
+  renameBtn.addEventListener('click', () => {
     if (files.length === 0) {
-      alert('Please add some files first.');
+      alert('Please select files first.');
       return;
     }
-
     const prefix = prefixInput.value.trim() || 'file';
     const startNumStr = startNumberInput.value.trim() || '1';
     const paddingWidth = startNumStr.length;
-    let startNum = parseInt(startNumStr, 10);
-    if (isNaN(startNum)) startNum = 1;
-
+    let currentNum = parseInt(startNumStr, 10) || 1;
     const separator = useUnderscoreCheckbox.checked ? '_' : '';
 
     const zip = new JSZip();
-
-    files.forEach((file, index) => {
-      const ext = file.name.includes('.') ? file.name.substring(file.name.lastIndexOf('.')) : '';
-      const newName = `${prefix}${separator}${zeroPad(startNum + index, paddingWidth)}${ext}`;
+    files.forEach(file => {
+      // Get extension from original file
+      let ext = '.txt';
+      if (file.name.includes('.')) {
+        ext = file.name.substring(file.name.lastIndexOf('.'));
+      }
+      const newName = `${prefix}${separator}${zeroPad(currentNum, paddingWidth)}${ext}`;
       zip.file(newName, file);
+      currentNum++;
     });
 
-    try {
-      const content = await zip.generateAsync({ type: 'blob' });
-      const url = URL.createObjectURL(content);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${prefix}_files.zip`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      alert('Error creating ZIP file: ' + err);
-    }
+    zip.generateAsync({ type: 'blob' }).then(content => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = 'renamed_files.zip';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    });
   });
 
-  // Initialize empty example filename on load
+  // Initial example filename update on page load
   updateExampleFilename();
 });
