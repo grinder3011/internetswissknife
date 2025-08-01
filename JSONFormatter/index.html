@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JSON Formatter / Validator</title>
+  <title>JSON Formatter / Validator</title>  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../tooltip.styles.css?v=3">
   <link rel="stylesheet" href="JSONFormatter.styles.css" />
 </head>
 <body>
@@ -24,10 +26,15 @@
       <button id="copy-btn" class="btn" title="Copy formatted JSON to clipboard" disabled>📋 Copy</button>
       <button id="download-btn" class="btn" title="Download formatted JSON" disabled>⬇️ Download</button>
 
-      <button id="tooltip-btn" class="tooltip-btn" title="How to use this tool?">💡 How to use this tool?</button>
+      
+    <!-- Tooltip trigger -->
+    <button class="tooltip-toggle-btn" data-tooltip-target="json-tip" aria-expanded="false" aria-controls="json-tip">
+      <i class="fas fa-lightbulb tooltip-icon"></i> How to use this tool?
+    </button>
     </div>
-
-    <div id="tooltip-text" class="tooltip-text hidden" aria-live="polite">
+  
+    <!-- Tooltip content -->
+    <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
       <p>💡 <strong>How to use this tool:</strong></p>
       <ul>
         <li>📋 Paste or upload JSON to format or validate.</li>
@@ -40,6 +47,7 @@
     <div id="validation-result" class="validation-result" aria-live="polite"></div>
   </main>
 
+  <script src="../tooltip.js" defer></script>
   <script src="JSONFormatter.js"></script>
 </body>
 </html>
