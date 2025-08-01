@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Simple PDF Merger</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../tooltip.styles.css?v=3">
   <link rel="stylesheet" href="pdfmerger.styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -30,8 +31,11 @@
 
     <!-- Accordion container -->
     <div class="accordion-container">
-      <!-- Modular Tooltip Trigger -->
-      <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
+      
+      <!-- Tooltip trigger -->
+      <button class="tooltip-toggle-btn" data-tooltip-target="json-tip" aria-expanded="false" aria-controls="json-tip">
+        <i class="fas fa-lightbulb tooltip-icon"></i> How to use this tool?
+      </button>
 
       <!-- Modular Tooltip Content -->
       <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
