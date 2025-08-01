@@ -38,7 +38,8 @@
         <label for="prefix">Filename Prefix</label>
         <input type="text" id="prefix" placeholder="e.g. vacation, invoice, photo" value="file" />
       </div>
-
+    </div>
+    <div class="input-row">
       <div class="form-group">
         <label for="start-number">Starting Number</label>
         <input type="text" id="start-number" value="1" />
@@ -52,7 +53,12 @@
       </div>
     </div>
 
-     <!-- Tooltip trigger -->
+    <div class="example-filename-container" aria-live="polite" aria-atomic="true">
+      <label>📄 File name preview:</label>
+      <div id="example-filename" class="example-filename">file1.jpg</div>
+    </div>
+
+      <!-- Tooltip trigger -->
     <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
     
     <!-- Tooltip content -->
@@ -67,12 +73,7 @@
         <li>💾 Click <em>Rename & Download ZIP</em> to rename your files in batch and download them as a ZIP archive.</li>
       </ul>
     </div>
-
-    <div class="example-filename-container" aria-live="polite" aria-atomic="true">
-      <label>📄 File name preview:</label>
-      <div id="example-filename" class="example-filename">file1.jpg</div>
-    </div>
-
+    
     <button id="rename-btn">Rename & Download ZIP</button>
   </main>
 
