@@ -56,7 +56,8 @@ textarea:focus {
   user-select: none;
 }
 
-button {
+/* ✅ Scoped only to buttons inside .button-row */
+.button-row button {
   padding: 0.65rem 1.8rem;
   font-size: 1rem;
   border-radius: 8px;
@@ -70,25 +71,25 @@ button {
   user-select: none;
 }
 
-button:hover:not(:disabled) {
+.button-row button:hover:not(:disabled) {
   background-color: #3a5498;
   box-shadow: 0 5px 10px rgb(58 84 152 / 0.5);
 }
 
-button:disabled {
+.button-row button:disabled {
   background-color: #a0a5ad;
   cursor: not-allowed;
   box-shadow: none;
 }
 
-button.secondary {
+.button-row button.secondary {
   background-color: #e2e8f0;
   color: #1f2937;
   box-shadow: none;
   font-weight: 600;
 }
 
-button.secondary:hover:not(:disabled) {
+.button-row button.secondary:hover:not(:disabled) {
   background-color: #cbd5e1;
 }
 
@@ -136,7 +137,7 @@ button.secondary:hover:not(:disabled) {
     padding: 0.75rem 0;
   }
 
-  button {
+  .button-row button {
     flex: 1 1 45%;
     padding: 0.6rem 1rem;
     font-size: 0.95rem;
