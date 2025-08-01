@@ -47,3 +47,46 @@
 .hidden {
   display: none;
 }
+
+/* Style the tooltip toggle button similar to your main tooltip-button */
+
+.tooltip-toggle-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #0b3d91;
+  padding: 4px 8px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  transition: color 0.3s ease;
+  border-radius: 4px;
+}
+
+// Takes care of highlighting the bulb iconto yellow
+
+.tooltip-toggle-btn:hover,
+.tooltip-toggle-btn:focus {
+  color: #06326b;
+  outline: none;
+  text-decoration: underline;
+}
+
+/* Icon inside tooltip toggle */
+
+.tooltip-toggle-btn .tooltip-icon {
+  color: #f4c430; /* bright yellow */
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+  font-size: 1.2rem;
+  /* subtle glow */
+  text-shadow: 0 0 4px #f4c430cc;
+}
+
+.tooltip-toggle-btn:hover .tooltip-icon,
+.tooltip-toggle-btn:focus .tooltip-icon {
+  color: #d6a500; /* darker yellow on hover */
+  text-shadow: 0 0 8px #d6a500cc, 0 0 12px #d6a500bb;
+}
