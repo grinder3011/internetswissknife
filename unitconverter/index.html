@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Unit Converter</title>
-  <link rel="stylesheet" href="../tooltip.styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../tooltip.styles.css?v=3">
   <link rel="stylesheet" href="unitconverter.styles.css" />
 </head>
 <body>
@@ -46,7 +47,11 @@
         <label for="batch-toggle" class="batch-toggle-label">Batch Mode (convert multiple numbers at once)</label>
       </div>
       
-      <button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
+      
+      <!-- Tooltip trigger -->
+      <button class="tooltip-toggle-btn" data-tooltip-target="json-tip" aria-expanded="false" aria-controls="json-tip">
+        <i class="fas fa-lightbulb tooltip-icon"></i> How to use this tool?
+      </button>
 
       <div id="json-tip" class="tooltip-box hidden" aria-live="polite">
         <p>💡 <strong>How to use this tool:</strong></p>
