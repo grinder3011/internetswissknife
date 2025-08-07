@@ -1,238 +1,250 @@
-// app.js
+// Elements
+const inputModeRadios = document.querySelectorAll('input[name="inputMode"]');
+const fileNamesInputGroup = document.getElementById('fileNamesInput');
+const textInputGroup = document.getElementById('textInput');
+const fileUploadInputGroup = document.getElementById('fileUploadInput');
 
-// --- Cache DOM elements ---
-const modeRadios = document.querySelectorAll('input[name="mode"]');
-const fileNameUploadContainer = document.getElementById('fileNameUploadContainer');
-const textInputContainer = document.getElementById('textInputContainer');
-const textFileUploadContainer = document.getElementById('textFileUploadContainer');
+const fileNamesTextArea = document.getElementById('fileNamesTextArea');
+const textInputArea = document.getElementById('textInputArea');
+const textFileUpload = document.getElementById('textFileUpload');
 
-const fileNamesInput = document.getElementById('fileNamesInput');
-const textInput = document.getElementById('textInput');
-const textFileInput = document.getElementById('textFileInput');
+const specialCharRemovalRadios = document.querySelectorAll('input[name="specialCharRemoval"]');
+const listedCharsInput = document.getElementById('listedCharsInput');
 
-const removeAllSpecialCharsRadio = document.getElementById('removeAllSpecialChars');
-const removeSelectedSpecialCharsRadio = document.getElementById('removeSelectedSpecialChars');
-const customCharsInput = document.getElementById('customCharsInput');
+const trimSpacesCheckbox = document.getElementById('trimSpacesCheckbox');
+const insertSeparatorCheckbox = document.getElementById('insertSeparatorCheckbox');
+const separatorSelect = document.getElementById('separatorSelect');
 
-const trimSpacesCheckbox = document.getElementById('trimSpaces');
-const insertDashesUnderscoresCheckbox = document.getElementById('insertDashesUnderscores');
-const dashesOption = document.getElementById('dashesOption');
-const underscoresOption = document.getElementById('underscoresOption');
+const processButton = document.getElementById('processButton');
+const outputPreview = document.getElementById('outputPreview');
+const downloadButtons = document.getElementById('downloadButtons');
+const downloadButton = document.getElementById('downloadButton');
 
-const outputTextarea = document.getElementById('outputTextarea');
+// Current input mode
+let currentInputMode = 'cleanFilenames';
 
-const processBtn = document.getElementById('processBtn');
-const downloadBtn = document.getElementById('downloadBtn');
-const copyBtn = document.getElementById('copyBtn');
-
-const JSZip = window.JSZip; // Assuming JSZip included via script tag in html
-
-// --- State ---
-let currentMode = 'fileNames'; // default mode
-
-// --- Helper Functions ---
-
-// Show/hide input containers by mode
-function updateModeUI() {
-  fileNameUploadContainer.style.display = currentMode === 'fileNames' ? 'block' : 'none';
-  textInputContainer.style.display = currentMode === 'textInput' ? 'block' : 'none';
-  textFileUploadContainer.style.display = currentMode === 'textFile' ? 'block' : 'none';
-
-  // Reset outputs and buttons
-  outputTextarea.value = '';
-  downloadBtn.style.display = 'none';
-  copyBtn.style.display = 'none';
-}
-
-// Enable or disable custom chars input based on remove all vs selected
-function updateCustomCharsInputState() {
-  if (removeSelectedSpecialCharsRadio.checked) {
-    customCharsInput.disabled = false;
+// Utility Functions
+function enableDisableListedCharsInput() {
+  const selected = document.querySelector('input[name="specialCharRemoval"]:checked').value;
+  if (selected === 'removeListed') {
+    listedCharsInput.disabled = false;
   } else {
-    customCharsInput.disabled = true;
-    customCharsInput.value = '';
+    listedCharsInput.disabled = true;
+    listedCharsInput.value = '';
   }
 }
 
-// Utility: Clean text according to options
-function cleanText(text) {
-  let charsToRemove = '';
-
-  if (removeAllSpecialCharsRadio.checked) {
-    // Remove all special chars (anything not a-z, A-Z, 0-9, space)
-    charsToRemove = null; // signify all special chars
-  } else if (removeSelectedSpecialCharsRadio.checked) {
-    charsToRemove = customCharsInput.value;
-  }
-
-  // Build regex for removal
-  let cleaned = text;
-
-  if (charsToRemove === null) {
-    // Remove all special chars except letters, numbers and spaces
-    cleaned = cleaned.replace(/[^a-zA-Z0-9\s]/g, '');
-  } else if (charsToRemove.trim() !== '') {
-    // Escape regex special chars in input
-    const escapedChars = charsToRemove.split('').map(c => '\\' + c).join('');
-    const reg = new RegExp('[' + escapedChars + ']', 'g');
-    cleaned = cleaned.replace(reg, '');
-  }
-
-  // Trim extra spaces if checked
-  if (trimSpacesCheckbox.checked) {
-    // Replace multiple spaces with single space, trim ends
-    cleaned = cleaned.replace(/\s+/g, ' ').trim();
-  }
-
-  // Insert dashes or underscores if checked (replace spaces)
-  if (insertDashesUnderscoresCheckbox.checked) {
-    if (dashesOption.checked) {
-      cleaned = cleaned.replace(/\s+/g, '-');
-    } else if (underscoresOption.checked) {
-      cleaned = cleaned.replace(/\s+/g, '_');
-    }
-  }
-
-  return cleaned;
+function enableDisableSeparatorSelect() {
+  separatorSelect.disabled = !insertSeparatorCheckbox.checked;
 }
 
-// Convert file name safely: keep extension and clean only basename
-function cleanFileName(filename) {
-  const lastDotIndex = filename.lastIndexOf('.');
-  let name = filename;
-  let ext = '';
+function switchInputMode(newMode) {
+  currentInputMode = newMode;
+  // Show/Hide input groups based on selected mode
+  fileNamesInputGroup.classList.toggle('hidden', newMode !== 'cleanFilenames');
+  textInputGroup.classList.toggle('hidden', newMode !== 'cleanTextInput');
+  fileUploadInputGroup.classList.toggle('hidden', newMode !== 'cleanTextFile');
 
-  if (lastDotIndex !== -1) {
-    name = filename.substring(0, lastDotIndex);
-    ext = filename.substring(lastDotIndex);
-  }
-
-  const cleanedName = cleanText(name);
-  return cleanedName + ext;
+  // Clear outputs and inputs
+  outputPreview.value = '';
+  downloadButtons.classList.add('hidden');
+  fileNamesTextArea.value = '';
+  textInputArea.value = '';
+  textFileUpload.value = '';
 }
 
-// Process file names: generate cleaned names, log changes, zip files with cleaned names
-async function processFileNames(files) {
-  if (files.length === 0) {
-    alert('Please select one or more files.');
-    return;
-  }
+// Cleaners
 
-  const zip = new JSZip();
-  let log = 'Original Name → Cleaned Name\n----------------------------\n';
-
-  for (const file of files) {
-    const cleanedName = cleanFileName(file.name);
-    log += `${file.name} → ${cleanedName}\n`;
-
-    const content = await file.arrayBuffer();
-    zip.file(cleanedName, content);
-  }
-
-  outputTextarea.value = log;
-
-  const blob = await zip.generateAsync({ type: 'blob' });
-  const url = URL.createObjectURL(blob);
-
-  downloadBtn.href = url;
-  downloadBtn.download = 'cleaned_files.zip';
-  downloadBtn.style.display = 'inline-block';
-
-  copyBtn.style.display = 'none';
+// Remove all special characters (anything not a-zA-Z0-9 or whitespace or dash/underscore)
+function removeAllSpecialChars(text) {
+  return text.replace(/[^\w\s\-]/g, '');
 }
 
-// Process text input or text file
+// Remove only listed characters from text
+function removeListedChars(text, chars) {
+  if (!chars) return text;
+  // Escape regex special chars for safe use
+  const escapedChars = chars.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  const regex = new RegExp('[' + escapedChars + ']', 'g');
+  return text.replace(regex, '');
+}
+
+// Trim extra spaces between words (collapse multiple spaces to one, trim ends)
+function trimExtraSpaces(text) {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+// Insert separator between words (replace spaces with selected separator)
+function insertSeparator(text, separator) {
+  // Collapse spaces first (to avoid multiple separators)
+  text = trimExtraSpaces(text);
+  return text.replace(/ /g, separator);
+}
+
+// Process the text based on options
 function processText(text) {
-  if (!text) {
-    alert('Please enter or upload some text.');
-    return;
+  // Remove special characters
+  const specialRemovalOption = document.querySelector('input[name="specialCharRemoval"]:checked').value;
+  let result = text;
+
+  if (specialRemovalOption === 'removeAll') {
+    result = removeAllSpecialChars(result);
+  } else if (specialRemovalOption === 'removeListed') {
+    result = removeListedChars(result, listedCharsInput.value);
   }
 
-  const cleaned = cleanText(text);
-
-  let log = '';
-  if (text === cleaned) {
-    log = 'No changes made to the text.';
-  } else {
-    log = `Original text length: ${text.length}\nCleaned text length: ${cleaned.length}\n\nCleaned Text:\n${cleaned}`;
+  // Trim spaces if checked
+  if (trimSpacesCheckbox.checked) {
+    result = trimExtraSpaces(result);
   }
 
-  outputTextarea.value = log;
+  // Insert separator if checked
+  if (insertSeparatorCheckbox.checked) {
+    const sep = separatorSelect.value || '-';
+    result = insertSeparator(result, sep);
+  }
 
-  // Prepare download for cleaned text
-  const blob = new Blob([cleaned], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  downloadBtn.href = url;
-  downloadBtn.download = 'cleaned_text.txt';
-  downloadBtn.style.display = 'inline-block';
-
-  // Show copy button
-  copyBtn.style.display = 'inline-block';
+  return result;
 }
 
-// --- Event Listeners ---
+// Handle processing for different input modes
+async function handleProcess() {
+  outputPreview.value = '';
+  downloadButtons.classList.add('hidden');
 
-// Mode radio buttons
-modeRadios.forEach(radio => {
-  radio.addEventListener('change', e => {
-    currentMode = e.target.value;
-    updateModeUI();
-  });
-});
+  if (currentInputMode === 'cleanFilenames') {
+    const filenamesRaw = fileNamesTextArea.value.trim();
+    if (!filenamesRaw) {
+      alert('Please enter one or more file names.');
+      return;
+    }
+    const filenames = filenamesRaw.split('\n').map(f => f.trim()).filter(f => f.length > 0);
 
-// Remove all vs custom chars radio
-removeAllSpecialCharsRadio.addEventListener('change', updateCustomCharsInputState);
-removeSelectedSpecialCharsRadio.addEventListener('change', updateCustomCharsInputState);
+    const processedNames = filenames.map(name => processText(name));
 
-// Insert dashes/underscores enabling/disabling
-insertDashesUnderscoresCheckbox.addEventListener('change', () => {
-  dashesOption.disabled = !insertDashesUnderscoresCheckbox.checked;
-  underscoresOption.disabled = !insertDashesUnderscoresCheckbox.checked;
-  if (!insertDashesUnderscoresCheckbox.checked) {
-    dashesOption.checked = true; // default
-  }
-});
+    outputPreview.value = processedNames.join('\n');
+    downloadButtons.classList.remove('hidden');
 
-// Copy button
-copyBtn.addEventListener('click', () => {
-  navigator.clipboard.writeText(outputTextarea.value)
-    .then(() => alert('Copied to clipboard!'))
-    .catch(() => alert('Failed to copy!'));
-});
+    downloadButton.onclick = () => {
+      // Prepare downloadable text file with processed filenames
+      const blob = new Blob([processedNames.join('\n')], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cleaned_filenames.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    };
 
-// Process button
-processBtn.addEventListener('click', async () => {
-  downloadBtn.style.display = 'none';
-  copyBtn.style.display = 'none';
-  outputTextarea.value = '';
-
-  if (currentMode === 'fileNames') {
-    const files = fileNamesInput.files;
-    await processFileNames(files);
-  } else if (currentMode === 'textInput') {
-    const text = textInput.value;
-    processText(text);
-  } else if (currentMode === 'textFile') {
-    const files = textFileInput.files;
-    if (files.length === 0) {
-      alert('Please select a text file.');
+  } else if (currentInputMode === 'cleanTextInput') {
+    const inputText = textInputArea.value;
+    if (!inputText.trim()) {
+      alert('Please enter or paste some text.');
       return;
     }
 
-    // Read the first file as text
-    const file = files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      processText(e.target.result);
+    const processedText = processText(inputText);
+    outputPreview.value = processedText;
+    downloadButtons.classList.remove('hidden');
+
+    downloadButton.onclick = () => {
+      const blob = new Blob([processedText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cleaned_text.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     };
-    reader.onerror = function() {
-      alert('Error reading the file.');
+
+  } else if (currentInputMode === 'cleanTextFile') {
+    const files = textFileUpload.files;
+    if (!files.length) {
+      alert('Please upload one or more .txt files.');
+      return;
+    }
+
+    const processedFileContents = [];
+    const processedFileNames = [];
+
+    for (const file of files) {
+      if (!file.name.toLowerCase().endsWith('.txt')) {
+        alert(`Skipping non-txt file: ${file.name}`);
+        continue;
+      }
+      const text = await file.text();
+      const cleaned = processText(text);
+      processedFileContents.push(cleaned);
+      processedFileNames.push(file.name.replace(/\.txt$/i, '_cleaned.txt'));
+    }
+
+    if (!processedFileContents.length) {
+      alert('No valid .txt files processed.');
+      return;
+    }
+
+    // Show preview of first file (or combined text)
+    outputPreview.value = processedFileContents.length === 1
+      ? processedFileContents[0]
+      : processedFileContents.map((content, i) => `--- ${processedFileNames[i]} ---\n${content}`).join('\n\n');
+
+    downloadButtons.classList.remove('hidden');
+
+    downloadButton.onclick = () => {
+      if (processedFileContents.length === 1) {
+        // Download single file
+        const blob = new Blob([processedFileContents[0]], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = processedFileNames[0];
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } else {
+        // Multiple files - create zip for download
+        // Since no external libs allowed, we fallback to downloading concatenated txt file
+        const combined = processedFileContents.map((content, i) =>
+          `--- ${processedFileNames[i]} ---\n${content}`).join('\n\n');
+        const blob = new Blob([combined], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cleaned_text_files.txt';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
     };
-    reader.readAsText(file);
   }
+}
+
+// Event Listeners
+inputModeRadios.forEach(radio => {
+  radio.addEventListener('change', e => {
+    switchInputMode(e.target.value);
+  });
 });
 
-// Initialize UI on page load
-updateModeUI();
-updateCustomCharsInputState();
-insertDashesUnderscoresCheckbox.dispatchEvent(new Event('change'));
+specialCharRemovalRadios.forEach(radio => {
+  radio.addEventListener('change', () => {
+    enableDisableListedCharsInput();
+  });
+});
+
+insertSeparatorCheckbox.addEventListener('change', () => {
+  enableDisableSeparatorSelect();
+});
+
+processButton.addEventListener('click', handleProcess);
+
+// Initialize UI state
+enableDisableListedCharsInput();
+enableDisableSeparatorSelect();
+switchInputMode(currentInputMode);
