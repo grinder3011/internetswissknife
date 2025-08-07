@@ -13,16 +13,24 @@ body {
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease-in-out;
 }
 
 h1 {
   font-size: 1.8rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  color: #1e3a8a;
 }
 
 .mode-selector label {
   margin-right: 1rem;
   font-weight: 500;
+  cursor: pointer;
+}
+
+.mode-selector input[type="radio"] {
+  margin-right: 0.25rem;
+  accent-color: #2563eb;
 }
 
 .mode-section {
@@ -41,9 +49,11 @@ textarea {
   border-radius: 8px;
   border: 1px solid #ccc;
   resize: vertical;
+  font-family: monospace;
 }
 
 input[type="file"] {
+  display: block;
   margin-top: 0.5rem;
 }
 
@@ -65,4 +75,10 @@ button {
 
 button:hover {
   background-color: #1e40af;
+}
+
+input[type="checkbox"] {
+  margin-right: 0.5rem;
+  transform: scale(1.1);
+  accent-color: #2563eb;
 }
