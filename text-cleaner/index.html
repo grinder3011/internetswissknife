@@ -1,53 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Text & Filename Cleaner</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clean Text Tool</title>
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Clean File Names / Text Tool</h1>
+    <h1>Clean Text Tool</h1>
+    
+    <section class="input-section">
+      <label for="inputText">Input text or file content:</label>
+      <textarea id="inputText" rows="6" placeholder="Paste your text here..."></textarea>
+    </section>
 
-    <div class="mode-selector">
-      <label><input type="radio" name="mode" value="filenames" checked /> Clean File Names</label>
-      <label><input type="radio" name="mode" value="textinput" /> Clean Text Input</label>
-      <label><input type="radio" name="mode" value="textfile" /> Clean Text File</label>
-    </div>
+    <section class="options-section">
+      <h2>Cleaning Options</h2>
 
-    <!-- File Name Mode -->
-    <div id="filenamesSection" class="mode-section">
-      <label>
-        Upload files:
-        <input type="file" id="fileInput" multiple />
-      </label>
-    </div>
+      <div class="option-group">
+        <label>
+          <input type="checkbox" id="removeSpecialChars" />
+          Remove all special characters
+          <span class="tooltip" data-tooltip="Remove all characters except letters and numbers.">?</span>
+        </label>
+      </div>
 
-    <!-- Text Input Mode -->
-    <div id="textinputSection" class="mode-section hidden">
-      <label>
-        Paste your text:
-        <textarea id="textInput"></textarea>
-      </label>
-    </div>
+      <div class="option-group">
+        <label>
+          <input type="checkbox" id="removeListedChars" />
+          Remove listed special characters
+          <span class="tooltip" data-tooltip="Specify characters to remove below, separated by commas.">?</span>
+        </label>
+        <input
+          type="text"
+          id="customCharsInput"
+          placeholder="e.g. @,#,$"
+          disabled
+          title="Enter characters separated by commas"
+        />
+      </div>
 
-    <!-- Text File Mode -->
-    <div id="textfileSection" class="mode-section hidden">
-      <label>
-        Upload a text file:
-        <input type="file" id="textFileInput" accept=".txt" />
-      </label>
-    </div>
+      <div class="option-group">
+        <label>
+          <input type="checkbox" id="trimSpaces" />
+          Trim extra spaces between characters
+          <span class="tooltip" data-tooltip="Replace multiple spaces with a single space.">?</span>
+        </label>
+      </div>
 
-    <label>
-      <input type="checkbox" id="removeSpecials" checked /> Remove special characters
-    </label>
+      <div class="option-group">
+        <label>
+          <input type="checkbox" id="insertSeparator" />
+          Insert separator between words
+          <span class="tooltip" data-tooltip="Useful for filenames. Choose dash or underscore.">?</span>
+        </label>
+        <div class="separator-options">
+          <label><input type="radio" name="separator" value="-" checked /> Dash (-)</label>
+          <label><input type="radio" name="separator" value="_" /> Underscore (_)</label>
+        </div>
+      </div>
+    </section>
 
-    <button id="processBtn">Clean & Download</button>
+    <section class="actions-section">
+      <button id="cleanBtn">Clean Text</button>
+    </section>
+
+    <section class="output-section">
+      <label for="outputText">Cleaned Output:</label>
+      <textarea id="outputText" rows="6" readonly></textarea>
+    </section>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="app.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
