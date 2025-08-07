@@ -3,81 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Clean Text & Filenames Tool</title>
+  <title>Text & Filename Cleaner Tool</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Clean Text & Filenames Tool</h1>
+    <h1>Text & Filename Cleaner Tool</h1>
 
-    <!-- Input selection -->
-    <fieldset>
-      <legend>Select Input Type</legend>
-      <label><input type="radio" name="inputType" value="fileNames" checked /> Clean File Names</label>
-      <label><input type="radio" name="inputType" value="textInput" /> Clean Text Input</label>
-      <label><input type="radio" name="inputType" value="textFile" /> Clean Text File</label>
-    </fieldset>
-
-    <!-- File names input -->
-    <div id="fileNamesInput">
-      <textarea id="fileNamesTextarea" placeholder="Paste or type file names here, one per line"></textarea>
-    </div>
-
-    <!-- Text input -->
-    <div id="textInput" style="display:none;">
-      <textarea id="textTextarea" placeholder="Paste or type text here"></textarea>
-    </div>
-
-    <!-- File upload -->
-    <div id="fileUpload" style="display:none;">
-      <input type="file" id="fileUploadInput" accept=".txt" multiple />
-    </div>
-
-    <!-- Cleaning options -->
-    <fieldset>
-      <legend>Cleaning Options</legend>
-      <label><input type="radio" name="specialCharOption" value="removeAll" checked /> Remove All Special Characters</label>
+    <section id="mode-selection">
+      <h2>Select Input Type</h2>
       <label>
-        <input type="radio" name="specialCharOption" value="removeListed" />
-        Remove Listed Characters
+        <input type="radio" name="inputMode" value="cleanFilenames" checked />
+        Clean File Names
       </label>
-      <input
-        type="text"
-        id="listedCharsInput"
-        placeholder="Enter characters to remove"
-        disabled
-        title="Enter characters separated by commas, spaces, or new lines"
-      />
-      <span class="tooltip">Separate by commas, spaces or new lines</span>
+      <label>
+        <input type="radio" name="inputMode" value="cleanTextInput" />
+        Clean Text Input
+      </label>
+      <label>
+        <input type="radio" name="inputMode" value="cleanTextFile" />
+        Clean Text File Upload
+      </label>
+    </section>
 
-      <br /><br />
+    <section id="input-section">
 
-      <label><input type="checkbox" id="trimSpacesCheckbox" /> Trim extra spaces between words</label>
-
-      <div id="separatorOptions" style="display:none; margin-left: 20px;">
-        <label>
-          Insert between words:
-          <select id="wordSeparatorSelect">
-            <option value="dash">Dashes (-)</option>
-            <option value="underscore">Underscores (_)</option>
-          </select>
-        </label>
+      <!-- For filenames: textarea for list of filenames -->
+      <div id="fileNamesInput" class="input-group">
+        <label for="fileNamesTextArea">Enter file names (one per line):</label>
+        <textarea id="fileNamesTextArea" rows="6" placeholder="example.jpg&#10;my_file(1).png"></textarea>
       </div>
-    </fieldset>
 
-    <button id="processButton">Process</button>
+      <!-- For text input: plain textarea -->
+      <div id="textInput" class="input-group hidden">
+        <label for="textInputArea">Enter or paste text:</label>
+        <textarea id="textInputArea" rows="8" placeholder="Paste your text here..."></textarea>
+      </div>
 
-    <!-- Preview / Logs -->
-    <h2>Preview / Logs</h2>
-    <textarea id="outputPreview" readonly></textarea>
+      <!-- For text file upload -->
+      <div id="fileUploadInput" class="input-group hidden">
+        <label for="textFileUpload">Upload one or more text files (.txt):</label>
+        <input type="file" id="textFileUpload" accept=".txt" multiple />
+      </div>
+    </section>
 
-    <!-- Actions -->
-    <div id="actions" style="margin-top:10px;">
-      <button id="copyButton">Copy to Clipboard</button>
-      <button id="downloadButton">Download Result</button>
-    </div>
+    <section id="options-section">
+      <h2>Cleaning Options</h2>
+
+      <fieldset>
+        <legend>Remove Special Characters</legend>
+        <label>
+          <input type="radio" name="specialCharRemoval" value="removeAll" checked />
+          Remove all special characters
+        </label>
+        <label>
+          <input type="radio" name="specialCharRemoval" value="removeListed" />
+          Remove only listed special characters
+        </label>
+        <input
+          type="text"
+          id="listedCharsInput"
+          placeholder="List characters to remove (e.g. !@#$%)"
+          disabled
+          title="Enter characters you want to remove, no separators needed."
+        />
+      </fieldset>
+
+      <fieldset>
+        <legend>Other Options</legend>
+        <label>
+          <input type="checkbox" id="trimSpacesCheckbox" />
+          Trim extra spaces between words
+        </label>
+
+        <label>
+          <input type="checkbox" id="insertSeparatorCheckbox" />
+          Insert separator between words
+        </label>
+
+        <select id="separatorSelect" disabled>
+          <option value="-">Dash (-)</option>
+          <option value="_">Underscore (_)</option>
+        </select>
+      </fieldset>
+    </section>
+
+    <section id="action-section">
+      <button id="processButton">Process</button>
+    </section>
+
+    <section id="output-section">
+      <h2>Output Preview & Actions</h2>
+      <textarea id="outputPreview" rows="10" readonly placeholder="Processed output will appear here..."></textarea>
+
+      <div id="downloadButtons" class="hidden">
+        <button id="downloadButton">Download Result</button>
+      </div>
+    </section>
   </div>
 
-  <script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
