@@ -1,8 +1,7 @@
-/* styles.css */
-
+/* Basic Reset & Typography */
 body {
-  font-family: Arial, sans-serif;
-  background: #f9fafb;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f7f9fc;
   color: #333;
   margin: 0;
   padding: 20px;
@@ -12,168 +11,110 @@ body {
   max-width: 700px;
   margin: 0 auto;
   background: #fff;
-  border-radius: 8px;
   padding: 25px 30px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
 }
 
-h1 {
-  margin-bottom: 20px;
-  font-weight: 700;
-  color: #2c3e50;
-  text-align: center;
+h1, h2 {
+  margin-bottom: 15px;
+  color: #222;
 }
 
-.mode-select label,
-.options label,
-.output-options label {
+label {
   display: block;
-  margin: 8px 0;
+  margin-bottom: 8px;
   cursor: pointer;
-  font-size: 16px;
   user-select: none;
 }
 
-.mode-select input[type="radio"],
-.options input[type="radio"],
-.options input[type="checkbox"],
-.output-options input[type="radio"] {
-  margin-right: 8px;
-  cursor: pointer;
-}
-
-#customCharsInput {
+input[type="text"], textarea, select {
   width: 100%;
-  margin-top: 6px;
-  padding: 6px 10px;
-  font-size: 14px;
-  border: 1.5px solid #bbb;
-  border-radius: 4px;
-  transition: border-color 0.3s ease;
-}
-
-#customCharsInput:disabled {
-  background-color: #eee;
-  color: #888;
-  cursor: not-allowed;
-  border-color: #ddd;
-}
-
-.options fieldset,
-.output-options fieldset {
-  margin-top: 20px;
-  border: 1px solid #ddd;
-  padding: 12px 15px;
+  padding: 8px 10px;
+  margin-top: 5px;
   border-radius: 5px;
-  background: #fafafa;
-}
-
-.options legend,
-.output-options legend {
-  padding: 0 6px;
-  font-weight: 600;
-  color: #555;
-}
-
-textarea {
-  width: 100%;
+  border: 1px solid #bbb;
+  font-size: 14px;
   resize: vertical;
-  font-family: monospace, monospace;
-  font-size: 14px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1.5px solid #ccc;
-  margin-top: 10px;
-  min-height: 150px;
   box-sizing: border-box;
 }
 
-textarea[readonly] {
-  background-color: #f0f0f0;
+input[type="text"]:disabled {
+  background-color: #eee;
+  color: #999;
+}
+
+input[type="checkbox"], input[type="radio"] {
+  margin-right: 8px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.input-group {
+  margin-bottom: 25px;
+}
+
+.hidden {
+  display: none;
+}
+
+fieldset {
+  border: 1px solid #ddd;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  background-color: #fafafa;
+}
+
+legend {
+  font-weight: 600;
+  padding: 0 6px;
   color: #555;
 }
 
-.action-buttons {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.action-buttons button {
-  background-color: #2c3e50;
-  color: #fff;
-  font-weight: 600;
+#processButton {
+  background-color: #0078d7;
+  color: white;
   font-size: 16px;
-  padding: 10px 25px;
+  padding: 12px 18px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.25s ease;
 }
 
-.action-buttons button:hover {
-  background-color: #34495e;
+#processButton:hover {
+  background-color: #005ea3;
 }
 
-.output-container {
-  margin-top: 20px;
-  position: relative;
-}
-
-.output-container button {
-  margin-top: 10px;
-  padding: 8px 16px;
+#outputPreview {
+  font-family: monospace;
+  background-color: #222;
+  color: #eee;
+  border-radius: 6px;
+  padding: 12px;
   font-size: 14px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 600;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
-#downloadBtn {
-  background-color: #27ae60;
-  color: white;
-  display: none;
-}
-
-#downloadBtn:hover {
-  background-color: #219150;
-}
-
-#copyBtn {
-  background-color: #2980b9;
-  color: white;
-  display: none;
-  margin-left: 10px;
-}
-
-#copyBtn:hover {
-  background-color: #216b9e;
-}
-
-/* Hide file upload containers by default and show based on mode in JS */
-#fileNameUploadContainer,
-#textInputContainer,
-#textFileUploadContainer {
+#downloadButtons {
   margin-top: 15px;
+  text-align: right;
 }
 
-select:disabled {
-  background-color: #eee;
-  color: #888;
-  cursor: not-allowed;
+#downloadButton {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .container {
-    padding: 15px 20px;
-  }
-  .action-buttons button {
-    width: 100%;
-  }
-  #copyBtn {
-    margin-left: 0;
-    margin-top: 8px;
-    width: 100%;
-  }
+#downloadButton:hover {
+  background-color: #1e7e34;
 }
