@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Multilingual Filename Cleaner</title>
+  <title>Text & Filename Cleaner</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Multilingual Cleaner</h1>
-    <p>Select what you'd like to clean: file names, pasted text, or a text file.</p>
+    <h1>Clean File Names / Text Tool</h1>
 
     <div class="mode-selector">
       <label><input type="radio" name="mode" value="filenames" checked /> Clean File Names</label>
@@ -17,24 +16,38 @@
       <label><input type="radio" name="mode" value="textfile" /> Clean Text File</label>
     </div>
 
-    <div id="fileInputSection" class="mode-section">
-      <input type="file" id="fileInput" multiple />
+    <!-- File Name Mode -->
+    <div id="filenamesSection" class="mode-section">
+      <label>
+        Upload files:
+        <input type="file" id="fileInput" multiple />
+      </label>
     </div>
 
-    <div id="textInputSection" class="mode-section hidden">
-      <textarea id="textInput" placeholder="Paste or type text here..."></textarea>
+    <!-- Text Input Mode -->
+    <div id="textinputSection" class="mode-section hidden">
+      <label>
+        Paste your text:
+        <textarea id="textInput"></textarea>
+      </label>
     </div>
 
-    <div id="textFileSection" class="mode-section hidden">
-      <input type="file" id="textFileInput" accept=".txt" />
+    <!-- Text File Mode -->
+    <div id="textfileSection" class="mode-section hidden">
+      <label>
+        Upload a text file:
+        <input type="file" id="textFileInput" accept=".txt" />
+      </label>
     </div>
 
-    <label><input type="checkbox" id="removeSpecials" /> Remove all special characters (not just transliterate)</label>
+    <label>
+      <input type="checkbox" id="removeSpecials" checked /> Remove special characters
+    </label>
 
-    <div id="fileList"></div>
     <button id="processBtn">Clean & Download</button>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
