@@ -1,105 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Text & Filename Cleaner Tool</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clean Text & File Name Tool</title>
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Text & Filename Cleaner Tool</h1>
+    <h1>Clean Text & File Name Tool</h1>
 
-    <section id="mode-selection">
-      <h2>Select Input Type</h2>
+    <div class="mode-select">
       <label>
-        <input type="radio" name="inputMode" value="cleanFilenames" checked />
-        Clean File Names
+        <input type="radio" name="mode" value="cleanFileName" checked />
+        Clean File Names (upload files)
       </label>
       <label>
-        <input type="radio" name="inputMode" value="cleanTextInput" />
-        Clean Text Input
+        <input type="radio" name="mode" value="cleanTextInput" />
+        Clean Text Input (paste or type)
       </label>
       <label>
-        <input type="radio" name="inputMode" value="cleanTextFile" />
-        Clean Text File Upload
+        <input type="radio" name="mode" value="cleanTextFile" />
+        Clean Text File (upload .txt file)
       </label>
-    </section>
+    </div>
 
-    <section id="input-section">
+    <!-- File upload for file names -->
+    <div id="fileNameUploadContainer">
+      <input type="file" id="fileNameFiles" multiple />
+    </div>
 
-      <!-- For filenames: textarea for list of filenames -->
-      <div id="fileNamesInput" class="input-group">
-        <label for="fileNamesTextArea">Enter file names (one per line):</label>
-        <textarea id="fileNamesTextArea" rows="6" placeholder="example.jpg&#10;my_file(1).png"></textarea>
-      </div>
+    <!-- Text input area -->
+    <div id="textInputContainer" style="display:none;">
+      <textarea id="textInput" rows="10" placeholder="Paste or type your text here"></textarea>
+    </div>
 
-      <!-- For text input: plain textarea -->
-      <div id="textInput" class="input-group hidden">
-        <label for="textInputArea">Enter or paste text:</label>
-        <textarea id="textInputArea" rows="8" placeholder="Paste your text here..."></textarea>
-      </div>
+    <!-- Text file upload -->
+    <div id="textFileUploadContainer" style="display:none;">
+      <input type="file" id="textFileInput" accept=".txt" />
+    </div>
 
-      <!-- For text file upload -->
-      <div id="fileUploadInput" class="input-group hidden">
-        <label for="textFileUpload">Upload one or more text files (.txt):</label>
-        <input type="file" id="textFileUpload" accept=".txt" multiple />
-      </div>
-    </section>
+    <fieldset class="options">
+      <legend>Special Characters Removal</legend>
+      <label>
+        <input type="radio" name="removeSpecialChars" value="all" checked />
+        Remove all special characters
+      </label>
+      <label>
+        <input type="radio" name="removeSpecialChars" value="custom" />
+        Remove only these characters:
+      </label>
+      <input type="text" id="customCharsInput" placeholder="Enter characters here" disabled
+        title="Enter characters to remove, separated by commas or spaces" />
+    </fieldset>
 
-    <section id="options-section">
-      <h2>Cleaning Options</h2>
+    <fieldset class="options">
+      <legend>Additional Options</legend>
+      <label>
+        <input type="checkbox" id="trimSpaces" />
+        Trim extra spaces between words
+      </label>
+      <label>
+        <input type="checkbox" id="insertSeparator" />
+        Insert separator between words
+      </label>
+      <select id="separatorSelect" disabled>
+        <option value="-">Dash (-)</option>
+        <option value="_">Underscore (_)</option>
+      </select>
+    </fieldset>
 
-      <fieldset>
-        <legend>Remove Special Characters</legend>
-        <label>
-          <input type="radio" name="specialCharRemoval" value="removeAll" checked />
-          Remove all special characters
-        </label>
-        <label>
-          <input type="radio" name="specialCharRemoval" value="removeListed" />
-          Remove only listed special characters
-        </label>
-        <input
-          type="text"
-          id="listedCharsInput"
-          placeholder="List characters to remove (e.g. !@#$%)"
-          disabled
-          title="Enter characters you want to remove, no separators needed."
-        />
-      </fieldset>
+    <div class="action-buttons">
+      <button id="processBtn">Process</button>
+    </div>
 
-      <fieldset>
-        <legend>Other Options</legend>
-        <label>
-          <input type="checkbox" id="trimSpacesCheckbox" />
-          Trim extra spaces between words
-        </label>
+    <fieldset class="output-options">
+      <legend>Output Options</legend>
+      <label><input type="radio" name="outputOption" value="download" checked /> Download Output</label>
+      <label><input type="radio" name="outputOption" value="copy" /> Copy to Clipboard</label>
+    </fieldset>
 
-        <label>
-          <input type="checkbox" id="insertSeparatorCheckbox" />
-          Insert separator between words
-        </label>
+    <div class="output-container">
+      <textarea id="outputArea" readonly placeholder="Processed output will appear here"></textarea>
+      <button id="downloadBtn" style="display:none;">Download Output</button>
+      <button id="copyBtn" style="display:none;">Copy to Clipboard</button>
+    </div>
 
-        <select id="separatorSelect" disabled>
-          <option value="-">Dash (-)</option>
-          <option value="_">Underscore (_)</option>
-        </select>
-      </fieldset>
-    </section>
-
-    <section id="action-section">
-      <button id="processButton">Process</button>
-    </section>
-
-    <section id="output-section">
-      <h2>Output Preview & Actions</h2>
-      <textarea id="outputPreview" rows="10" readonly placeholder="Processed output will appear here..."></textarea>
-
-      <div id="downloadButtons" class="hidden">
-        <button id="downloadButton">Download Result</button>
-      </div>
-    </section>
   </div>
 
   <script src="app.js"></script>
