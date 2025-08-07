@@ -1,7 +1,8 @@
-/* Basic Reset & Typography */
+/* styles.css */
+
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f7f9fc;
+  font-family: Arial, sans-serif;
+  background: #f9fafb;
   color: #333;
   margin: 0;
   padding: 20px;
@@ -11,110 +12,168 @@ body {
   max-width: 700px;
   margin: 0 auto;
   background: #fff;
-  padding: 25px 30px;
   border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  padding: 25px 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-h1, h2 {
-  margin-bottom: 15px;
-  color: #222;
+h1 {
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
 }
 
-label {
+.mode-select label,
+.options label,
+.output-options label {
   display: block;
-  margin-bottom: 8px;
+  margin: 8px 0;
   cursor: pointer;
+  font-size: 16px;
   user-select: none;
 }
 
-input[type="text"], textarea, select {
-  width: 100%;
-  padding: 8px 10px;
-  margin-top: 5px;
-  border-radius: 5px;
-  border: 1px solid #bbb;
-  font-size: 14px;
-  resize: vertical;
-  box-sizing: border-box;
-}
-
-input[type="text"]:disabled {
-  background-color: #eee;
-  color: #999;
-}
-
-input[type="checkbox"], input[type="radio"] {
+.mode-select input[type="radio"],
+.options input[type="radio"],
+.options input[type="checkbox"],
+.output-options input[type="radio"] {
   margin-right: 8px;
-  vertical-align: middle;
   cursor: pointer;
 }
 
-.input-group {
-  margin-bottom: 25px;
+#customCharsInput {
+  width: 100%;
+  margin-top: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1.5px solid #bbb;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
 }
 
-.hidden {
-  display: none;
+#customCharsInput:disabled {
+  background-color: #eee;
+  color: #888;
+  cursor: not-allowed;
+  border-color: #ddd;
 }
 
-fieldset {
+.options fieldset,
+.output-options fieldset {
+  margin-top: 20px;
   border: 1px solid #ddd;
-  padding: 15px 20px;
-  margin-bottom: 20px;
-  border-radius: 6px;
-  background-color: #fafafa;
+  padding: 12px 15px;
+  border-radius: 5px;
+  background: #fafafa;
 }
 
-legend {
-  font-weight: 600;
+.options legend,
+.output-options legend {
   padding: 0 6px;
+  font-weight: 600;
   color: #555;
 }
 
-#processButton {
-  background-color: #0078d7;
-  color: white;
+textarea {
+  width: 100%;
+  resize: vertical;
+  font-family: monospace, monospace;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1.5px solid #ccc;
+  margin-top: 10px;
+  min-height: 150px;
+  box-sizing: border-box;
+}
+
+textarea[readonly] {
+  background-color: #f0f0f0;
+  color: #555;
+}
+
+.action-buttons {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.action-buttons button {
+  background-color: #2c3e50;
+  color: #fff;
+  font-weight: 600;
   font-size: 16px;
-  padding: 12px 18px;
+  padding: 10px 25px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.25s ease;
+  transition: background-color 0.3s ease;
 }
 
-#processButton:hover {
-  background-color: #005ea3;
+.action-buttons button:hover {
+  background-color: #34495e;
 }
 
-#outputPreview {
-  font-family: monospace;
-  background-color: #222;
-  color: #eee;
-  border-radius: 6px;
-  padding: 12px;
+.output-container {
+  margin-top: 20px;
+  position: relative;
+}
+
+.output-container button {
+  margin-top: 10px;
+  padding: 8px 16px;
   font-size: 14px;
-  line-height: 1.4;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-#downloadButtons {
-  margin-top: 15px;
-  text-align: right;
-}
-
-#downloadButton {
-  background-color: #28a745;
+#downloadBtn {
+  background-color: #27ae60;
   color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.25s ease;
+  display: none;
 }
 
-#downloadButton:hover {
-  background-color: #1e7e34;
+#downloadBtn:hover {
+  background-color: #219150;
+}
+
+#copyBtn {
+  background-color: #2980b9;
+  color: white;
+  display: none;
+  margin-left: 10px;
+}
+
+#copyBtn:hover {
+  background-color: #216b9e;
+}
+
+/* Hide file upload containers by default and show based on mode in JS */
+#fileNameUploadContainer,
+#textInputContainer,
+#textFileUploadContainer {
+  margin-top: 15px;
+}
+
+select:disabled {
+  background-color: #eee;
+  color: #888;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container {
+    padding: 15px 20px;
+  }
+  .action-buttons button {
+    width: 100%;
+  }
+  #copyBtn {
+    margin-left: 0;
+    margin-top: 8px;
+    width: 100%;
+  }
 }
