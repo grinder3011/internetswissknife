@@ -1,77 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Clean Text Tool</title>
-<link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clean Text & File Utility</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Clean Text Tool</h1>
-    
-    <section class="input-section">
-      <label for="inputText">Input text or file content:</label>
-      <textarea id="inputText" rows="6" placeholder="Paste your text here..."></textarea>
-    </section>
+    <h1>Cleaner Utility</h1>
 
-    <section class="options-section">
-      <h2>Cleaning Options</h2>
+    <fieldset>
+      <legend>1. Choose Input Type</legend>
+      <label><input type="radio" name="inputType" value="text" checked> Text</label>
+      <label><input type="radio" name="inputType" value="file"> File (Text)</label>
+      <label><input type="radio" name="inputType" value="filenames"> File Name(s)</label>
+    </fieldset>
 
-      <div class="option-group">
-        <label>
-          <input type="checkbox" id="removeSpecialChars" />
-          Remove all special characters
-          <span class="tooltip" data-tooltip="Remove all characters except letters and numbers.">?</span>
-        </label>
+    <div id="textInputGroup">
+      <label for="textInput">Paste or type text:</label>
+      <textarea id="textInput" rows="6"></textarea>
+    </div>
+
+    <div id="fileInputGroup" class="hidden">
+      <label for="fileInput">Upload .txt file(s):</label>
+      <input type="file" id="fileInput" multiple accept=".txt" />
+    </div>
+
+    <div id="filenameInputGroup" class="hidden">
+      <label for="filenameInput">Upload file(s) to rename:</label>
+      <input type="file" id="filenameInput" multiple />
+    </div>
+
+    <fieldset>
+      <legend>2. Cleaning Options</legend>
+
+      <label><input type="radio" name="specialCharOption" value="all" checked> Remove all special characters</label>
+      <label><input type="radio" name="specialCharOption" value="custom"> Remove listed characters</label>
+
+      <div id="customCharInputWrapper" class="hidden">
+        <label for="customCharInput">List characters to remove (separated by space):</label>
+        <input type="text" id="customCharInput" disabled />
       </div>
 
-      <div class="option-group">
-        <label>
-          <input type="checkbox" id="removeListedChars" />
-          Remove listed special characters
-          <span class="tooltip" data-tooltip="Specify characters to remove below, separated by commas.">?</span>
-        </label>
-        <input
-          type="text"
-          id="customCharsInput"
-          placeholder="e.g. @,#,$"
-          disabled
-          title="Enter characters separated by commas"
-        />
+      <label><input type="checkbox" id="trimSpaces"> Trim extra spaces between words</label>
+
+      <label><input type="checkbox" id="insertSeparator"> Insert separator between words (for filenames)</label>
+      <div id="separatorOptions" class="hidden">
+        <label><input type="radio" name="separatorType" value="dash" checked> Dashes (-)</label>
+        <label><input type="radio" name="separatorType" value="underscore"> Underscores (_)</label>
       </div>
+    </fieldset>
 
-      <div class="option-group">
-        <label>
-          <input type="checkbox" id="trimSpaces" />
-          Trim extra spaces between characters
-          <span class="tooltip" data-tooltip="Replace multiple spaces with a single space.">?</span>
-        </label>
+    <button id="cleanButton">Clean</button>
+
+    <div id="outputLog">
+      <h2>Output Preview</h2>
+      <textarea id="outputText" readonly></textarea>
+      <div id="outputActions" class="hidden">
+        <button id="copyButton">Copy to Clipboard</button>
+        <button id="downloadButton">Download Result</button>
       </div>
-
-      <div class="option-group">
-        <label>
-          <input type="checkbox" id="insertSeparator" />
-          Insert separator between words
-          <span class="tooltip" data-tooltip="Useful for filenames. Choose dash or underscore.">?</span>
-        </label>
-        <div class="separator-options">
-          <label><input type="radio" name="separator" value="-" checked /> Dash (-)</label>
-          <label><input type="radio" name="separator" value="_" /> Underscore (_)</label>
-        </div>
-      </div>
-    </section>
-
-    <section class="actions-section">
-      <button id="cleanBtn">Clean Text</button>
-    </section>
-
-    <section class="output-section">
-      <label for="outputText">Cleaned Output:</label>
-      <textarea id="outputText" rows="6" readonly></textarea>
-    </section>
+    </div>
   </div>
 
-<script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
