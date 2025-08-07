@@ -1,53 +1,99 @@
+// script.js
+
 document.addEventListener("DOMContentLoaded", () => {
-  const removeListedCheckbox = document.getElementById("removeListedChars");
-  const customCharsInput = document.getElementById("customCharsInput");
-  const cleanBtn = document.getElementById("cleanBtn");
+  const inputTypeRadios = document.querySelectorAll("input[name='inputType']");
+  const textInputGroup = document.getElementById("textInputGroup");
+  const fileInputGroup = document.getElementById("fileInputGroup");
+  const filenameInputGroup = document.getElementById("filenameInputGroup");
 
-  // Enable/disable custom chars input based on checkbox
-  removeListedCheckbox.addEventListener("change", () => {
-    customCharsInput.disabled = !removeListedCheckbox.checked;
-    if (!removeListedCheckbox.checked) customCharsInput.value = "";
-  });
+  const customCharInput = document.getElementById("customCharInput");
+  const customCharRadio = document.querySelector("input[value='custom']");
+  const allCharRadio = document.querySelector("input[value='all']");
 
-  cleanBtn.addEventListener("click", () => {
-    let text = document.getElementById("inputText").value;
+  const insertSeparatorCheckbox = document.getElementById("insertSeparator");
+  const separatorOptions = document.getElementById("separatorOptions");
 
-    // Option: Remove all special chars (keep only letters, numbers, spaces)
-    if (document.getElementById("removeSpecialChars").checked) {
-      text = text.replace(/[^a-zA-Z0-9\s]/g, "");
-    }
+  const cleanButton = document.getElementById("cleanButton");
+  const outputText = document.getElementById("outputText");
+  const outputActions = document.getElementById("outputActions");
+  const copyButton = document.getElementById("copyButton");
+  const downloadButton = document.getElementById("downloadButton");
 
-    // Option: Remove listed special chars
-    if (removeListedCheckbox.checked) {
-      const charsToRemove = customCharsInput.value;
-      if (charsToRemove) {
-        // Split by comma and trim spaces
-        const charsArray = charsToRemove.split(",").map(c => c.trim()).filter(c => c.length > 0);
-        if (charsArray.length) {
-          // Build regex pattern to remove listed chars globally
-          const pattern = new RegExp(`[${charsArray.map(c => escapeRegex(c)).join("")}]`, "g");
-          text = text.replace(pattern, "");
-        }
-      }
-    }
-
-    // Option: Trim extra spaces between characters
-    if (document.getElementById("trimSpaces").checked) {
-      text = text.replace(/\s+/g, " ");
-    }
-
-    // Option: Insert separator between words
-    if (document.getElementById("insertSeparator").checked) {
-      const sep = document.querySelector('input[name="separator"]:checked').value;
-      // Replace all spaces between words with separator
-      text = text.trim().replace(/\s+/g, sep);
-    }
-
-    document.getElementById("outputText").value = text;
-  });
-
-  // Utility to escape special regex chars in user input
-  function escapeRegex(string) {
-    return string.replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&");
+  function updateInputGroups() {
+    const selectedType = document.querySelector("input[name='inputType']:checked").value;
+    textInputGroup.classList.toggle("hidden", selectedType !== "text");
+    fileInputGroup.classList.toggle("hidden", selectedType !== "file");
+    filenameInputGroup.classList.toggle("hidden", selectedType !== "filenames");
   }
+
+  inputTypeRadios.forEach(radio => radio.addEventListener("change", updateInputGroups));
+
+  customCharRadio.addEventListener("change", () => {
+    customCharInput.disabled = false;
+  });
+
+  allCharRadio.addEventListener("change", () => {
+    customCharInput.disabled = true;
+    customCharInput.value = "";
+  });
+
+  insertSeparatorCheckbox.addEventListener("change", () => {
+    separatorOptions.classList.toggle("hidden", !insertSeparatorCheckbox.checked);
+  });
+
+  cleanButton.addEventListener("click", () => {
+    const inputType = document.querySelector("input[name='inputType']:checked").value;
+
+    if (inputType === "text") {
+      const text = document.getElementById("textInput").value;
+      const cleaned = cleanText(text);
+      outputText.value = cleaned;
+      outputActions.classList.remove("hidden");
+    }
+    // TODO: Handle file cleaning and filename cleaning separately
+  });
+
+  function cleanText(text) {
+    const removeAll = allCharRadio.checked;
+    const trimSpaces = document.getElementById("trimSpaces").checked;
+    const insertSeparator = insertSeparatorCheckbox.checked;
+    const separatorType = document.querySelector("input[name='separatorType']:checked").value;
+    const customChars = customCharInput.value.split(',').map(c => c.trim()).filter(Boolean);
+
+    let cleaned = text;
+
+    if (removeAll) {
+      cleaned = cleaned.replace(/[^\w\s]/g, "");
+    } else if (customChars.length > 0) {
+      const pattern = new RegExp("[" + customChars.join("") + "]", "g");
+      cleaned = cleaned.replace(pattern, "");
+    }
+
+    if (trimSpaces) {
+      cleaned = cleaned.replace(/\s+/g, " ").trim();
+    }
+
+    if (insertSeparator) {
+      const sep = separatorType === "dash" ? "-" : "_";
+      cleaned = cleaned.trim().replace(/\s+/g, sep);
+    }
+
+    return cleaned;
+  }
+
+  copyButton.addEventListener("click", () => {
+    navigator.clipboard.writeText(outputText.value);
+  });
+
+  downloadButton.addEventListener("click", () => {
+    const blob = new Blob([outputText.value], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "cleaned-text.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  updateInputGroups();
 });
