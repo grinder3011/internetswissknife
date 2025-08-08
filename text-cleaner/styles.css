@@ -104,7 +104,9 @@ legend {
   text-align: right;
 }
 
-#downloadButton {
+/* Style for both download and copy log buttons */
+#downloadButton,
+#copyLogButton {
   background-color: #28a745;
   color: white;
   padding: 10px 16px;
@@ -115,6 +117,7 @@ legend {
   transition: background-color 0.25s ease;
 }
 
-#downloadButton:hover {
+#downloadButton:hover,
+#copyLogButton:hover {
   background-color: #1e7e34;
 }
