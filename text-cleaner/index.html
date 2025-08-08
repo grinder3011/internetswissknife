@@ -27,10 +27,16 @@
     </section>
 
     <section id="input-section">
-      <!-- Updated for Clean File Names: Upload any files -->
+
+      <!-- For filenames: textarea for list of filenames OR file upload input -->
       <div id="fileNamesInput" class="input-group">
-        <label for="fileNamesUpload">Upload files (any type, max 50MB total):</label>
-        <input type="file" id="fileNamesUpload" multiple />
+        <label for="fileNamesTextArea">Enter file names (one per line):</label>
+        <textarea id="fileNamesTextArea" rows="6" placeholder="example.jpg&#10;my_file(1).png"></textarea>
+
+        <label for="fileUploadForNames" style="margin-top:15px; display:block;">
+          Or upload files (any type, max 50MB each):
+        </label>
+        <input type="file" id="fileUploadForNames" multiple />
       </div>
 
       <!-- For text input: plain textarea -->
