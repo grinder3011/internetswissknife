@@ -19,7 +19,14 @@ const separatorSelect = document.getElementById('separatorSelect');
 const processButton = document.getElementById('processButton');
 const outputPreview = document.getElementById('outputPreview');
 const downloadButtons = document.getElementById('downloadButtons');
-const downloadButton = document.getElementById('downloadButton');
+
+// Create and add Copy Log button
+const copyLogButton = document.createElement('button');
+copyLogButton.id = 'copyLogButton';
+copyLogButton.textContent = 'Copy Log';
+copyLogButton.style.marginLeft = '8px';
+copyLogButton.classList.add('hidden');
+downloadButtons.appendChild(copyLogButton);
 
 // Current input mode
 let currentInputMode = 'cleanFilenames';
@@ -49,6 +56,7 @@ function switchInputMode(newMode) {
   // Clear outputs and inputs
   outputPreview.value = '';
   downloadButtons.classList.add('hidden');
+  copyLogButton.classList.add('hidden');
 
   // Clear inputs
   fileNamesTextArea.value = '';
@@ -130,6 +138,7 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024;
 async function handleProcess() {
   outputPreview.value = '';
   downloadButtons.classList.add('hidden');
+  copyLogButton.classList.add('hidden');
 
   if (currentInputMode === 'cleanFilenames') {
     // If user has uploaded files for filename cleaning
@@ -162,27 +171,27 @@ async function handleProcess() {
       const logLines = originalNames.map((orig, i) => `${orig}  →  ${cleanedNames[i]}`);
       outputPreview.value = logLines.join('\n');
       downloadButtons.classList.remove('hidden');
+      copyLogButton.classList.remove('hidden');
 
       downloadButton.onclick = () => {
         if (validFiles.length === 1) {
-          // Download single log file
-          const blob = new Blob([logLines[0]], { type: 'text/plain' });
+          // Download cleaned filename as text file containing the cleaned filename
+          const blob = new Blob([cleanedNames[0]], { type: 'text/plain' });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'filename_clean_log.txt';
+          a.download = cleanedNames[0] + '.txt';
           document.body.appendChild(a);
           a.click();
           a.remove();
           URL.revokeObjectURL(url);
         } else {
-          // Multiple files - create combined log file (fallback for no zip)
-          const combinedLog = logLines.join('\n');
-          const blob = new Blob([combinedLog], { type: 'text/plain' });
+          // Multiple cleaned filenames as list text file
+          const blob = new Blob([cleanedNames.join('\n')], { type: 'text/plain' });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'filename_clean_log.txt';
+          a.download = 'cleaned_filenames.txt';
           document.body.appendChild(a);
           a.click();
           a.remove();
@@ -203,6 +212,7 @@ async function handleProcess() {
 
       outputPreview.value = processedNames.join('\n');
       downloadButtons.classList.remove('hidden');
+      copyLogButton.classList.remove('hidden');
 
       downloadButton.onclick = () => {
         // Prepare downloadable text file with processed filenames
@@ -228,6 +238,7 @@ async function handleProcess() {
     const processedText = processText(inputText);
     outputPreview.value = processedText;
     downloadButtons.classList.remove('hidden');
+    copyLogButton.classList.remove('hidden');
 
     downloadButton.onclick = () => {
       const blob = new Blob([processedText], { type: 'text/plain' });
@@ -263,20 +274,23 @@ async function handleProcess() {
     }
 
     if (!processedFileContents.length) {
-      alert('No valid .txt files processed.');
+      alert('No valid .txt files were uploaded to process.');
       return;
     }
 
-    // Show preview of first file (or combined text)
-    outputPreview.value = processedFileContents.length === 1
-      ? processedFileContents[0]
-      : processedFileContents.map((content, i) => `--- ${processedFileNames[i]} ---\n${content}`).join('\n\n');
-
+    // Prepare log preview (show original filename and first 100 chars of cleaned text)
+    const logLines = processedFileNames.map((name, i) => {
+      let snippet = processedFileContents[i].slice(0, 100).replace(/\n/g, ' ');
+      if (processedFileContents[i].length > 100) snippet += '...';
+      return `${name}: ${snippet}`;
+    });
+    outputPreview.value = logLines.join('\n');
     downloadButtons.classList.remove('hidden');
+    copyLogButton.classList.remove('hidden');
 
     downloadButton.onclick = () => {
+      // If only one file, download the cleaned content directly
       if (processedFileContents.length === 1) {
-        // Download single file
         const blob = new Blob([processedFileContents[0]], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -287,11 +301,12 @@ async function handleProcess() {
         a.remove();
         URL.revokeObjectURL(url);
       } else {
-        // Multiple files - create zip for download
-        // Since no external libs allowed, fallback to downloading concatenated txt file
-        const combined = processedFileContents.map((content, i) =>
-          `--- ${processedFileNames[i]} ---\n${content}`).join('\n\n');
-        const blob = new Blob([combined], { type: 'text/plain' });
+        // Multiple files: zip is better, but for simplicity, generate a combined text file with markers
+        let combinedText = '';
+        processedFileNames.forEach((name, i) => {
+          combinedText += `===== ${name} =====\n${processedFileContents[i]}\n\n`;
+        });
+        const blob = new Blob([combinedText], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -305,6 +320,17 @@ async function handleProcess() {
   }
 }
 
+// Copy output preview to clipboard
+function copyLogToClipboard() {
+  if (!outputPreview.value.trim()) {
+    alert('No output to copy!');
+    return;
+  }
+  navigator.clipboard.writeText(outputPreview.value)
+    .then(() => alert('Output copied to clipboard!'))
+    .catch(err => alert('Failed to copy: ' + err));
+}
+
 // Event Listeners
 inputModeRadios.forEach(radio => {
   radio.addEventListener('change', e => {
@@ -313,18 +339,30 @@ inputModeRadios.forEach(radio => {
 });
 
 specialCharRemovalRadios.forEach(radio => {
-  radio.addEventListener('change', () => {
-    enableDisableListedCharsInput();
-  });
+  radio.addEventListener('change', enableDisableListedCharsInput);
+});
+
+listedCharsInput.addEventListener('input', () => {
+  // no extra action needed, processing will read the input live
+});
+
+trimSpacesCheckbox.addEventListener('change', () => {
+  // no extra action needed
 });
 
 insertSeparatorCheckbox.addEventListener('change', () => {
   enableDisableSeparatorSelect();
 });
 
+separatorSelect.addEventListener('change', () => {
+  // no extra action needed
+});
+
 processButton.addEventListener('click', handleProcess);
 
-// Initialize UI state
+copyLogButton.addEventListener('click', copyLogToClipboard);
+
+// Initialization
 enableDisableListedCharsInput();
 enableDisableSeparatorSelect();
 switchInputMode(currentInputMode);
