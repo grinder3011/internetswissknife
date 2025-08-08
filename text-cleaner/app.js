@@ -5,6 +5,7 @@ const textInputGroup = document.getElementById('textInput');
 const fileUploadInputGroup = document.getElementById('fileUploadInput');
 
 const fileNamesTextArea = document.getElementById('fileNamesTextArea');
+const fileUploadForNames = document.getElementById('fileUploadForNames'); // NEW upload input
 const textInputArea = document.getElementById('textInputArea');
 const textFileUpload = document.getElementById('textFileUpload');
 
@@ -19,9 +20,6 @@ const processButton = document.getElementById('processButton');
 const outputPreview = document.getElementById('outputPreview');
 const downloadButtons = document.getElementById('downloadButtons');
 const downloadButton = document.getElementById('downloadButton');
-
-// NEW: Create new input element for filename upload dynamically (replaces textarea)
-let fileNameUploadInput = null;
 
 // Current input mode
 let currentInputMode = 'cleanFilenames';
@@ -43,59 +41,20 @@ function enableDisableSeparatorSelect() {
 
 function switchInputMode(newMode) {
   currentInputMode = newMode;
-
-  // Show/hide input groups based on selected mode
-  if (newMode === 'cleanFilenames') {
-    // Replace textarea with file input for filenames if not already created
-    if (!fileNameUploadInput) {
-      // Remove the existing textarea from the DOM
-      fileNamesTextArea.style.display = 'none';
-
-      // Create new input[type="file"] for filenames with multiple and max size limit
-      fileNameUploadInput = document.createElement('input');
-      fileNameUploadInput.type = 'file';
-      fileNameUploadInput.multiple = true;
-      fileNameUploadInput.id = 'fileNameUploadInput';
-      fileNameUploadInput.accept = '*/*'; // allow any file type
-
-      // Add max size message
-      const maxSizeNote = document.createElement('small');
-      maxSizeNote.id = 'maxSizeNote';
-      maxSizeNote.textContent = 'You can upload multiple files (max size 50MB each).';
-      maxSizeNote.style.display = 'block';
-      maxSizeNote.style.marginTop = '6px';
-      maxSizeNote.style.color = '#555';
-
-      // Append file input and note to fileNamesInputGroup
-      fileNamesInputGroup.appendChild(fileNameUploadInput);
-      fileNamesInputGroup.appendChild(maxSizeNote);
-    }
-    fileNamesInputGroup.classList.remove('hidden');
-    textInputGroup.classList.add('hidden');
-    fileUploadInputGroup.classList.add('hidden');
-  } else {
-    // Show/hide original inputs for other modes
-    fileNamesInputGroup.classList.toggle('hidden', true);
-    textInputGroup.classList.toggle('hidden', newMode !== 'cleanTextInput');
-    fileUploadInputGroup.classList.toggle('hidden', newMode !== 'cleanTextFile');
-
-    // Restore textarea visibility for filenames mode if switching back
-    if (fileNameUploadInput) {
-      fileNamesTextArea.style.display = 'block';
-      fileNameUploadInput.value = '';
-      fileNameUploadInput.style.display = 'none';
-      const maxSizeNote = document.getElementById('maxSizeNote');
-      if (maxSizeNote) maxSizeNote.style.display = 'none';
-    }
-  }
+  // Show/Hide input groups based on selected mode
+  fileNamesInputGroup.classList.toggle('hidden', newMode !== 'cleanFilenames');
+  textInputGroup.classList.toggle('hidden', newMode !== 'cleanTextInput');
+  fileUploadInputGroup.classList.toggle('hidden', newMode !== 'cleanTextFile');
 
   // Clear outputs and inputs
   outputPreview.value = '';
   downloadButtons.classList.add('hidden');
+
+  // Clear inputs
   fileNamesTextArea.value = '';
+  fileUploadForNames.value = '';
   textInputArea.value = '';
   textFileUpload.value = '';
-  if (fileNameUploadInput) fileNameUploadInput.value = '';
 }
 
 // Cleaners
@@ -152,7 +111,19 @@ function processText(text) {
   return result;
 }
 
-// Max file size limit in bytes (50MB)
+// Helper to split filename into base name and extension
+function splitFilename(filename) {
+  const lastDotIndex = filename.lastIndexOf('.');
+  if (lastDotIndex <= 0) {
+    return { base: filename, ext: '' }; // no extension or hidden file starting with dot
+  }
+  return {
+    base: filename.slice(0, lastDotIndex),
+    ext: filename.slice(lastDotIndex),
+  };
+}
+
+// Max file size for uploads in bytes (50MB)
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 // Handle processing for different input modes
@@ -161,75 +132,91 @@ async function handleProcess() {
   downloadButtons.classList.add('hidden');
 
   if (currentInputMode === 'cleanFilenames') {
-    // Now use uploaded files instead of textarea input
-    if (!fileNameUploadInput || !fileNameUploadInput.files.length) {
-      alert('Please upload one or more files to clean their filenames.');
-      return;
-    }
+    // If user has uploaded files for filename cleaning
+    const files = fileUploadForNames.files;
 
-    const files = Array.from(fileNameUploadInput.files);
-
-    // Check file size limit
-    for (const file of files) {
-      if (file.size > MAX_FILE_SIZE) {
-        alert(`File "${file.name}" exceeds the 50MB size limit and will be skipped.`);
+    if (files.length > 0) {
+      // Validate max size per file
+      for (const f of files) {
+        if (f.size > MAX_FILE_SIZE) {
+          alert(`File "${f.name}" exceeds the 50MB size limit and will be skipped.`);
+        }
       }
-    }
 
-    // Filter files within size limit
-    const validFiles = files.filter(file => file.size <= MAX_FILE_SIZE);
+      const validFiles = Array.from(files).filter(f => f.size <= MAX_FILE_SIZE);
 
-    if (!validFiles.length) {
-      alert('No valid files to process (all exceeded 50MB).');
-      return;
-    }
+      if (validFiles.length === 0) {
+        alert('No files under 50MB were uploaded to process.');
+        return;
+      }
 
-    // Process filenames (excluding extension)
-    const processedFileNames = validFiles.map(file => {
-      const lastDotIndex = file.name.lastIndexOf('.');
-      const namePart = lastDotIndex === -1 ? file.name : file.name.substring(0, lastDotIndex);
-      const extPart = lastDotIndex === -1 ? '' : file.name.substring(lastDotIndex);
+      // Process filenames only
+      const originalNames = validFiles.map(f => f.name);
+      const cleanedNames = originalNames.map(filename => {
+        const { base, ext } = splitFilename(filename);
+        const cleanedBase = processText(base);
+        return cleanedBase + ext;
+      });
 
-      const cleanedName = processText(namePart);
-      return cleanedName + extPart;
-    });
+      // Show preview of cleaned filenames
+      const logLines = originalNames.map((orig, i) => `${orig}  →  ${cleanedNames[i]}`);
+      outputPreview.value = logLines.join('\n');
+      downloadButtons.classList.remove('hidden');
 
-    // Build log content
-    let logContent = '';
-    validFiles.forEach((file, i) => {
-      logContent += `${file.name}  -->  ${processedFileNames[i]}\n`;
-    });
+      downloadButton.onclick = () => {
+        if (validFiles.length === 1) {
+          // Download single log file
+          const blob = new Blob([logLines[0]], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'filename_clean_log.txt';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } else {
+          // Multiple files - create combined log file (fallback for no zip)
+          const combinedLog = logLines.join('\n');
+          const blob = new Blob([combinedLog], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'filename_clean_log.txt';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        }
+      };
 
-    // Output the log
-    outputPreview.value = logContent;
-    downloadButtons.classList.remove('hidden');
+    } else {
+      // Fallback: user can still input filenames manually (original behavior)
+      const filenamesRaw = fileNamesTextArea.value.trim();
+      if (!filenamesRaw) {
+        alert('Please enter one or more file names or upload files.');
+        return;
+      }
+      const filenames = filenamesRaw.split('\n').map(f => f.trim()).filter(f => f.length > 0);
 
-    downloadButton.onclick = () => {
-      if (validFiles.length === 1) {
-        // For single file: download log as TXT
-        const blob = new Blob([logContent], { type: 'text/plain' });
+      const processedNames = filenames.map(name => processText(name));
+
+      outputPreview.value = processedNames.join('\n');
+      downloadButtons.classList.remove('hidden');
+
+      downloadButton.onclick = () => {
+        // Prepare downloadable text file with processed filenames
+        const blob = new Blob([processedNames.join('\n')], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'filename_clean_log.txt';
+        a.download = 'cleaned_filenames.txt';
         document.body.appendChild(a);
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
-      } else {
-        // For multiple files: prepare ZIP download
-        // Since no external libs allowed, fallback to download combined log txt
-        const blob = new Blob([logContent], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'filename_clean_log.txt';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      }
-    };
+      };
+    }
 
   } else if (currentInputMode === 'cleanTextInput') {
     const inputText = textInputArea.value;
@@ -301,7 +288,7 @@ async function handleProcess() {
         URL.revokeObjectURL(url);
       } else {
         // Multiple files - create zip for download
-        // Since no external libs allowed, we fallback to downloading concatenated txt file
+        // Since no external libs allowed, fallback to downloading concatenated txt file
         const combined = processedFileContents.map((content, i) =>
           `--- ${processedFileNames[i]} ---\n${content}`).join('\n\n');
         const blob = new Blob([combined], { type: 'text/plain' });
