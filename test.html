@@ -1,28 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Word & Character Counter +</title>
-  <link rel="stylesheet" href="tooltip.styles.css?v=3">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100px;
+      width: 100%;
+      background-color: #f4f4f4;
+    }
+
+    .status {
+      padding: 15px 30px;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      border-radius: 10px;
+    }
+
+    .open {
+      background-color: green;
+    }
+
+    .closed {
+      background-color: red;
+    }
+  </style>
 </head>
 <body>
- <!-- Tooltip trigger -->
-<button class="tooltip-toggle-btn" data-tooltip-target="json-tip">💡 How to use this tool?</button>
+  <div id="status" class="status">Loading...</div>
 
-<!-- Tooltip content -->
-<div id="json-tip" class="tooltip-box hidden" aria-live="polite">
-  <p>💡 <strong>How to use this tool:</strong></p>
-  <ul>
-    <li>📋 Paste or upload JSON to format or validate.</li>
-    <li>✨ Click <em>Format JSON</em> to prettify your JSON.</li>
-    <li>🔍 Click <em>Validate JSON</em> to check for errors.</li>
-    <li>⬇️ Download or 📋 Copy your formatted JSON.</li>
-  </ul>
-</div>
+  <script>
+    const openingHours = {
+      0: null, // Sunday - closed
+      1: { open: 9, close: 17 }, // Monday
+      2: { open: 9, close: 17 }, // Tuesday
+      3: { open: 9, close: 17 }, // Wednesday
+      4: { open: 9, close: 17 }, // Thursday
+      5: { open: 9, close: 17 }, // Friday
+      6: { open: 10, close: 14 }, // Saturday
+    };
 
+    function updateStatus() {
+      const now = new Date();
+      const day = now.getDay();
+      const hour = now.getHours();
 
-  <script src="tooltip.js" defer></script>
+      const todayHours = openingHours[day];
+      const isOpen = todayHours && hour >= todayHours.open && hour < todayHours.close;
+
+      const statusEl = document.getElementById('status');
+      if (isOpen) {
+        statusEl.textContent = 'OPEN';
+        statusEl.classList.add('open');
+        statusEl.classList.remove('closed');
+      } else {
+        statusEl.textContent = 'CLOSED';
+        statusEl.classList.add('closed');
+        statusEl.classList.remove('open');
+      }
+    }
+
+    updateStatus();
+    setInterval(updateStatus, 60000); // update every minute
+  </script>
 </body>
 </html>
