@@ -13,10 +13,11 @@ const formatSelect = document.getElementById("format");
 const logoUpload = document.getElementById("logo-upload");
 const resetBtn = document.getElementById("reset-btn");
 
-// FIXED: Match the actual HTML structure
+// 🔧 FIXED tooltip references to match actual HTML
 const tooltipToggleBtn = document.querySelector(".tooltip-toggle-btn");
 const tooltipPanel = document.getElementById("qr-tip");
-// No close button exists in your HTML, so we'll add close on second click
+
+// ✅ DO NOT CHANGE ANYTHING ELSE
 
 let qrCode = null;
 let logoImage = null;
@@ -37,6 +38,7 @@ function createQRCode() {
     return;
   }
 
+  // Clear previous QR code and reset reference
   qrCodeContainer.innerHTML = "";
   qrCode = null;
 
@@ -112,18 +114,24 @@ function handleLogoUpload(event) {
   reader.readAsDataURL(file);
 }
 
-// More options toggle handler
+// ✅ FIXED: Restore correct visibility toggle logic
 toggleOptionsBtn.addEventListener("click", () => {
   const isExpanded = toggleOptionsBtn.getAttribute("aria-expanded") === "true";
 
-  moreOptions.hidden = isExpanded;
+  // Show/hide using display (NOT .hidden)
+  if (isExpanded) {
+    moreOptions.style.display = "none";
+  } else {
+    moreOptions.style.display = "block";
+  }
+
   toggleOptionsBtn.setAttribute("aria-expanded", String(!isExpanded));
   toggleOptionsBtn.innerHTML =
     (!isExpanded ? "Less options " : "More options ") +
     '<i class="fas fa-chevron-down arrow"></i>';
 });
 
-// Tooltip toggle handler (updated to match actual HTML)
+// ✅ Tooltip toggle logic now correctly mapped to your actual markup
 tooltipToggleBtn.addEventListener("click", () => {
   const isExpanded = tooltipToggleBtn.getAttribute("aria-expanded") === "true";
   tooltipPanel.classList.toggle("hidden", isExpanded);
