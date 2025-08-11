@@ -1,72 +1,173 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Open Status</title>
   <style>
     body {
       margin: 0;
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100px;
-      width: 100%;
-      background-color: #f4f4f4;
+      height: 120px;
     }
 
-    .status {
+    .status-box {
+      text-align: center;
       padding: 15px 30px;
-      font-size: 24px;
-      font-weight: bold;
-      color: white;
       border-radius: 10px;
+      color: #fff;
+      font-size: 22px;
+      font-weight: bold;
     }
 
-    .open {
-      background-color: green;
-    }
+    .open { background-color: #2ecc71; }
+    .closed { background-color: #e74c3c; }
 
-    .closed {
-      background-color: red;
+    .hours {
+      font-size: 14px;
+      margin-top: 5px;
+      color: #fff;
+      font-weight: normal;
     }
   </style>
 </head>
 <body>
-  <div id="status" class="status">Loading...</div>
+  <div id="status" class="status-box">Loading…</div>
 
   <script>
-    const openingHours = {
-      0: null, // Sunday - closed
-      1: { open: 9, close: 17 }, // Monday
-      2: { open: 9, close: 17 }, // Tuesday
-      3: { open: 9, close: 17 }, // Wednesday
-      4: { open: 9, close: 17 }, // Thursday
-      5: { open: 9, close: 17 }, // Friday
-      6: { open: 10, close: 14 }, // Saturday
+    const LOCATIONS = {
+      "Palača-Gabrielli": {
+        name: "Palača Gabrielli",
+        timezone: "Europe/Ljubljana",
+        schedule: (date) => {
+          const month = date.getMonth() + 1;
+          const day = date.getDay(); // 0=Sunday
+          if (day === 1) return null; // Closed Monday
+          if (month >= 7 && month <= 8) {
+            return [{ open: 9, close: 12 }, { open: 17, close: 21 }];
+          }
+          return [{ open: 9, close: 17 }];
+        }
+      },
+      "Tartinijeva-hiša": {
+        name: "Tartinijeva hiša",
+        timezone: "Europe/Ljubljana",
+        schedule: (date) => {
+          const month = date.getMonth() + 1;
+          const day = date.getDay();
+          if (day === 1) return null; // Closed Monday
+          if (month >= 6 && month <= 8) {
+            return [{ open: 9, close: 12 }, { open: 17, close: 21 }];
+          }
+          switch (day) {
+            case 2: return [{ open: 10, close: 13 }];
+            case 3: return [{ open: 15, close: 18 }];
+            case 4: return [{ open: 10, close: 13 }];
+            case 5: return [{ open: 15, close: 18 }];
+            case 6: return [{ open: 10, close: 18 }];
+            case 0: return [{ open: 10, close: 15 }];
+            default: return null;
+          }
+        }
+      },
+      "Piranski-svetilnik": {
+        name: "Piranski svetilnik",
+        timezone: "Europe/Ljubljana",
+        schedule: (date) => {
+          const month = date.getMonth() + 1;
+          const day = date.getDay();
+          if (month === 10 || month === 5 || month === 6) {
+            if (day < 5) return null; // Fri–Sun only
+            return [{ open: 10, close: 17 }];
+          }
+          if (month === 7) return [{ open: 9, close: 12 }, { open: 17, close: 21 }];
+          if (month === 8) return [{ open: 9, close: 12 }, { open: 16, close: 20 }];
+          if (month === 9) return [{ open: 10, close: 13 }, { open: 16, close: 19 }];
+          return null;
+        }
+      },
+      "Monfort": {
+        name: "Monfort",
+        timezone: "Europe/Ljubljana",
+        schedule: (date) => {
+          const month = date.getMonth() + 1;
+          const day = date.getDay();
+          if ([3,4,11,12].includes(month)) {
+            if (day < 4) return null;
+            return [{ open: 14, close: 18 }];
+          }
+          if ([5,6,9,10].includes(month)) {
+            if (day === 1) return null;
+            if (day >= 2 && day <= 5) return [{ open: 12, close: 18 }];
+            return [{ open: 10, close: 18 }];
+          }
+          if (month === 7 || month === 8) {
+            if (day === 1) return null;
+            if (day >= 2 && day <= 4) return [{ open: 9, close: 12 }];
+            return [{ open: 9, close: 12 }, { open: 17, close: 21 }];
+          }
+          return null;
+        }
+      },
+      "Tonina-hiša": {
+        name: "Tonina hiša",
+        timezone: "Europe/Ljubljana",
+        schedule: (date) => {
+          const month = date.getMonth() + 1;
+          const day = date.getDay();
+          if (month === 12 || month <= 3) return null; // Closed Dec–Mar
+          if (day === 1 || day === 4) return null; // Closed Mon & Thu
+          return [{ open: 10, close: 14 }];
+        }
+      }
     };
 
-    function updateStatus() {
-      const now = new Date();
-      const day = now.getDay();
-      const hour = now.getHours();
-
-      const todayHours = openingHours[day];
-      const isOpen = todayHours && hour >= todayHours.open && hour < todayHours.close;
-
-      const statusEl = document.getElementById('status');
-      if (isOpen) {
-        statusEl.textContent = 'OPEN';
-        statusEl.classList.add('open');
-        statusEl.classList.remove('closed');
-      } else {
-        statusEl.textContent = 'CLOSED';
-        statusEl.classList.add('closed');
-        statusEl.classList.remove('open');
-      }
+    function formatTime(hour) {
+      return `${hour.toString().padStart(2, '0')}:00`;
     }
 
-    updateStatus();
-    setInterval(updateStatus, 60000); // update every minute
+    function getCurrentTimeInTZ(timezone) {
+      const dateStr = new Date().toLocaleString("en-US", { timeZone: timezone });
+      return new Date(dateStr);
+    }
+
+    function renderStatus() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const key = urlParams.get("location");
+      const config = LOCATIONS[key];
+
+      const box = document.getElementById("status");
+
+      if (!config) {
+        box.textContent = "Neznana lokacija";
+        box.className = "status-box closed";
+        return;
+      }
+
+      const now = getCurrentTimeInTZ(config.timezone);
+      const todaySchedule = config.schedule(now);
+
+      if (!todaySchedule || todaySchedule.length === 0) {
+        box.innerHTML = `${config.name}: ZAPRTO<br><div class="hours">Danes zaprto</div>`;
+        box.className = "status-box closed";
+        return;
+      }
+
+      const hour = now.getHours();
+      const isOpen = todaySchedule.some(range => hour >= range.open && hour < range.close);
+
+      const hoursText = todaySchedule.map(range => `${formatTime(range.open)}–${formatTime(range.close)}`).join(' in ');
+
+      box.innerHTML = `${config.name}: ${isOpen ? "ODPRTO" : "ZAPRTO"}<br><div class="hours">Danes: ${hoursText}</div>`;
+      box.className = `status-box ${isOpen ? "open" : "closed"}`;
+    }
+
+    renderStatus();
+    setInterval(renderStatus, 60000);
   </script>
 </body>
 </html>
