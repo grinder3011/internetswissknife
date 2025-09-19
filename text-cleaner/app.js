@@ -26,12 +26,8 @@ let currentInputMode = 'cleanFilenames';
 
 function enableDisableListedCharsInput() {
   const selected = document.querySelector('input[name="specialCharRemoval"]:checked').value;
-  if (selected === 'removeListed') {
-    listedCharsInput.disabled = false;
-  } else {
-    listedCharsInput.disabled = true;
-    listedCharsInput.value = '';
-  }
+  listedCharsInput.disabled = selected !== 'removeListed';
+  if (listedCharsInput.disabled) listedCharsInput.value = '';
 }
 
 function enableDisableSeparatorSelect() {
@@ -71,7 +67,11 @@ function trimExtraSpaces(text) {
 }
 
 function insertSeparator(text, separator) {
+  // Convert dashes and underscores to spaces first
+  text = text.replace(/[-_]+/g, ' ');
+  // Trim extra spaces
   text = trimExtraSpaces(text);
+  // Replace spaces with selected separator (space itself is fine)
   return text.replace(/ /g, separator);
 }
 
@@ -99,9 +99,7 @@ function processText(text) {
 
 function splitFilename(filename) {
   const lastDotIndex = filename.lastIndexOf('.');
-  if (lastDotIndex <= 0) {
-    return { base: filename, ext: '' };
-  }
+  if (lastDotIndex <= 0) return { base: filename, ext: '' };
   return {
     base: filename.slice(0, lastDotIndex),
     ext: filename.slice(lastDotIndex),
@@ -110,7 +108,6 @@ function splitFilename(filename) {
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-// Download helper for a single file
 function triggerDownload(blob, filename) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -122,12 +119,10 @@ function triggerDownload(blob, filename) {
   URL.revokeObjectURL(url);
 }
 
-// Download multiple files sequentially to avoid browser blocking
 async function downloadMultipleFiles(files) {
   for (const { content, filename } of files) {
     const blob = new Blob([content], { type: 'application/octet-stream' });
     triggerDownload(blob, filename);
-    // Delay a bit between downloads to avoid browser popup blocking
     await new Promise(r => setTimeout(r, 500));
   }
 }
@@ -140,7 +135,6 @@ async function handleProcess() {
   if (currentInputMode === 'cleanFilenames') {
     const files = fileUploadForNames.files;
     if (files.length > 0) {
-      // Validate file sizes
       const validFiles = Array.from(files).filter(f => {
         if (f.size > MAX_FILE_SIZE) {
           alert(`File "${f.name}" exceeds the 50MB size limit and will be skipped.`);
@@ -149,7 +143,7 @@ async function handleProcess() {
         return true;
       });
 
-      if (validFiles.length === 0) {
+      if (!validFiles.length) {
         alert('No valid files under 50MB to process.');
         return;
       }
@@ -161,31 +155,16 @@ async function handleProcess() {
         return cleanedBase + ext;
       });
 
-      // Show log preview: original -> cleaned
-      const logLines = originalNames.map((orig, i) => `${orig}  →  ${cleanedNames[i]}`);
-      outputPreview.value = logLines.join('\n');
+      outputPreview.value = originalNames.map((o, i) => `${o}  →  ${cleanedNames[i]}`).join('\n');
       downloadButtons.classList.remove('hidden');
       copyLogButton.classList.remove('hidden');
 
-      // Prepare files with cleaned names but same content
-      const filesToDownload = [];
-      for (let i = 0; i < validFiles.length; i++) {
-        const file = validFiles[i];
-        const newName = cleanedNames[i];
-        // Use the original file content as is
-        filesToDownload.push({ content: file, filename: newName });
-      }
-
       downloadButton.onclick = async () => {
-        // We need to read the files as blobs and trigger downloads with cleaned filenames
-        const downloadItems = [];
-        for (const file of validFiles) {
+        const downloadItems = validFiles.map(file => {
           const { base, ext } = splitFilename(file.name);
           const cleanedBase = processText(base);
-          const cleanedFilename = cleanedBase + ext;
-          // Just reuse the original file as Blob (file is Blob)
-          downloadItems.push({ content: file, filename: cleanedFilename });
-        }
+          return { content: file, filename: cleanedBase + ext };
+        });
         await downloadMultipleFiles(downloadItems);
       };
 
@@ -193,16 +172,13 @@ async function handleProcess() {
         navigator.clipboard.writeText(outputPreview.value);
         alert('Log copied to clipboard.');
       };
-
     } else {
-      // User input filenames manually
       const filenamesRaw = fileNamesTextArea.value.trim();
       if (!filenamesRaw) {
         alert('Please enter one or more file names or upload files.');
         return;
       }
       const filenames = filenamesRaw.split('\n').map(f => f.trim()).filter(f => f.length > 0);
-
       const processedNames = filenames.map(name => processText(name));
 
       outputPreview.value = processedNames.join('\n');
@@ -219,7 +195,6 @@ async function handleProcess() {
         alert('Log copied to clipboard.');
       };
     }
-
   } else if (currentInputMode === 'cleanTextInput') {
     const inputText = textInputArea.value;
     if (!inputText.trim()) {
@@ -241,7 +216,6 @@ async function handleProcess() {
       navigator.clipboard.writeText(outputPreview.value);
       alert('Log copied to clipboard.');
     };
-
   } else if (currentInputMode === 'cleanTextFile') {
     const files = textFileUpload.files;
     if (!files.length) {
@@ -284,7 +258,6 @@ async function handleProcess() {
         const blob = new Blob([processedFileContents[0]], { type: 'text/plain' });
         triggerDownload(blob, processedFileNames[0]);
       } else {
-        // Multiple cleaned text files - trigger downloads sequentially
         const downloadItems = processedFileContents.map((content, i) => ({
           content,
           filename: processedFileNames[i],
@@ -301,21 +274,9 @@ async function handleProcess() {
 }
 
 // Event listeners
-inputModeRadios.forEach(radio => {
-  radio.addEventListener('change', e => {
-    switchInputMode(e.target.value);
-  });
-});
-
-specialCharRemovalRadios.forEach(radio => {
-  radio.addEventListener('change', () => {
-    enableDisableListedCharsInput();
-  });
-});
-
-insertSeparatorCheckbox.addEventListener('change', () => {
-  enableDisableSeparatorSelect();
-});
+inputModeRadios.forEach(radio => radio.addEventListener('change', e => switchInputMode(e.target.value)));
+specialCharRemovalRadios.forEach(radio => radio.addEventListener('change', enableDisableListedCharsInput));
+insertSeparatorCheckbox.addEventListener('change', enableDisableSeparatorSelect);
 
 processButton.addEventListener('click', handleProcess);
 
